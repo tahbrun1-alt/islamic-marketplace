@@ -12,7 +12,7 @@ const footerLinks = {
   "Sell": [
     { label: "Start Selling", href: "/seller/dashboard" },
     { label: "How It Works", href: "/how-it-works" },
-    { label: "Seller Dashboard", href: "/seller/dashboard" },
+    { label: "Seller Dashboard", href: "/seller/dashboard#dashboard" },
     { label: "Commission Info", href: "/how-it-works#commission" },
   ],
   "Support": [
@@ -64,7 +64,7 @@ export default function Footer() {
               <h3 className="font-bold text-sm mb-4 opacity-90">{title}</h3>
               <ul className="space-y-2">
                 {links.map((link) => (
-                  <li key={link.href}>
+                  <li key={link.label}>
                     <Link
                       href={link.href}
                       className="text-sm opacity-60 hover:opacity-100 transition-opacity"
