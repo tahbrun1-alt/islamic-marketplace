@@ -50,27 +50,52 @@ async function startServer() {
   app.post("/api/seed-admin", async (req, res) => {
     const { token } = req.body || {};
     if (token !== "noor-seed-2026") return res.status(403).json({ error: "forbidden" });
+    const log: string[] = [];
     try {
       const bcryptjs = await import("bcryptjs");
-      const { getDb } = await import("../db");
-      const { sql } = await import("drizzle-orm");
-      const db = await getDb();
-      // Seed admin user only (fast - single query)
+      const mysql2 = await import("mysql2/promise");
+      log.push("imports ok");
+
+      // Use a direct connection (not the pool) to avoid any pool state issues
+      const conn = await mysql2.default.createConnection(process.env.DATABASE_URL!);
+      log.push("direct connection ok");
+
+      // Run migrations to add missing columns
+      const migrations = [
+        `ALTER TABLE users ADD COLUMN IF NOT EXISTS passwordHash VARCHAR(255) NULL`,
+        `ALTER TABLE users ADD COLUMN IF NOT EXISTS phone VARCHAR(50) NULL`,
+        `ALTER TABLE users ADD COLUMN IF NOT EXISTS avatar TEXT NULL`,
+        `ALTER TABLE users ADD COLUMN IF NOT EXISTS bio TEXT NULL`,
+        `ALTER TABLE users ADD COLUMN IF NOT EXISTS location VARCHAR(255) NULL`,
+        `ALTER TABLE users ADD COLUMN IF NOT EXISTS loginMethod VARCHAR(50) NULL DEFAULT 'email'`,
+        `ALTER TABLE users ADD COLUMN IF NOT EXISTS isVerified BOOLEAN NOT NULL DEFAULT false`,
+        `ALTER TABLE users ADD COLUMN IF NOT EXISTS stripeCustomerId VARCHAR(255) NULL`,
+        `ALTER TABLE users ADD COLUMN IF NOT EXISTS lastSignedIn DATETIME NULL`,
+      ];
+      for (const m of migrations) {
+        try { await conn.execute(m); log.push(`migration ok: ${m.slice(0,50)}`); }
+        catch (me: any) { log.push(`migration skip: ${me.message.slice(0,60)}`); }
+      }
+
       const hash = await bcryptjs.default.hash("Qwerty65", 10);
       const openId = "local_admin_tahmid";
-      const existing = await db.execute(sql.raw(`SELECT id FROM users WHERE email = 'tahmidburner12@gmail.com' LIMIT 1`));
+
+      const [rows] = await conn.execute(`SELECT id FROM users WHERE email = 'tahmidburner12@gmail.com' LIMIT 1`);
+      const existing = rows as any[];
       let action = "";
-      const rows = existing[0] as any[];
-      if (rows.length > 0) {
-        await db.execute(sql.raw(`UPDATE users SET passwordHash = '${hash}', role = 'admin', name = 'Admin', openId = '${openId}' WHERE email = 'tahmidburner12@gmail.com'`));
+      if (existing.length > 0) {
+        await conn.execute(`UPDATE users SET passwordHash = ?, role = 'admin', name = 'Admin', openId = ? WHERE email = 'tahmidburner12@gmail.com'`, [hash, openId]);
         action = "updated";
       } else {
-        await db.execute(sql.raw(`INSERT INTO users (openId, name, email, passwordHash, role) VALUES ('${openId}', 'Admin', 'tahmidburner12@gmail.com', '${hash}', 'admin')`));
+        await conn.execute(`INSERT INTO users (openId, name, email, passwordHash, role) VALUES (?, 'Admin', 'tahmidburner12@gmail.com', ?, 'admin')`, [openId, hash]);
         action = "created";
       }
-      return res.json({ ok: true, action });
+      await conn.end();
+      log.push(`admin ${action}`);
+      return res.json({ ok: true, action, log });
     } catch (e: any) {
-      return res.status(500).json({ error: e.message });
+      console.error("[Seed] Error:", e);
+      return res.status(500).json({ error: e.message, log });
     }
   });
 
