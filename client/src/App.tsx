@@ -20,6 +20,13 @@ import ServiceForm from "./pages/ServiceForm";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import ImportProduct from "./pages/ImportProduct";
+import Help from "./pages/Help";
+import Contact from "./pages/Contact";
+import Disputes from "./pages/Disputes";
+import Returns from "./pages/Returns";
+import Privacy from "./pages/Privacy";
+import About from "./pages/About";
+import HalalStandards from "./pages/HalalStandards";
 import { lazy, Suspense } from "react";
 
 // Lazy-loaded pages
@@ -69,6 +76,13 @@ function Router() {
         <Route path="/admin" component={AdminPanel} />
         <Route path="/how-it-works" component={HowItWorks} />
         <Route path="/terms" component={Terms} />
+        <Route path="/help" component={Help} />
+        <Route path="/contact" component={Contact} />
+        <Route path="/disputes" component={Disputes} />
+        <Route path="/returns" component={Returns} />
+        <Route path="/privacy" component={Privacy} />
+        <Route path="/about" component={About} />
+        <Route path="/halal-standards" component={HalalStandards} />
         <Route path="/login" component={Login} />
         <Route path="/register" component={Register} />
         <Route path="/import-product" component={ImportProduct} />
