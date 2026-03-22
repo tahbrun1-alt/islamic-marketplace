@@ -41,6 +41,42 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+
+  /* ── Gold palette (24-carat vivid gold) ── */
+  --color-gold-50:  oklch(0.98 0.025 88);
+  --color-gold-100: oklch(0.95 0.055 88);
+  --color-gold-200: oklch(0.92 0.090 88);
+  --color-gold-300: oklch(0.88 0.130 88);
+  --color-gold-400: oklch(0.86 0.165 88);
+  --color-gold-500: oklch(0.83 0.190 88);
+  --color-gold-600: oklch(0.78 0.185 85);
+  --color-gold-700: oklch(0.68 0.175 82);
+  --color-gold-800: oklch(0.55 0.155 78);
+  --color-gold-900: oklch(0.40 0.120 72);
+
+  /* ── Ink palette (deep charcoal) ── */
+  --color-ink-50:  oklch(0.97 0.004 50);
+  --color-ink-100: oklch(0.93 0.008 50);
+  --color-ink-200: oklch(0.85 0.012 50);
+  --color-ink-300: oklch(0.72 0.015 50);
+  --color-ink-400: oklch(0.58 0.018 50);
+  --color-ink-500: oklch(0.45 0.018 50);
+  --color-ink-600: oklch(0.35 0.018 50);
+  --color-ink-700: oklch(0.28 0.016 50);
+  --color-ink-800: oklch(0.20 0.014 50);
+  --color-ink-900: oklch(0.12 0.010 50);
+
+  /* ── Cream palette (ivory/warm white) ── */
+  --color-cream-50:  oklch(0.993 0.003 90);
+  --color-cream-100: oklch(0.985 0.006 90);
+  --color-cream-200: oklch(0.970 0.010 88);
+  --color-cream-300: oklch(0.950 0.018 86);
+  --color-cream-400: oklch(0.920 0.025 85);
+  --color-cream-500: oklch(0.880 0.035 84);
+  --color-cream-600: oklch(0.820 0.050 83);
+  --color-cream-700: oklch(0.720 0.065 82);
+  --color-cream-800: oklch(0.580 0.055 80);
+  --color-cream-900: oklch(0.420 0.040 78);
 }
 
 :root {
