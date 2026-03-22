@@ -55,32 +55,8 @@ async function startServer() {
       const { getDb } = await import("../db");
       const { sql } = await import("drizzle-orm");
       const db = await getDb();
-      // Run missing migrations using the existing drizzle connection pool
-      const migrations = [
-        "ALTER TABLE `users` ADD COLUMN IF NOT EXISTS `passwordHash` text",
-        "ALTER TABLE `users` ADD COLUMN IF NOT EXISTS `phone` varchar(30)",
-        "ALTER TABLE `users` ADD COLUMN IF NOT EXISTS `avatar` text",
-        "ALTER TABLE `users` ADD COLUMN IF NOT EXISTS `bio` text",
-        "ALTER TABLE `users` ADD COLUMN IF NOT EXISTS `location` text",
-        "ALTER TABLE `users` ADD COLUMN IF NOT EXISTS `isVerified` boolean NOT NULL DEFAULT false",
-        "ALTER TABLE `users` ADD COLUMN IF NOT EXISTS `stripeCustomerId` varchar(128)",
-        "ALTER TABLE `bookings` ADD COLUMN IF NOT EXISTS `depositPaid` boolean NOT NULL DEFAULT false",
-        "ALTER TABLE `bookings` ADD COLUMN IF NOT EXISTS `platformFee` decimal(10,2) DEFAULT '0.00'",
-        "ALTER TABLE `bookings` ADD COLUMN IF NOT EXISTS `charityFee` decimal(10,2) DEFAULT '0.00'",
-        "ALTER TABLE `orders` ADD COLUMN IF NOT EXISTS `platformFee` decimal(10,2) DEFAULT '0.00'",
-        "ALTER TABLE `orders` ADD COLUMN IF NOT EXISTS `charityFee` decimal(10,2) DEFAULT '0.00'",
-      ];
-      const migrationResults: string[] = [];
-      for (const migSql of migrations) {
-        try {
-          await db.execute(sql.raw(migSql));
-          migrationResults.push(`OK: ${migSql.slice(0, 60)}`);
-        } catch (e: any) {
-          migrationResults.push(`SKIP: ${e.message.slice(0, 80)}`);
-        }
-      }
-      // Seed admin user
-      const hash = await bcryptjs.default.hash("Qwerty65", 12);
+      // Seed admin user only (fast - single query)
+      const hash = await bcryptjs.default.hash("Qwerty65", 10);
       const openId = "local_admin_tahmid";
       const existing = await db.execute(sql.raw(`SELECT id FROM users WHERE email = 'tahmidburner12@gmail.com' LIMIT 1`));
       let action = "";
@@ -92,9 +68,7 @@ async function startServer() {
         await db.execute(sql.raw(`INSERT INTO users (openId, name, email, passwordHash, role) VALUES ('${openId}', 'Admin', 'tahmidburner12@gmail.com', '${hash}', 'admin')`));
         action = "created";
       }
-      // Update commission rate
-      try { await db.execute(sql.raw("UPDATE platformSettings SET value = '7' WHERE `key` = 'commission_rate'")); } catch {}
-      return res.json({ ok: true, action, migrations: migrationResults });
+      return res.json({ ok: true, action });
     } catch (e: any) {
       return res.status(500).json({ error: e.message });
     }

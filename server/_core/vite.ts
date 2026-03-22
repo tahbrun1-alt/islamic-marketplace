@@ -9,11 +9,15 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 export async function setupVite(app: Express, server: Server) {
-  // Dynamic imports so vite.config.ts is NOT bundled into the production build.
+  // Dynamic imports so vite packages are NOT bundled into the production build.
   // In production, serveStatic() is used instead and this function is never called.
   const { createServer: createViteServer } = await import("vite");
   const { nanoid } = await import("nanoid");
-  const viteConfig = (await import("../../vite.config")).default;
+
+  // Use a dynamic string to prevent esbuild from resolving this import at build time.
+  // This import is only ever called in development, never in production.
+  const configPath = [".", ".", "vite.config"].join("/");
+  const viteConfig = (await import(/* @vite-ignore */ configPath)).default;
 
   const serverOptions = {
     middlewareMode: true,
