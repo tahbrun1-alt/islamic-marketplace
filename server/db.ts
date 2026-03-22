@@ -300,8 +300,12 @@ export async function updateService(id: number, data: Partial<typeof services.$i
   await db.update(services).set(data).where(eq(services.id, id));
 }
 
+export async function deleteService(id: number) {
+  const db = await getDb();
+  if (!db) return;
+  await db.update(services).set({ isActive: false }).where(eq(services.id, id));
+}
 // ─── Orders ───────────────────────────────────────────────────────────────────
-
 export async function createOrder(orderData: typeof orders.$inferInsert, items: typeof orderItems.$inferInsert[]) {
   const db = await getDb();
   if (!db) throw new Error("DB not available");

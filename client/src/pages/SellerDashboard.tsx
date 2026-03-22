@@ -202,6 +202,7 @@ export default function SellerDashboard() {
           <TabsList className="mb-6">
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="products">Products</TabsTrigger>
+            <TabsTrigger value="services">Services</TabsTrigger>
             <TabsTrigger value="orders">Orders</TabsTrigger>
             <TabsTrigger value="bookings">Bookings</TabsTrigger>
             <TabsTrigger value="settings">Settings</TabsTrigger>
@@ -331,7 +332,10 @@ export default function SellerDashboard() {
               </div>
             )}
           </TabsContent>
-
+          {/* Services */}
+          <TabsContent value="services">
+            <SellerServicesTab />
+          </TabsContent>
           {/* Orders */}
           <TabsContent value="orders">
             <Card className="border-0 shadow-sm">
@@ -501,6 +505,85 @@ function ShopSettings({ shop, onSaved }: { shop: { id: number; name: string; des
         >
           {updateShopMutation.isPending ? "Saving..." : "Save Settings"}
         </Button>
+      </CardContent>
+    </Card>
+  );
+}
+
+// ─── Seller Services Tab ───────────────────────────────────────────────────
+function SellerServicesTab() {
+  const { user } = useAuth();
+  const { data: services, refetch } = trpc.services.list.useQuery(
+    { providerId: user?.id, limit: 50 },
+    { enabled: !!user?.id }
+  );
+  const deleteServiceMutation = trpc.services.delete.useMutation({
+    onSuccess: () => { toast.success("Service removed"); refetch(); },
+    onError: (e) => toast.error(e.message),
+  });
+
+  return (
+    <Card className="border-0 shadow-sm">
+      <CardHeader className="flex flex-row items-center justify-between">
+        <CardTitle>My Services ({services?.length ?? 0})</CardTitle>
+        <Button asChild size="sm">
+          <Link href="/seller/services/new">
+            <Plus className="w-4 h-4 mr-2" /> Add Service
+          </Link>
+        </Button>
+      </CardHeader>
+      <CardContent>
+        {services && services.length > 0 ? (
+          <div className="space-y-3">
+            {services.map((service) => (
+              <div key={service.id} className="flex items-center justify-between p-3 bg-secondary/30 rounded-lg">
+                <div className="flex items-center gap-3 min-w-0">
+                  {(service.images as string[])?.[0] ? (
+                    <img src={(service.images as string[])[0]} alt={service.title}
+                      className="w-12 h-12 rounded-lg object-cover flex-shrink-0" />
+                  ) : (
+                    <div className="w-12 h-12 rounded-lg bg-secondary flex items-center justify-center flex-shrink-0">
+                      <Calendar className="w-5 h-5 text-muted-foreground" />
+                    </div>
+                  )}
+                  <div className="min-w-0">
+                    <p className="font-medium text-sm text-foreground truncate">{service.title}</p>
+                    <p className="text-xs text-muted-foreground">
+                      £{parseFloat(service.price).toFixed(2)} · {service.locationType?.replace("_", " ")} · {service.duration}min
+                    </p>
+                    <div className="flex items-center gap-2 mt-1">
+                      <span className={`text-xs px-1.5 py-0.5 rounded-full ${service.isActive ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-600"}`}>
+                        {service.isActive ? "Active" : "Inactive"}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 flex-shrink-0">
+                  <Button variant="ghost" size="icon" asChild className="h-8 w-8">
+                    <Link href={`/seller/services/${service.id}/edit`}>
+                      <Edit className="w-3.5 h-3.5" />
+                    </Link>
+                  </Button>
+                  <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:text-destructive"
+                    onClick={() => { if (confirm("Remove this service?")) deleteServiceMutation.mutate({ id: service.id }); }}>
+                    <Trash2 className="w-3.5 h-3.5" />
+                  </Button>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-12">
+            <Calendar className="w-12 h-12 text-muted-foreground mx-auto mb-3" />
+            <h3 className="font-bold text-lg mb-2 text-foreground">No services yet</h3>
+            <p className="text-muted-foreground mb-4">Add your first service to start accepting bookings</p>
+            <Button asChild>
+              <Link href="/seller/services/new">
+                <Plus className="w-4 h-4 mr-2" /> Add Service
+              </Link>
+            </Button>
+          </div>
+        )}
       </CardContent>
     </Card>
   );

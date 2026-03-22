@@ -6,8 +6,10 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { Search, Star, Clock, MapPin, Filter, X, Calendar } from "lucide-react";
+import { Search, Star, Clock, MapPin, Filter, X, Calendar, Heart } from "lucide-react";
 import { Link } from "wouter";
+import { useAuth } from "@/_core/hooks/useAuth";
+import { toast } from "sonner";
 
 const SERVICE_CATEGORIES = [
   { label: "All Services", value: "" },
@@ -32,6 +34,23 @@ const LOCATION_TYPES = [
 ];
 
 export default function Services() {
+  const { isAuthenticated } = useAuth();
+  const utils = trpc.useUtils();
+  const wishlistAdd = trpc.wishlist.add.useMutation({
+    onSuccess: () => { utils.wishlist.list.invalidate(); toast.success("Added to wishlist"); },
+    onError: () => toast.error("Sign in to save to wishlist"),
+  });
+  const wishlistRemove = trpc.wishlist.remove.useMutation({
+    onSuccess: () => { utils.wishlist.list.invalidate(); toast.success("Removed from wishlist"); },
+  });
+  const { data: wishlistItems } = trpc.wishlist.list.useQuery(undefined, { enabled: isAuthenticated });
+  const wishlistIds = new Set((wishlistItems ?? []).filter((i: any) => i.service).map((i: any) => i.service.id));
+  const handleWishlist = (serviceId: number, e: React.MouseEvent) => {
+    e.preventDefault();
+    if (!isAuthenticated) { toast.error("Sign in to save to wishlist"); return; }
+    if (wishlistIds.has(serviceId)) { wishlistRemove.mutate({ serviceId }); }
+    else { wishlistAdd.mutate({ serviceId }); }
+  };
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [category, setCategory] = useState("");
@@ -198,7 +217,7 @@ export default function Services() {
                       transition={{ delay: i * 0.05 }}
                     >
                       <Link href={`/services/${service.id}`}>
-                        <div className="product-card rounded-xl overflow-hidden bg-white border border-border cursor-pointer group h-full">
+                        <div className="product-card rounded-xl overflow-hidden bg-white border border-border cursor-pointer group h-full relative">
                           <div className="aspect-video bg-secondary overflow-hidden relative">
                             {(service.images as string[])?.[0] ? (
                               <img
@@ -232,6 +251,12 @@ export default function Services() {
                                 {service.reviewCount ? <span className="text-xs text-muted-foreground">({service.reviewCount})</span> : null}
                               </div>
                             </div>
+                            <button
+                              className="absolute top-2 right-2 p-1.5 rounded-full bg-white/80 hover:bg-white transition-colors opacity-0 group-hover:opacity-100"
+                              onClick={(e) => handleWishlist(service.id, e)}
+                            >
+                              <Heart className={`w-4 h-4 transition-colors ${wishlistIds.has(service.id) ? "fill-rose-500 text-rose-500" : "text-muted-foreground hover:text-rose-500"}`} />
+                            </button>
                             <Button size="sm" className="w-full mt-3 bg-primary text-primary-foreground">
                               <Calendar className="w-3.5 h-3.5 mr-2" /> Book Now
                             </Button>

@@ -14,6 +14,7 @@ import {
   ArrowLeft, Save, Package, Image as ImageIcon, Tag, DollarSign,
   Hash, ToggleLeft, Loader2, Plus, X, AlertCircle
 } from "lucide-react";
+import ImageUploader from "@/components/ImageUploader";
 
 const CATEGORIES = [
   { id: 1, name: "Clothing & Modest Fashion" },
@@ -371,55 +372,13 @@ export default function ProductForm() {
           </div>
 
           {/* Images */}
-          <div className="bg-card border rounded-xl p-6 space-y-4">
-            <div className="flex items-center gap-2 mb-1">
-              <ImageIcon className="w-4 h-4 text-primary" />
-              <h2 className="font-semibold text-foreground">Product Images</h2>
-            </div>
-
-            <div className="flex gap-2">
-              <Input
-                value={imageInput}
-                onChange={(e) => setImageInput(e.target.value)}
-                placeholder="Paste image URL (https://...)"
-                className="flex-1"
-                onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addImage())}
-              />
-              <Button type="button" variant="outline" onClick={addImage} disabled={!imageInput.trim()}>
-                <Plus className="w-4 h-4" />
-              </Button>
-            </div>
-
-            {form.images.length > 0 && (
-              <div className="grid grid-cols-3 sm:grid-cols-4 gap-3">
-                {form.images.map((url, i) => (
-                  <div key={i} className="relative group aspect-square rounded-lg overflow-hidden border border-border">
-                    <img
-                      src={url}
-                      alt={`Product image ${i + 1}`}
-                      className="w-full h-full object-cover"
-                      onError={(e) => { (e.target as HTMLImageElement).src = ""; }}
-                    />
-                    <button
-                      type="button"
-                      onClick={() => removeImage(url)}
-                      className="absolute top-1 right-1 w-5 h-5 bg-destructive text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
-                    >
-                      <X className="w-3 h-3" />
-                    </button>
-                    {i === 0 && (
-                      <div className="absolute bottom-1 left-1 bg-black/60 text-white text-xs px-1.5 py-0.5 rounded">
-                        Main
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            )}
-
-            <p className="text-xs text-muted-foreground">
-              Add image URLs for your product. The first image will be the main display image.
-            </p>
+          <div className="bg-card border rounded-xl p-6">
+            <ImageUploader
+              images={form.images}
+              onChange={(imgs) => setForm((f) => ({ ...f, images: imgs }))}
+              maxImages={8}
+              label="Product Images"
+            />
           </div>
 
           {/* Tags */}

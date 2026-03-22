@@ -11,6 +11,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Search, SlidersHorizontal, Heart, Star, ShoppingCart, X, Filter } from "lucide-react";
 import { useCartStore } from "@/stores/cartStore";
+import { useAuth } from "@/_core/hooks/useAuth";
 import { toast } from "sonner";
 import { Link } from "wouter";
 
@@ -38,6 +39,23 @@ const SORT_OPTIONS = [
 
 export default function Products() {
   const [, navigate] = useLocation();
+  const { isAuthenticated } = useAuth();
+  const utils = trpc.useUtils();
+  const wishlistAdd = trpc.wishlist.add.useMutation({
+    onSuccess: () => { utils.wishlist.list.invalidate(); toast.success("Added to wishlist"); },
+    onError: () => toast.error("Sign in to save to wishlist"),
+  });
+  const wishlistRemove = trpc.wishlist.remove.useMutation({
+    onSuccess: () => { utils.wishlist.list.invalidate(); toast.success("Removed from wishlist"); },
+  });
+  const { data: wishlistItems } = trpc.wishlist.list.useQuery(undefined, { enabled: isAuthenticated });
+  const wishlistIds = new Set((wishlistItems ?? []).filter((i: any) => i.product).map((i: any) => i.product.id));
+  const handleWishlist = (productId: number, e: React.MouseEvent) => {
+    e.preventDefault();
+    if (!isAuthenticated) { toast.error("Sign in to save to wishlist"); return; }
+    if (wishlistIds.has(productId)) { wishlistRemove.mutate({ productId }); }
+    else { wishlistAdd.mutate({ productId }); }
+  };
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [category, setCategory] = useState("");
@@ -278,8 +296,11 @@ export default function Products() {
                                 Sale
                               </Badge>
                             )}
-                            <button className="absolute top-2 right-2 p-1.5 rounded-full bg-white/80 hover:bg-white transition-colors opacity-0 group-hover:opacity-100">
-                              <Heart className="w-4 h-4 text-muted-foreground hover:text-rose-500 transition-colors" />
+                            <button
+                              className="absolute top-2 right-2 p-1.5 rounded-full bg-white/80 hover:bg-white transition-colors opacity-0 group-hover:opacity-100"
+                              onClick={(e) => handleWishlist(product.id, e)}
+                            >
+                              <Heart className={`w-4 h-4 transition-colors ${wishlistIds.has(product.id) ? "fill-rose-500 text-rose-500" : "text-muted-foreground hover:text-rose-500"}`} />
                             </button>
                           </div>
                         </Link>

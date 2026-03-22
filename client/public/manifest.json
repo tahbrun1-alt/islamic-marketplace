@@ -1,0 +1,36 @@
+{
+  "name": "Noor Marketplace",
+  "short_name": "Noor",
+  "description": "The Islamic marketplace for halal products and services",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FDFAF5",
+  "theme_color": "#B8972E",
+  "orientation": "portrait-primary",
+  "categories": ["shopping", "lifestyle"],
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "48x48",
+      "type": "image/x-icon"
+    }
+  ],
+  "screenshots": [],
+  "shortcuts": [
+    {
+      "name": "Browse Products",
+      "url": "/products",
+      "description": "Browse halal products"
+    },
+    {
+      "name": "Browse Services",
+      "url": "/services",
+      "description": "Find Islamic services"
+    },
+    {
+      "name": "My Orders",
+      "url": "/orders",
+      "description": "View your orders"
+    }
+  ]
+}

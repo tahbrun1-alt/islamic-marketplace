@@ -91,27 +91,28 @@ export default function Navbar() {
   return (
     <>
       {/* Top announcement bar */}
-      <div className="bg-primary text-primary-foreground text-center py-2 text-xs font-medium">
-        🌙 Free for 14 days — then just 6.5% commission. Join the Ummah marketplace today!
+      <div className="text-center py-2 text-xs font-medium tracking-wide" style={{ background: "oklch(0.18 0.025 40)", color: "oklch(0.87 0.015 75)" }}>
+        <span className="font-arabic text-sm mr-2">بسم الله</span>
+        Free for 14 days — then just 6.5% commission. Join the Ummah marketplace today!
       </div>
 
       <nav
-        className={`sticky top-0 z-50 bg-white/95 backdrop-blur-md transition-shadow duration-300 ${
-          scrolled ? "shadow-md" : "border-b border-border"
+        className={`sticky top-0 z-50 bg-card/95 backdrop-blur-md transition-all duration-300 ${
+          scrolled ? "shadow-[0_1px_0_0_var(--color-border),0_4px_20px_oklch(0.18_0.025_40/0.08)]" : "border-b border-border"
         }`}
       >
         <div className="container">
           <div className="flex items-center justify-between h-16 gap-4">
             {/* Logo */}
             <Link href="/" className="flex items-center gap-2 shrink-0">
-              <div className="w-9 h-9 rounded-lg bg-primary flex items-center justify-center text-white font-bold text-lg">
+              <div className="w-9 h-9 rounded-lg flex items-center justify-center text-white font-bold text-lg" style={{ background: "linear-gradient(135deg, oklch(0.58 0.13 75), oklch(0.45 0.14 60))" }}>
                 ن
               </div>
               <div className="hidden sm:block">
-                <div className="font-bold text-lg leading-tight text-foreground" style={{ fontFamily: "'Playfair Display', serif" }}>
+                <div className="font-serif font-semibold text-lg leading-tight text-foreground tracking-tight">
                   Noor
                 </div>
-                <div className="text-xs text-muted-foreground leading-tight -mt-0.5">Marketplace</div>
+                <div className="text-[10px] text-muted-foreground tracking-widest uppercase leading-tight -mt-0.5">Marketplace</div>
               </div>
             </Link>
 
@@ -311,7 +312,7 @@ export default function Navbar() {
                   <Button variant="ghost" size="sm" asChild className="hidden sm:flex">
                     <a href={getLoginUrl()}>Sign In</a>
                   </Button>
-                  <Button size="sm" asChild className="bg-primary text-primary-foreground hover:bg-primary/90">
+                  <Button size="sm" asChild className="text-primary-foreground hover:opacity-90" style={{ background: "linear-gradient(135deg, oklch(0.58 0.13 75), oklch(0.45 0.14 60))" }}>
                     <a href={getLoginUrl()}>Get Started</a>
                   </Button>
                 </>
@@ -361,7 +362,7 @@ export default function Navbar() {
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: "auto", opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
-              className="lg:hidden border-t border-border bg-white overflow-hidden"
+              className="lg:hidden border-t border-border bg-card overflow-hidden"
             >
               <div className="container py-4 space-y-1">
                 <Link

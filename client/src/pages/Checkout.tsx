@@ -9,8 +9,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import { ShieldCheck, Lock, CreditCard, Truck } from "lucide-react";
+import { ShieldCheck, Lock, CreditCard, Truck, Tag, CheckCircle2, X } from "lucide-react";
 
 export default function Checkout() {
   const [, navigate] = useLocation();
@@ -27,7 +28,31 @@ export default function Checkout() {
   const [postcode, setPostcode] = useState("");
   const [country, setCountry] = useState("United Kingdom");
   const [coupon, setCoupon] = useState("");
+  const [couponInput, setCouponInput] = useState("");
+  const [discount, setDiscount] = useState(0);
+  const [discountType, setDiscountType] = useState<"percentage" | "fixed">("fixed");
+  const [couponApplied, setCouponApplied] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
+
+  const validateCouponMutation = trpc.coupons.validate.useMutation({
+    onSuccess: (data) => {
+      setCoupon(couponInput);
+      setCouponApplied(true);
+      const type = data.coupon.type as "percentage" | "fixed";
+      const value = Number(data.coupon.value);
+      setDiscountType(type);
+      setDiscount(value);
+      toast.success(`Coupon applied! You save ${type === "percentage" ? value + "%" : "£" + value.toFixed(2)}`);
+    },
+    onError: (e) => toast.error(e.message || "Invalid coupon code"),
+  });
+
+  const discountAmount = couponApplied
+    ? discountType === "percentage"
+      ? (total * discount) / 100
+      : Math.min(discount, total)
+    : 0;
+  const finalTotal = Math.max(0, total - discountAmount);
 
   const createOrderMutation = trpc.payments.createOrderIntent.useMutation({
     onSuccess: (data) => {
@@ -141,11 +166,34 @@ export default function Checkout() {
                     <p className="text-xs text-muted-foreground mt-1">Your payment details are encrypted and never stored</p>
                   </div>
                   <div className="mt-4">
-                    <Label>Coupon Code</Label>
-                    <div className="flex gap-2 mt-1">
-                      <Input value={coupon} onChange={(e) => setCoupon(e.target.value)} placeholder="Enter coupon code" />
-                      <Button type="button" variant="outline">Apply</Button>
-                    </div>
+                    <Label className="flex items-center gap-1.5"><Tag className="w-3.5 h-3.5" /> Coupon Code</Label>
+                    {couponApplied ? (
+                      <div className="flex items-center gap-2 mt-1 p-3 bg-primary/10 rounded-lg border border-primary/30">
+                        <CheckCircle2 className="w-4 h-4 text-primary shrink-0" />
+                        <span className="text-sm font-medium text-primary flex-1">{coupon} applied!</span>
+                        <button type="button" onClick={() => { setCouponApplied(false); setCoupon(""); setCouponInput(""); setDiscount(0); }} className="text-muted-foreground hover:text-foreground">
+                          <X className="w-4 h-4" />
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="flex gap-2 mt-1">
+                        <Input
+                          value={couponInput}
+                          onChange={(e) => setCouponInput(e.target.value.toUpperCase())}
+                          placeholder="NOOR10"
+                          className="uppercase"
+                          onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), couponInput.trim() && validateCouponMutation.mutate({ code: couponInput.trim(), amount: total }))}
+                        />
+                        <Button
+                          type="button"
+                          variant="outline"
+                          onClick={() => couponInput.trim() && validateCouponMutation.mutate({ code: couponInput.trim(), amount: total })}
+                          disabled={!couponInput.trim() || validateCouponMutation.isPending}
+                        >
+                          {validateCouponMutation.isPending ? "..." : "Apply"}
+                        </Button>
+                      </div>
+                    )}
                   </div>
                 </CardContent>
               </Card>
@@ -182,23 +230,32 @@ export default function Checkout() {
                       <span className="text-muted-foreground">Subtotal</span>
                       <span className="text-foreground">£{total.toFixed(2)}</span>
                     </div>
+                    {couponApplied && (
+                      <div className="flex justify-between text-primary">
+                        <span className="flex items-center gap-1">
+                          <Tag className="w-3 h-3" />
+                          Discount ({coupon})
+                        </span>
+                        <span>-£{discountAmount.toFixed(2)}</span>
+                      </div>
+                    )}
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Shipping</span>
-                      <span className="text-muted-foreground">Calculated</span>
+                      <span className="text-muted-foreground">Calculated at delivery</span>
                     </div>
                   </div>
                   <Separator className="my-3" />
                   <div className="flex justify-between font-bold text-lg mb-4">
                     <span className="text-foreground">Total</span>
-                    <span className="text-primary">£{total.toFixed(2)}</span>
+                    <span className="text-primary">£{finalTotal.toFixed(2)}</span>
                   </div>
                   <Button
                     type="submit"
-                    className="w-full"
+                    className="w-full btn-gold"
                     size="lg"
                     disabled={isProcessing || !name || !email || !address}
                   >
-                    {isProcessing ? "Processing..." : `Pay £${total.toFixed(2)}`}
+                    {isProcessing ? "Processing..." : `Pay £${finalTotal.toFixed(2)}`}
                   </Button>
                   <p className="text-xs text-muted-foreground text-center mt-3 flex items-center justify-center gap-1">
                     <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />

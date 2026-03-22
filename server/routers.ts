@@ -2,6 +2,7 @@ import { TRPCError } from "@trpc/server";
 import { nanoid } from "nanoid";
 import { z } from "zod";
 import { COOKIE_NAME } from "@shared/const";
+import { storagePut } from "./storage";
 import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
 import { protectedProcedure, publicProcedure, router } from "./_core/trpc";
@@ -277,18 +278,38 @@ export const appRouter = router({
         title: z.string().min(2).max(256).optional(),
         description: z.string().max(5000).optional(),
         price: z.number().positive().optional(),
+        depositAmount: z.number().positive().optional(),
+        requireDeposit: z.boolean().optional(),
+        duration: z.number().int().positive().optional(),
+        categoryId: z.number().optional(),
+        locationType: z.enum(["online", "in_person", "at_client", "at_provider"]).optional(),
+        address: z.string().optional(),
+        images: z.array(z.string()).optional(),
+        tags: z.array(z.string()).optional(),
         isActive: z.boolean().optional(),
+        isFeatured: z.boolean().optional(),
+        cancellationPolicy: z.string().optional(),
         availability: z.any().optional(),
         packages: z.any().optional(),
         addons: z.any().optional(),
+        allowRecurring: z.boolean().optional(),
       }))
       .mutation(async ({ ctx, input }) => {
         const service = await db.getServiceById(input.id);
         if (!service || service.providerId !== ctx.user.id) throw new TRPCError({ code: "FORBIDDEN" });
-        const { id, price, ...rest } = input;
+        const { id, price, depositAmount, ...rest } = input;
         const data: Record<string, unknown> = { ...rest };
         if (price !== undefined) data.price = price.toFixed(2);
+        if (depositAmount !== undefined) data.depositAmount = depositAmount.toFixed(2);
         await db.updateService(id, data as Parameters<typeof db.updateService>[1]);
+        return { success: true };
+      }),
+    delete: protectedProcedure
+      .input(z.object({ id: z.number() }))
+      .mutation(async ({ ctx, input }) => {
+        const service = await db.getServiceById(input.id);
+        if (!service || service.providerId !== ctx.user.id) throw new TRPCError({ code: "FORBIDDEN" });
+        await db.deleteService(input.id);
         return { success: true };
       }),
   }),
@@ -754,6 +775,22 @@ export const appRouter = router({
         return { success: true, orderNumber: input.orderNumber };
       }),
   }),
+  // ─── Upload ───────────────────────────────────────────────────────────────────
+  upload: router({
+    image: protectedProcedure
+      .input(z.object({
+        base64: z.string(),
+        mimeType: z.string().default("image/jpeg"),
+        filename: z.string().optional(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        const ext = input.mimeType.split("/")[1] ?? "jpg";
+        const filename = input.filename ?? `img-${Date.now()}.${ext}`;
+        const key = `uploads/${ctx.user.id}/${Date.now()}-${filename}`;
+        const buffer = Buffer.from(input.base64, "base64");
+        const { url } = await storagePut(key, buffer, input.mimeType);
+        return { url };
+      }),
+  }),
 });
-
 export type AppRouter = typeof appRouter;
