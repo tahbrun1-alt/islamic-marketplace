@@ -1,3 +1,4 @@
+import SellerMarketingTools from "@/components/SellerMarketingTools";
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { trpc } from "@/lib/trpc";
@@ -233,6 +234,7 @@ export default function SellerDashboard() {
             <TabsTrigger value="bookings">Bookings</TabsTrigger>
             <TabsTrigger value="analytics"><BarChart3 className="w-3.5 h-3.5 mr-1" />Analytics</TabsTrigger>
             <TabsTrigger value="messages"><MessageSquare className="w-3.5 h-3.5 mr-1" />Messages</TabsTrigger>
+            <TabsTrigger value="marketing">📣 Marketing</TabsTrigger>
             <TabsTrigger value="settings">Settings</TabsTrigger>
           </TabsList>
 
@@ -538,6 +540,17 @@ export default function SellerDashboard() {
                 </Button>
               </CardContent>
             </Card>
+          </TabsContent>
+
+          {/* Marketing */}
+          <TabsContent value="marketing">
+            <div className="space-y-6">
+              <div>
+                <h3 className="text-lg font-semibold mb-1">Marketing Tools</h3>
+                <p className="text-sm text-muted-foreground mb-4">Grow your shop with these powerful marketing tools.</p>
+                <SellerMarketingTools shopId={String(shop?.id ?? "my-shop")} shopName={shop?.name ?? "My Shop"} />
+              </div>
+            </div>
           </TabsContent>
 
           {/* Settings */}

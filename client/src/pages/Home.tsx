@@ -1,4 +1,13 @@
 import { useState } from "react";
+import NearMeDiscovery from "@/components/NearMeDiscovery";
+import SmartBundles from "@/components/SmartBundles";
+import { NewSellerSpotlight } from "@/components/SellerBoost";
+import { CommunityReviews } from "@/components/CommunityLayer";
+import IslamicGiftingSystem from "@/components/IslamicGiftingSystem";
+import { CharityImpactSection } from "@/components/CharityIntegration";
+import { TrustBadgesSection } from "@/components/IslamicTrustBadges";
+import { SeasonalBanner } from "@/components/SeasonalEngine";
+import { WhatsAppSupport } from "@/components/WhatsAppFallback";
 import { Link } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
 import { trpc } from "@/lib/trpc";
@@ -64,6 +73,8 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-background">
+      {/* ── Seasonal Banner ──────────────────────────────────────────────── */}
+      <SeasonalBanner />
 
       {/* ── Hero ─────────────────────────────────────────────────────────── */}
       <section className="relative overflow-hidden pattern-bg">
@@ -462,6 +473,32 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* ── Near Me Discovery ──────────────────────────────────────────── */}
+      <NearMeDiscovery />
+
+      {/* ── Smart Bundles ────────────────────────────────────────────────── */}
+      <SmartBundles />
+
+      {/* ── New Seller Spotlight ─────────────────────────────────────────── */}
+      <NewSellerSpotlight />
+
+      {/* ── Community Reviews ────────────────────────────────────────────── */}
+      <CommunityReviews />
+
+      {/* ── Islamic Gifting ──────────────────────────────────────────────── */}
+      <IslamicGiftingSystem />
+
+      {/* ── Charity Impact ───────────────────────────────────────────────── */}
+      <CharityImpactSection />
+
+      {/* ── Trust Badges ─────────────────────────────────────────────────── */}
+      <TrustBadgesSection />
+
+      {/* ── WhatsApp Support ─────────────────────────────────────────────── */}
+      <div className="max-w-6xl mx-auto px-4 py-6">
+        <WhatsAppSupport />
+      </div>
 
     </div>
   );

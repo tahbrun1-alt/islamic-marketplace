@@ -28,6 +28,7 @@ import Privacy from "./pages/Privacy";
 import About from "./pages/About";
 import HalalStandards from "./pages/HalalStandards";
 import Messages from "./pages/Messages";
+import SellerOnboarding from "./pages/SellerOnboarding";
 import { lazy, Suspense } from "react";
 
 // Lazy-loaded pages
@@ -88,6 +89,8 @@ function Router() {
         <Route path="/login" component={Login} />
         <Route path="/register" component={Register} />
         <Route path="/import-product" component={ImportProduct} />
+        <Route path="/seller-onboarding" component={SellerOnboarding} />
+        <Route path="/start-selling" component={SellerOnboarding} />
         <Route path="/404" component={NotFound} />
         <Route component={NotFound} />
       </Switch>
