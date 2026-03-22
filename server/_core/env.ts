@@ -2,10 +2,10 @@ export const ENV = {
   cookieSecret: process.env.JWT_SECRET ?? "noor-marketplace-secret-change-in-production",
   databaseUrl: process.env.DATABASE_URL ?? "",
   isProduction: process.env.NODE_ENV === "production",
-  // LLM for AI product import (OpenAI-compatible)
-  llmApiUrl: process.env.LLM_API_URL ?? "https://api.openai.com/v1/chat/completions",
-  llmApiKey: process.env.OPENAI_API_KEY ?? process.env.LLM_API_KEY ?? "",
-  llmModel: process.env.LLM_MODEL ?? "gpt-4o-mini",
+  // LLM for AI product import (Groq — OpenAI-compatible)
+  llmApiUrl: process.env.LLM_API_URL ?? "https://api.groq.com/openai/v1/chat/completions",
+  llmApiKey: process.env.GROQ_API_KEY ?? process.env.OPENAI_API_KEY ?? process.env.LLM_API_KEY ?? "",
+  llmModel: process.env.LLM_MODEL ?? "llama-3.3-70b-versatile",
   // Stripe
   stripeSecretKey: process.env.STRIPE_SECRET_KEY ?? "",
   stripeWebhookSecret: process.env.STRIPE_WEBHOOK_SECRET ?? "",
