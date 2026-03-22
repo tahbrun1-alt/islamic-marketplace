@@ -457,9 +457,33 @@ export async function getOrCreateConversation(p1: number, p2: number, opts?: { p
 export async function getConversationsByUser(userId: number) {
   const db = await getDb();
   if (!db) return [];
-  return db.select().from(conversations).where(
+  const convs = await db.select().from(conversations).where(
     or(eq(conversations.participant1Id, userId), eq(conversations.participant2Id, userId)) as ReturnType<typeof eq>
   ).orderBy(desc(conversations.lastMessageAt));
+  // Enrich with other user info, last message, product, and service
+  const enriched = await Promise.all(convs.map(async (conv) => {
+    const otherUserId = conv.participant1Id === userId ? conv.participant2Id : conv.participant1Id;
+    const otherUserRows = await db.select({ id: users.id, name: users.name, avatar: users.avatar }).from(users).where(eq(users.id, otherUserId)).limit(1);
+    const lastMsgRows = await db.select({ body: messages.body, createdAt: messages.createdAt, senderId: messages.senderId }).from(messages).where(eq(messages.conversationId, conv.id)).orderBy(desc(messages.createdAt)).limit(1);
+    let product: { id: number; title: string; images: unknown } | null = null;
+    let service: { id: number; title: string; images: unknown } | null = null;
+    if (conv.productId) {
+      const pRows = await db.select({ id: products.id, title: products.title, images: products.images }).from(products).where(eq(products.id, conv.productId)).limit(1);
+      product = pRows[0] ?? null;
+    }
+    if (conv.serviceId) {
+      const sRows = await db.select({ id: services.id, title: services.title, images: services.images }).from(services).where(eq(services.id, conv.serviceId)).limit(1);
+      service = sRows[0] ?? null;
+    }
+    return {
+      ...conv,
+      otherUser: otherUserRows[0] ?? { id: otherUserId, name: "Unknown User", avatar: null },
+      lastMessage: lastMsgRows[0] ?? null,
+      product,
+      service,
+    };
+  }));
+  return enriched;
 }
 
 export async function getMessages(conversationId: number, limit = 50) {

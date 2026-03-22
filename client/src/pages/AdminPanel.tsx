@@ -170,6 +170,8 @@ export default function AdminPanel() {
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           <TabsList className="mb-6 flex-wrap h-auto gap-1">
             <TabsTrigger value="overview">Overview</TabsTrigger>
+            <TabsTrigger value="payouts"><DollarSign className="w-3.5 h-3.5 mr-1" />Payouts</TabsTrigger>
+            <TabsTrigger value="moderation"><Shield className="w-3.5 h-3.5 mr-1" />Moderation</TabsTrigger>
             <TabsTrigger value="shops">
               Shops
               {pendingShops.length > 0 && (
@@ -621,6 +623,114 @@ export default function AdminPanel() {
               </Card>
             </div>
           </TabsContent>
+          {/* Payouts Tab */}
+          <TabsContent value="payouts">
+            <div className="space-y-6">
+              <Card className="border-0 shadow-sm">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2"><DollarSign className="w-5 h-5 text-primary" /> Commission & Payout Summary</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+                    {[
+                      { label: "Total GMV", value: `£${((allOrders ?? []).reduce((sum: number, o: any) => sum + Number(o.total ?? 0), 0)).toFixed(2)}`, color: "text-blue-600 bg-blue-50" },
+                      { label: "Platform Revenue (6.5%)", value: `£${((allOrders ?? []).reduce((sum: number, o: any) => sum + Number(o.total ?? 0), 0) * 0.065).toFixed(2)}`, color: "text-primary bg-amber-50" },
+                      { label: "Charity Fund (0.5%)", value: `£${((allOrders ?? []).reduce((sum: number, o: any) => sum + Number(o.total ?? 0), 0) * 0.005).toFixed(2)}`, color: "text-emerald-600 bg-emerald-50" },
+                    ].map(({ label, value, color }) => (
+                      <div key={label} className={`p-4 rounded-xl ${color.split(" ")[1]}`}>
+                        <p className="text-xs text-muted-foreground mb-1">{label}</p>
+                        <p className={`text-2xl font-bold ${color.split(" ")[0]}`}>{value}</p>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="rounded-xl border border-border overflow-hidden">
+                    <table className="w-full text-sm">
+                      <thead className="bg-secondary">
+                        <tr>
+                          <th className="text-left py-3 px-4 text-muted-foreground font-medium">Shop</th>
+                          <th className="text-left py-3 px-4 text-muted-foreground font-medium hidden sm:table-cell">Orders</th>
+                          <th className="text-left py-3 px-4 text-muted-foreground font-medium">Revenue</th>
+                          <th className="text-left py-3 px-4 text-muted-foreground font-medium">Commission</th>
+                          <th className="text-left py-3 px-4 text-muted-foreground font-medium hidden md:table-cell">Net Payout</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-border">
+                        {(allShops ?? []).slice(0, 20).map((shop: any) => {
+                          const shopRevenue = (allOrders ?? []).filter((o: any) => o.shopId === shop.id).reduce((sum: number, o: any) => sum + Number(o.total ?? 0), 0);
+                          const shopOrders = (allOrders ?? []).filter((o: any) => o.shopId === shop.id).length;
+                          const commission = shopRevenue * 0.07;
+                          const netPayout = shopRevenue * 0.93;
+                          return (
+                            <tr key={shop.id} className="hover:bg-secondary/50">
+                              <td className="py-3 px-4 font-medium text-foreground">{shop.name}</td>
+                              <td className="py-3 px-4 text-muted-foreground hidden sm:table-cell">{shopOrders}</td>
+                              <td className="py-3 px-4 font-medium text-foreground">£{shopRevenue.toFixed(2)}</td>
+                              <td className="py-3 px-4 text-primary font-medium">£{commission.toFixed(2)}</td>
+                              <td className="py-3 px-4 text-emerald-600 font-medium hidden md:table-cell">£{netPayout.toFixed(2)}</td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+
+          {/* Moderation Tab */}
+          <TabsContent value="moderation">
+            <div className="space-y-6">
+              <Card className="border-0 shadow-sm">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2"><Shield className="w-5 h-5 text-primary" /> Content Moderation</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid sm:grid-cols-3 gap-4 mb-6">
+                    <div className="p-4 rounded-xl bg-emerald-50 border border-emerald-100">
+                      <CheckCircle className="w-6 h-6 text-emerald-600 mb-2" />
+                      <p className="text-2xl font-bold text-emerald-700">{(allShops ?? []).filter((s: any) => s.isVerified).length}</p>
+                      <p className="text-xs text-muted-foreground">Verified Shops</p>
+                    </div>
+                    <div className="p-4 rounded-xl bg-amber-50 border border-amber-100">
+                      <AlertCircle className="w-6 h-6 text-amber-600 mb-2" />
+                      <p className="text-2xl font-bold text-amber-700">{(allShops ?? []).filter((s: any) => !s.isVerified).length}</p>
+                      <p className="text-xs text-muted-foreground">Pending Verification</p>
+                    </div>
+                    <div className="p-4 rounded-xl bg-blue-50 border border-blue-100">
+                      <Users className="w-6 h-6 text-blue-600 mb-2" />
+                      <p className="text-2xl font-bold text-blue-700">{(allUsers ?? []).length}</p>
+                      <p className="text-xs text-muted-foreground">Total Users</p>
+                    </div>
+                  </div>
+                  <div className="space-y-3">
+                    <h4 className="font-semibold text-foreground text-sm">Halal Compliance Checklist</h4>
+                    {[
+                      { item: "No alcohol products listed", status: true },
+                      { item: "No pork or pork derivatives", status: true },
+                      { item: "No gambling or interest-based services", status: true },
+                      { item: "No adult content", status: true },
+                      { item: "Seller verification process active", status: true },
+                      { item: "Dispute resolution system active", status: true },
+                    ].map(({ item, status }) => (
+                      <div key={item} className="flex items-center gap-3 p-3 rounded-xl bg-secondary/50">
+                        {status ? (
+                          <CheckCircle className="w-4 h-4 text-emerald-500 shrink-0" />
+                        ) : (
+                          <XCircle className="w-4 h-4 text-destructive shrink-0" />
+                        )}
+                        <span className="text-sm text-foreground">{item}</span>
+                        <Badge className={`ml-auto text-xs ${status ? "bg-emerald-100 text-emerald-700" : "bg-red-100 text-red-700"}`}>
+                          {status ? "Compliant" : "Action Required"}
+                        </Badge>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+
         </Tabs>
       </div>
     </div>

@@ -225,12 +225,14 @@ export default function SellerDashboard() {
 
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="mb-6">
+          <TabsList className="mb-6 flex-wrap">
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="products">Products</TabsTrigger>
             <TabsTrigger value="services">Services</TabsTrigger>
             <TabsTrigger value="orders">Orders</TabsTrigger>
             <TabsTrigger value="bookings">Bookings</TabsTrigger>
+            <TabsTrigger value="analytics"><BarChart3 className="w-3.5 h-3.5 mr-1" />Analytics</TabsTrigger>
+            <TabsTrigger value="messages"><MessageSquare className="w-3.5 h-3.5 mr-1" />Messages</TabsTrigger>
             <TabsTrigger value="settings">Settings</TabsTrigger>
           </TabsList>
 
@@ -463,6 +465,77 @@ export default function SellerDashboard() {
                 ) : (
                   <p className="text-center text-muted-foreground py-8">No bookings yet</p>
                 )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Analytics */}
+          <TabsContent value="analytics">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <Card className="border-0 shadow-sm">
+                <CardHeader>
+                  <CardTitle className="text-base flex items-center gap-2">
+                    <TrendingUp className="w-4 h-4 text-primary" /> Revenue Overview
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="flex justify-between items-center p-3 bg-secondary/50 rounded-xl">
+                      <span className="text-sm text-muted-foreground">Total Revenue</span>
+                      <span className="font-bold text-primary">£{Number(stats?.grossRevenue ?? 0).toFixed(2)}</span>
+                    </div>
+                    <div className="flex justify-between items-center p-3 bg-secondary/50 rounded-xl">
+                      <span className="text-sm text-muted-foreground">Platform Fee (6.5%)</span>
+                      <span className="font-medium text-foreground">£{Number(stats?.platformFee ?? 0).toFixed(2)}</span>
+                    </div>
+                    <div className="flex justify-between items-center p-3 bg-secondary/50 rounded-xl">
+                      <span className="text-sm text-muted-foreground">Charity Donation (0.5%)</span>
+                      <span className="font-medium text-emerald-600">£{Number(stats?.charityFee ?? 0).toFixed(2)}</span>
+                    </div>
+                    <div className="flex justify-between items-center p-3 rounded-xl" style={{ background: "oklch(0.88 0.17 88 / 0.1)" }}>
+                      <span className="text-sm font-semibold text-foreground">Your Net Earnings</span>
+                      <span className="font-bold text-lg text-primary">£{Number(stats?.netRevenue ?? 0).toFixed(2)}</span>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+              <Card className="border-0 shadow-sm">
+                <CardHeader>
+                  <CardTitle className="text-base flex items-center gap-2">
+                    <BarChart3 className="w-4 h-4 text-primary" /> Performance Metrics
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {[
+                      { label: "Total Orders", value: stats?.orders ?? 0, icon: ShoppingBag },
+                      { label: "Total Bookings", value: stats?.bookings ?? 0, icon: Calendar },
+                      { label: "Products Listed", value: myProducts?.length ?? 0, icon: Package },
+                      { label: "Average Rating", value: `${Number(stats?.products ?? 0)} products`, icon: Star },
+                    ].map(({ label, value, icon: Icon }) => (
+                      <div key={label} className="flex justify-between items-center p-3 bg-secondary/50 rounded-xl">
+                        <span className="text-sm text-muted-foreground flex items-center gap-2">
+                          <Icon className="w-4 h-4" />{label}
+                        </span>
+                        <span className="font-bold text-foreground">{value}</span>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+
+          {/* Messages */}
+          <TabsContent value="messages">
+            <Card className="border-0 shadow-sm">
+              <CardContent className="p-6 text-center">
+                <MessageSquare className="w-12 h-12 text-primary mx-auto mb-3" />
+                <h3 className="font-semibold text-foreground mb-2">Buyer Messages</h3>
+                <p className="text-sm text-muted-foreground mb-4">View and respond to all messages from buyers in one place.</p>
+                <Button asChild>
+                  <a href="/messages"><MessageSquare className="w-4 h-4 mr-2" />Open Messages</a>
+                </Button>
               </CardContent>
             </Card>
           </TabsContent>

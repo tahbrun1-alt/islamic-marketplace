@@ -340,6 +340,98 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ── Seasonal Sections ────────────────────────────────────────────── */}
+      <section className="py-14 bg-background">
+        <div className="container">
+          <div className="text-center mb-10">
+            <h2 className="font-serif text-2xl font-semibold text-foreground mb-2">Shop by Occasion</h2>
+            <p className="text-sm text-muted-foreground">Curated collections for every blessed moment</p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {[
+              { title: "Ramadan", arabic: "رمضان", desc: "Lanterns, prayer sets, iftar essentials & more", icon: "🌙", href: "/products?category=ramadan-eid", color: "oklch(0.18 0.04 260)" },
+              { title: "Eid Collection", arabic: "عيد مبارك", desc: "Gifts, fashion, sweets & celebration items", icon: "🎉", href: "/products?category=ramadan-eid", color: "oklch(0.18 0.05 140)" },
+              { title: "Hajj & Umrah", arabic: "لبيك اللهم", desc: "Ihram, prayer beads, travel essentials", icon: "🕋", href: "/products?category=hajj-umrah", color: "oklch(0.18 0.04 45)" },
+            ].map(({ title, arabic, desc, icon, href, color }, i) => (
+              <motion.div key={title}
+                initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }} transition={{ duration: 0.5, delay: i * 0.1 }}
+                className="relative overflow-hidden rounded-2xl p-6 border border-border cursor-pointer hover:shadow-elegant transition-all duration-300 group"
+                style={{ background: `linear-gradient(135deg, ${color} 0%, oklch(0.15 0.02 45) 100%)` }}
+              >
+                <Link href={href} className="block">
+                  <div className="text-4xl mb-3">{icon}</div>
+                  <div className="font-arabic text-lg mb-1" style={{ color: "oklch(0.88 0.17 88)" }}>{arabic}</div>
+                  <h3 className="font-serif text-xl font-semibold text-white mb-2">{title}</h3>
+                  <p className="text-sm mb-4" style={{ color: "rgba(255,255,255,0.7)" }}>{desc}</p>
+                  <span className="text-sm font-medium flex items-center gap-1" style={{ color: "oklch(0.88 0.17 88)" }}>
+                    Shop Now <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                  </span>
+                </Link>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Trending Products ───────────────────────────────────────────── */}
+      <section className="py-14 bg-secondary/20">
+        <div className="container">
+          <div className="flex items-center justify-between mb-8">
+            <div>
+              <h2 className="font-serif text-2xl font-semibold text-foreground">Trending Now</h2>
+              <p className="text-sm text-muted-foreground mt-1">Most popular products this week</p>
+            </div>
+            <Link href="/products?sortBy=popular" className="text-sm font-medium text-primary hover:underline flex items-center gap-1">
+              View all <ChevronRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {displayProducts.slice(0, 4).length > 0 ? displayProducts.slice(0, 4).map((product, i) => (
+              <motion.div key={product.id}
+                initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }} transition={{ duration: 0.4, delay: i * 0.06 }}>
+                <ProductCard product={product} />
+              </motion.div>
+            )) : (
+              <div className="col-span-4 text-center py-12 text-muted-foreground">
+                <Package className="w-12 h-12 mx-auto mb-3 opacity-30" />
+                <p className="text-sm">Products coming soon — be the first to list!</p>
+              </div>
+            )}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Featured Service Providers ───────────────────────────────────── */}
+      <section className="py-14 bg-background">
+        <div className="container">
+          <div className="flex items-center justify-between mb-8">
+            <div>
+              <h2 className="font-serif text-2xl font-semibold text-foreground">Top Service Providers</h2>
+              <p className="text-sm text-muted-foreground mt-1">Highly rated professionals in the Ummah</p>
+            </div>
+            <Link href="/services" className="text-sm font-medium text-primary hover:underline flex items-center gap-1">
+              View all <ChevronRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {displayServices.slice(0, 4).length > 0 ? displayServices.slice(0, 4).map((service, i) => (
+              <motion.div key={service.id}
+                initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }} transition={{ duration: 0.4, delay: i * 0.06 }}>
+                <ServiceCard service={service} />
+              </motion.div>
+            )) : (
+              <div className="col-span-4 text-center py-12 text-muted-foreground">
+                <Calendar className="w-12 h-12 mx-auto mb-3 opacity-30" />
+                <p className="text-sm">Services coming soon — be the first to offer yours!</p>
+              </div>
+            )}
+          </div>
+        </div>
+      </section>
+
       {/* ── How It Works ──────────────────────────────────────────────────── */}
       <section className="py-14 bg-secondary/20">
         <div className="container">

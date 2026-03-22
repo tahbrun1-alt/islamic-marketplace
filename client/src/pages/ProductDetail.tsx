@@ -7,7 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { toast } from "sonner";
-import { ShoppingCart, Star, Shield, Truck, ArrowLeft, Plus, Minus, CheckCircle } from "lucide-react";
+import { ShoppingCart, Star, Shield, Truck, ArrowLeft, Plus, Minus, CheckCircle, MessageSquare, Heart } from "lucide-react";
+import { trpc as trpcClient } from "@/lib/trpc";
 import { Link } from "wouter";
 import { motion } from "framer-motion";
 
@@ -154,12 +155,13 @@ export default function ProductDetail() {
               </span>
             </div>
 
-            <div className="flex gap-3 mb-6">
+            <div className="flex gap-3 mb-4">
               <Button
                 size="lg"
                 className="flex-1"
                 onClick={handleAddToCart}
                 disabled={product.inventory === 0}
+                style={{ background: "linear-gradient(135deg, oklch(0.83 0.19 88), oklch(0.72 0.21 85))" }}
               >
                 <ShoppingCart className="w-4 h-4 mr-2" />
 {product.inventory === 0 ? "Out of Stock" : "Add to Cart"}
@@ -168,6 +170,18 @@ export default function ProductDetail() {
                 Buy Now
               </Button>
             </div>
+            {isAuthenticated && (
+              <Button
+                variant="outline"
+                className="w-full mb-6"
+                asChild
+              >
+                <Link href={`/messages`}>
+                  <MessageSquare className="w-4 h-4 mr-2" />
+                  Message Seller
+                </Link>
+              </Button>
+            )}
 
             {/* Trust Badges */}
             <div className="grid grid-cols-2 gap-3">

@@ -29,6 +29,8 @@ import {
   Star,
   Package,
   BookOpen,
+  MessageSquare,
+  TrendingUp,
 } from "lucide-react";
 import { trpc } from "@/lib/trpc";
 import { useCartStore } from "@/stores/cartStore";
@@ -195,6 +197,12 @@ export default function Navbar() {
               <Button variant="ghost" size="sm" asChild>
                 <Link href="/sellers">Sellers</Link>
               </Button>
+              <Button variant="ghost" size="sm" asChild>
+                <Link href="/seller/dashboard" className="flex items-center gap-1">
+                  <TrendingUp className="w-4 h-4" />
+                  Sell
+                </Link>
+              </Button>
             </div>
 
             {/* Right Actions */}
@@ -211,6 +219,13 @@ export default function Navbar() {
 
               {isAuthenticated ? (
                 <>
+                  {/* Messages */}
+                  <Button variant="ghost" size="icon" asChild className="hidden sm:flex">
+                    <Link href="/messages">
+                      <MessageSquare className="w-5 h-5" />
+                    </Link>
+                  </Button>
+
                   {/* Wishlist */}
                   <Button variant="ghost" size="icon" asChild className="hidden sm:flex">
                     <Link href="/wishlist">
@@ -274,6 +289,11 @@ export default function Navbar() {
                       <DropdownMenuItem asChild>
                         <Link href="/wishlist" className="cursor-pointer">
                           <Heart className="w-4 h-4 mr-2" /> Wishlist
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem asChild>
+                        <Link href="/messages" className="cursor-pointer">
+                          <MessageSquare className="w-4 h-4 mr-2" /> Messages
                         </Link>
                       </DropdownMenuItem>
                       <DropdownMenuSeparator />
@@ -399,6 +419,9 @@ export default function Navbar() {
                     </Link>
                     <Link href="/bookings" onClick={() => setMobileOpen(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-secondary text-sm">
                       <Calendar className="w-4 h-4" /> My Bookings
+                    </Link>
+                    <Link href="/messages" onClick={() => setMobileOpen(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-secondary text-sm">
+                      <MessageSquare className="w-4 h-4" /> Messages
                     </Link>
                     <Link href="/seller/dashboard" onClick={() => setMobileOpen(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-secondary text-sm">
                       <Store className="w-4 h-4" /> Seller Dashboard

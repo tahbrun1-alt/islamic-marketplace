@@ -9,7 +9,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { Calendar, Clock, MapPin, Star, Shield, CheckCircle, ArrowLeft } from "lucide-react";
+import { Calendar, Clock, MapPin, Star, Shield, CheckCircle, ArrowLeft, MessageSquare } from "lucide-react";
 import { Link } from "wouter";
 
 export default function ServiceDetail() {
@@ -198,6 +198,14 @@ export default function ServiceDetail() {
                 <p className="text-xs text-muted-foreground text-center mt-3">
                   Free cancellation 48+ hours before appointment
                 </p>
+                {isAuthenticated && (
+                  <Button variant="outline" className="w-full mt-3" asChild>
+                    <Link href="/messages">
+                      <MessageSquare className="w-4 h-4 mr-2" />
+                      Message Provider
+                    </Link>
+                  </Button>
+                )}
               </CardContent>
             </Card>
           </div>
