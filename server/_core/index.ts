@@ -46,6 +46,30 @@ async function startServer() {
   // Health check endpoint for Railway/Docker
   app.get("/api/health", (_req, res) => res.json({ status: "ok" }));
 
+  // One-time admin seed endpoint (protected by secret token)
+  app.post("/api/seed-admin", async (req, res) => {
+    const { token } = req.body || {};
+    if (token !== "noor-seed-2026") return res.status(403).json({ error: "forbidden" });
+    try {
+      const bcryptjs = await import("bcryptjs");
+      const { getDb } = await import("../db");
+      const { users } = await import("../../drizzle/schema");
+      const { eq } = await import("drizzle-orm");
+      const db = await getDb();
+      const hash = await bcryptjs.default.hash("Qwerty65", 12);
+      const existing = await db.select().from(users).where(eq(users.email, "tahmidburner12@gmail.com")).limit(1);
+      if (existing.length > 0) {
+        await db.update(users).set({ passwordHash: hash, role: "admin", name: "Admin" }).where(eq(users.email, "tahmidburner12@gmail.com"));
+        return res.json({ ok: true, action: "updated", id: existing[0].id });
+      } else {
+        const result = await db.insert(users).values({ name: "Admin", email: "tahmidburner12@gmail.com", passwordHash: hash, role: "admin" });
+        return res.json({ ok: true, action: "created", id: result[0].insertId });
+      }
+    } catch (e: any) {
+      return res.status(500).json({ error: e.message });
+    }
+  });
+
   // tRPC API
   app.use(
     "/api/trpc",
