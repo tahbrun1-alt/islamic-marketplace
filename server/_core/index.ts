@@ -43,6 +43,9 @@ async function startServer() {
   // Standalone email+password auth routes (no Manus dependencies)
   registerLocalAuthRoutes(app);
 
+  // Health check endpoint for Railway/Docker
+  app.get("/api/health", (_req, res) => res.json({ status: "ok" }));
+
   // tRPC API
   app.use(
     "/api/trpc",
@@ -60,14 +63,14 @@ async function startServer() {
   }
 
   const preferredPort = parseInt(process.env.PORT || "3000");
-  const port = await findAvailablePort(preferredPort);
+  // In production (Railway/Docker), bind to 0.0.0.0 so the proxy can reach us.
+  // In development, use port scanning to avoid conflicts.
+  const isProduction = process.env.NODE_ENV === "production";
+  const host = isProduction ? "0.0.0.0" : "127.0.0.1";
+  const port = isProduction ? preferredPort : await findAvailablePort(preferredPort);
 
-  if (port !== preferredPort) {
-    console.log(`Port ${preferredPort} is busy, using port ${port} instead`);
-  }
-
-  server.listen(port, () => {
-    console.log(`Server running on http://localhost:${port}/`);
+  server.listen(port, host, () => {
+    console.log(`Server running on http://${host}:${port}/`);
   });
 }
 
