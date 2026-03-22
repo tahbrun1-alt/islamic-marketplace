@@ -52,19 +52,53 @@ async function startServer() {
     if (token !== "noor-seed-2026") return res.status(403).json({ error: "forbidden" });
     try {
       const bcryptjs = await import("bcryptjs");
-      const { getDb } = await import("../db");
-      const { users } = await import("../../drizzle/schema");
-      const { eq } = await import("drizzle-orm");
-      const db = await getDb();
-      const hash = await bcryptjs.default.hash("Qwerty65", 12);
-      const existing = await db.select().from(users).where(eq(users.email, "tahmidburner12@gmail.com")).limit(1);
-      if (existing.length > 0) {
-        await db.update(users).set({ passwordHash: hash, role: "admin", name: "Admin" }).where(eq(users.email, "tahmidburner12@gmail.com"));
-        return res.json({ ok: true, action: "updated", id: existing[0].id });
-      } else {
-        const result = await db.insert(users).values({ name: "Admin", email: "tahmidburner12@gmail.com", passwordHash: hash, role: "admin" });
-        return res.json({ ok: true, action: "created", id: result[0].insertId });
+      const mysql2 = await import("mysql2/promise");
+      const url = new URL(process.env.DATABASE_URL || "");
+      const conn = await mysql2.default.createConnection({
+        host: url.hostname,
+        port: parseInt(url.port || "3306"),
+        user: url.username,
+        password: url.password,
+        database: url.pathname.slice(1),
+        ssl: url.hostname.includes("railway.internal") ? undefined : { rejectUnauthorized: false },
+      });
+      // Run missing migrations (safe — uses IF NOT EXISTS / IGNORE)
+      const migrations = [
+        "ALTER TABLE `users` ADD COLUMN IF NOT EXISTS `passwordHash` text",
+        "ALTER TABLE `users` ADD COLUMN IF NOT EXISTS `phone` varchar(30)",
+        "ALTER TABLE `users` ADD COLUMN IF NOT EXISTS `avatar` text",
+        "ALTER TABLE `users` ADD COLUMN IF NOT EXISTS `bio` text",
+        "ALTER TABLE `users` ADD COLUMN IF NOT EXISTS `location` text",
+        "ALTER TABLE `users` ADD COLUMN IF NOT EXISTS `isVerified` boolean NOT NULL DEFAULT false",
+        "ALTER TABLE `users` ADD COLUMN IF NOT EXISTS `stripeCustomerId` varchar(128)",
+        "ALTER TABLE `bookings` ADD COLUMN IF NOT EXISTS `depositPaid` boolean NOT NULL DEFAULT false",
+        "ALTER TABLE `bookings` ADD COLUMN IF NOT EXISTS `platformFee` decimal(10,2) DEFAULT '0.00'",
+        "ALTER TABLE `bookings` ADD COLUMN IF NOT EXISTS `charityFee` decimal(10,2) DEFAULT '0.00'",
+        "ALTER TABLE `orders` ADD COLUMN IF NOT EXISTS `platformFee` decimal(10,2) DEFAULT '0.00'",
+        "ALTER TABLE `orders` ADD COLUMN IF NOT EXISTS `charityFee` decimal(10,2) DEFAULT '0.00'",
+        "ALTER TABLE `users` ADD UNIQUE IF NOT EXISTS `users_email_unique` (`email`)",
+      ];
+      const migrationResults: string[] = [];
+      for (const sql of migrations) {
+        try { await conn.execute(sql); migrationResults.push(`OK: ${sql.slice(0, 60)}`); }
+        catch (e: any) { migrationResults.push(`SKIP: ${e.message.slice(0, 80)}`); }
       }
+      // Seed admin user
+      const hash = await bcryptjs.default.hash("Qwerty65", 12);
+      const openId = "local_admin_tahmid";
+      const [existing] = await conn.execute("SELECT id FROM users WHERE email = ?", ["tahmidburner12@gmail.com"]);
+      let action = "";
+      if ((existing as any[]).length > 0) {
+        await conn.execute("UPDATE users SET passwordHash = ?, role = 'admin', name = 'Admin', openId = ? WHERE email = ?", [hash, openId, "tahmidburner12@gmail.com"]);
+        action = "updated";
+      } else {
+        await conn.execute("INSERT INTO users (openId, name, email, passwordHash, role) VALUES (?, 'Admin', ?, ?, 'admin')", [openId, "tahmidburner12@gmail.com", hash]);
+        action = "created";
+      }
+      // Update commission rate
+      await conn.execute("UPDATE platformSettings SET value = '7' WHERE `key` = 'commission_rate'").catch(() => {});
+      await conn.end();
+      return res.json({ ok: true, action, migrations: migrationResults });
     } catch (e: any) {
       return res.status(500).json({ error: e.message });
     }
