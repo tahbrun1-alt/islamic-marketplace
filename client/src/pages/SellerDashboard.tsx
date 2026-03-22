@@ -11,9 +11,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { toast } from "sonner";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import {
   Package, ShoppingBag, Star, TrendingUp, Plus, Edit, Trash2,
   Settings, BarChart3, MessageSquare, Calendar, Store, CheckCircle,
@@ -22,6 +21,7 @@ import {
 
 export default function SellerDashboard() {
   const { user, isAuthenticated, loading } = useAuth();
+  const [, navigate] = useLocation();
   const [activeTab, setActiveTab] = useState("overview");
 
   const { data: shop, refetch: refetchShop } = trpc.shops.myShop.useQuery(undefined, { enabled: isAuthenticated });
@@ -35,11 +35,6 @@ export default function SellerDashboard() {
 
   const createShopMutation = trpc.shops.create.useMutation({
     onSuccess: () => { toast.success("Shop created! Welcome to Noor Marketplace."); refetchShop(); },
-    onError: (e) => toast.error(e.message),
-  });
-
-  const createProductMutation = trpc.products.create.useMutation({
-    onSuccess: () => { toast.success("Product listed!"); refetchProducts(); setProductOpen(false); },
     onError: (e) => toast.error(e.message),
   });
 
@@ -62,14 +57,6 @@ export default function SellerDashboard() {
   const [shopName, setShopName] = useState("");
   const [shopDesc, setShopDesc] = useState("");
   const [shopLocation, setShopLocation] = useState("");
-
-  // Create product form
-  const [productOpen, setProductOpen] = useState(false);
-  const [productTitle, setProductTitle] = useState("");
-  const [productDesc, setProductDesc] = useState("");
-  const [productPrice, setProductPrice] = useState("");
-  const [productType, setProductType] = useState<"physical" | "digital">("physical");
-  const [productInventory, setProductInventory] = useState("0");
 
   if (loading) {
     return (
@@ -175,7 +162,7 @@ export default function SellerDashboard() {
             </div>
             <div className="flex gap-2">
               <Button variant="outline" size="sm" asChild>
-                <Link href={`/shops/${shop.slug}`}>View Shop</Link>
+                <Link href={`/sellers/${shop.id}`}>View Shop</Link>
               </Button>
               <Button variant="outline" size="sm" onClick={() => setActiveTab("settings")}>
                 <Settings className="w-4 h-4" />
@@ -287,63 +274,11 @@ export default function SellerDashboard() {
           <TabsContent value="products">
             <div className="flex items-center justify-between mb-4">
               <h2 className="font-bold text-lg text-foreground">My Products ({myProducts?.length ?? 0})</h2>
-              <Dialog open={productOpen} onOpenChange={setProductOpen}>
-                <DialogTrigger asChild>
-                  <Button size="sm">
-                    <Plus className="w-4 h-4 mr-2" /> Add Product
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="max-w-lg">
-                  <DialogHeader>
-                    <DialogTitle>Add New Product</DialogTitle>
-                  </DialogHeader>
-                  <div className="space-y-4 mt-4">
-                    <div>
-                      <Label>Title *</Label>
-                      <Input value={productTitle} onChange={(e) => setProductTitle(e.target.value)} placeholder="Product name" className="mt-1" />
-                    </div>
-                    <div>
-                      <Label>Description</Label>
-                      <Textarea value={productDesc} onChange={(e) => setProductDesc(e.target.value)} placeholder="Describe your product..." className="mt-1" rows={3} />
-                    </div>
-                    <div className="grid grid-cols-2 gap-3">
-                      <div>
-                        <Label>Price (£) *</Label>
-                        <Input type="number" value={productPrice} onChange={(e) => setProductPrice(e.target.value)} placeholder="0.00" className="mt-1" />
-                      </div>
-                      <div>
-                        <Label>Inventory</Label>
-                        <Input type="number" value={productInventory} onChange={(e) => setProductInventory(e.target.value)} className="mt-1" />
-                      </div>
-                    </div>
-                    <div>
-                      <Label>Type</Label>
-                      <Select value={productType} onValueChange={(v) => setProductType(v as "physical" | "digital")}>
-                        <SelectTrigger className="mt-1">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="physical">Physical Product</SelectItem>
-                          <SelectItem value="digital">Digital Download</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <Button
-                      className="w-full"
-                      disabled={!productTitle || !productPrice || createProductMutation.isPending}
-                      onClick={() => createProductMutation.mutate({
-                        title: productTitle,
-                        description: productDesc,
-                        price: parseFloat(productPrice),
-                        type: productType,
-                        inventory: parseInt(productInventory),
-                      })}
-                    >
-                      {createProductMutation.isPending ? "Adding..." : "Add Product"}
-                    </Button>
-                  </div>
-                </DialogContent>
-              </Dialog>
+              <Button size="sm" asChild>
+                <Link href="/seller/products/new">
+                  <Plus className="w-4 h-4 mr-2" /> Add Product
+                </Link>
+              </Button>
             </div>
 
             {myProducts && myProducts.length > 0 ? (
@@ -388,8 +323,10 @@ export default function SellerDashboard() {
                 <Package className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
                 <h3 className="font-bold text-lg mb-2 text-foreground">No products yet</h3>
                 <p className="text-muted-foreground mb-4">Add your first product to start selling</p>
-                <Button onClick={() => setProductOpen(true)}>
-                  <Plus className="w-4 h-4 mr-2" /> Add Product
+                <Button asChild>
+                  <Link href="/seller/products/new">
+                    <Plus className="w-4 h-4 mr-2" /> Add Product
+                  </Link>
                 </Button>
               </div>
             )}

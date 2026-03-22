@@ -15,6 +15,7 @@ import SellerDashboard from "./pages/SellerDashboard";
 import AdminPanel from "./pages/AdminPanel";
 import Terms from "./pages/Terms";
 import HowItWorks from "./pages/HowItWorks";
+import ProductForm from "./pages/ProductForm";
 import { lazy, Suspense } from "react";
 
 // Lazy-loaded pages
@@ -51,6 +52,8 @@ function Router() {
         <Route path="/sellers" component={Sellers} />
         <Route path="/seller/dashboard" component={SellerDashboard} />
         <Route path="/seller/create" component={SellerDashboard} />
+        <Route path="/seller/products/new" component={() => <ProductForm />} />
+        <Route path="/seller/products/:id/edit" component={ProductForm} />
         <Route path="/admin" component={AdminPanel} />
         <Route path="/how-it-works" component={HowItWorks} />
         <Route path="/terms" component={Terms} />

@@ -81,3 +81,31 @@
 - [x] 17 vitest unit tests passing
 - [x] Zero TypeScript errors
 - [x] Push to GitHub repository
+
+## Change Request: UI Redesign & Fixes
+- [ ] Overhaul colour palette to white/cream/gold (elegant, professional)
+- [ ] Redesign homepage with Products/Services toggle section
+- [ ] Fix View Shop button on Sellers page (broken routing)
+- [ ] Update Navbar to match new colour scheme
+- [ ] Update Footer to match new colour scheme
+
+## Full Standalone Rebuild
+- [ ] Bootstrap Next.js 14 standalone project (no Manus deps)
+- [ ] Prisma schema + PostgreSQL (Neon/Supabase compatible)
+- [ ] NextAuth (Google OAuth + email magic link)
+- [ ] White/cream/gold UI redesign
+- [ ] Homepage Products/Services toggle
+- [ ] Fix View Shop button routing
+- [ ] Products: listings, detail, cart, Stripe checkout
+- [ ] Services: listings, detail, booking, Stripe deposit
+- [ ] Seller Dashboard with AI product importer (URL scraper)
+- [ ] Admin Panel, messaging, reviews, wishlist, coupons
+- [ ] Cloudinary image uploads
+- [ ] Resend transactional emails
+- [ ] PWA manifest + SEO + sitemap
+- [ ] Comprehensive README + deployment docs
+- [ ] Push complete standalone codebase to GitHub
+
+## Bug Fixes (Active Webdev Project)
+- [x] Fix product editing — add working create/edit form in seller dashboard
+- [x] Fix View Shop button routing on sellers page
