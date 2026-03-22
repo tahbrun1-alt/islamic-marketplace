@@ -195,6 +195,9 @@ export default function Navbar() {
               </DropdownMenu>
 
               <Button variant="ghost" size="sm" asChild>
+                <Link href="/categories">Categories</Link>
+              </Button>
+              <Button variant="ghost" size="sm" asChild>
                 <Link href="/sellers">Sellers</Link>
               </Button>
               <Button variant="ghost" size="sm" asChild>

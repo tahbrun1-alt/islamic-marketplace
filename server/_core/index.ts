@@ -8,6 +8,8 @@ import { appRouter } from "../routers";
 import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
 import { registerStripeWebhook } from "../stripeWebhook";
+import { getDb } from "../db";
+import { sql } from "drizzle-orm";
 
 function isPortAvailable(port: number): Promise<boolean> {
   return new Promise(resolve => {
@@ -53,17 +55,14 @@ async function startServer() {
     const log: string[] = [];
     try {
       const bcryptjs = await import("bcryptjs");
-      const mysql2 = await import("mysql2/promise");
       log.push("imports ok");
 
-      // Use a direct connection to Railway MySQL (internal network, no SSL needed)
-      const conn = await mysql2.default.createConnection({
-        uri: process.env.DATABASE_URL!,
-        connectTimeout: 30000,
-      });
-      log.push("direct connection ok");
+      // Use the existing shared database pool (already connected on Railway)
+      const db = await getDb();
+      if (!db) throw new Error("Database not available - check DATABASE_URL env var");
+      log.push("db connection ok via shared pool");
 
-      // Run migrations to add missing columns
+      // Run migrations to add missing columns using raw SQL via drizzle
       const migrations = [
         `ALTER TABLE users ADD COLUMN IF NOT EXISTS passwordHash VARCHAR(255) NULL`,
         `ALTER TABLE users ADD COLUMN IF NOT EXISTS phone VARCHAR(50) NULL`,
@@ -76,24 +75,23 @@ async function startServer() {
         `ALTER TABLE users ADD COLUMN IF NOT EXISTS lastSignedIn DATETIME NULL`,
       ];
       for (const m of migrations) {
-        try { await conn.execute(m); log.push(`migration ok: ${m.slice(0,50)}`); }
+        try { await db.execute(sql.raw(m)); log.push(`migration ok: ${m.slice(0,50)}`); }
         catch (me: any) { log.push(`migration skip: ${me.message.slice(0,60)}`); }
       }
 
       const hash = await bcryptjs.default.hash("Qwerty65", 10);
       const openId = "local_admin_tahmid";
 
-      const [rows] = await conn.execute(`SELECT id FROM users WHERE email = 'tahmidburner12@gmail.com' LIMIT 1`);
-      const existing = rows as any[];
+      const existing = await db.execute(sql.raw(`SELECT id FROM users WHERE email = 'tahmidburner12@gmail.com' LIMIT 1`));
+      const rows = (existing as any)[0] as any[];
       let action = "";
-      if (existing.length > 0) {
-        await conn.execute(`UPDATE users SET passwordHash = ?, role = 'admin', name = 'Admin', openId = ? WHERE email = 'tahmidburner12@gmail.com'`, [hash, openId]);
+      if (rows && rows.length > 0) {
+        await db.execute(sql`UPDATE users SET passwordHash = ${hash}, role = 'admin', name = 'Admin', openId = ${openId} WHERE email = 'tahmidburner12@gmail.com'`);
         action = "updated";
       } else {
-        await conn.execute(`INSERT INTO users (openId, name, email, passwordHash, role) VALUES (?, 'Admin', 'tahmidburner12@gmail.com', ?, 'admin')`, [openId, hash]);
+        await db.execute(sql`INSERT INTO users (openId, name, email, passwordHash, role) VALUES (${openId}, 'Admin', 'tahmidburner12@gmail.com', ${hash}, 'admin')`);
         action = "created";
       }
-      await conn.end();
       log.push(`admin ${action}`);
       return res.json({ ok: true, action, log });
     } catch (e: any) {
