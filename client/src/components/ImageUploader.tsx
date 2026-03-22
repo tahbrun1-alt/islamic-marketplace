@@ -100,7 +100,7 @@ export default function ImageUploader({
               {i === 0 && (
                 <div className="absolute bottom-1 left-1">
                   <span className="text-[10px] font-medium px-1.5 py-0.5 rounded"
-                    style={{ background: "oklch(0.18 0.025 40 / 0.75)", color: "oklch(0.87 0.015 75)" }}>
+                    style={{ background: "oklch(0.18 0.025 40 / 0.75)", color: "oklch(0.92 0.018 86)" }}>
                     Cover
                   </span>
                 </div>

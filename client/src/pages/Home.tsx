@@ -103,7 +103,7 @@ export default function Home() {
             <motion.div
               initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.3 }}
               className="inline-flex items-center p-1 rounded-xl mb-8"
-              style={{ background: "oklch(0.18 0.025 40 / 0.06)", border: "1px solid oklch(0.87 0.015 75)" }}
+              style={{ background: "oklch(0.78 0.18 85 / 0.07)", border: "1px solid oklch(0.92 0.018 86)" }}
             >
               <button
                 onClick={() => setMode("products")}
@@ -112,7 +112,7 @@ export default function Home() {
                     ? "text-primary-foreground shadow-sm"
                     : "text-muted-foreground hover:text-foreground"
                 }`}
-                style={mode === "products" ? { background: "linear-gradient(135deg, oklch(0.58 0.13 75), oklch(0.45 0.14 60))" } : {}}
+                style={mode === "products" ? { background: "linear-gradient(135deg, oklch(0.83 0.19 88), oklch(0.72 0.21 85))" } : {}}
               >
                 <ShoppingBag className="w-4 h-4" />
                 Shop Products
@@ -124,7 +124,7 @@ export default function Home() {
                     ? "text-primary-foreground shadow-sm"
                     : "text-muted-foreground hover:text-foreground"
                 }`}
-                style={mode === "services" ? { background: "linear-gradient(135deg, oklch(0.58 0.13 75), oklch(0.45 0.14 60))" } : {}}
+                style={mode === "services" ? { background: "linear-gradient(135deg, oklch(0.83 0.19 88), oklch(0.72 0.21 85))" } : {}}
               >
                 <Calendar className="w-4 h-4" />
                 Book Services
@@ -137,7 +137,7 @@ export default function Home() {
               className="flex flex-wrap items-center justify-center gap-3"
             >
               <Button size="lg" className="h-12 px-8 rounded-xl text-primary-foreground font-medium shadow-sm hover:opacity-90 transition-opacity"
-                style={{ background: "linear-gradient(135deg, oklch(0.58 0.13 75), oklch(0.45 0.14 60))" }} asChild>
+                style={{ background: "linear-gradient(135deg, oklch(0.83 0.19 88), oklch(0.72 0.21 85))" }} asChild>
                 <Link href={mode === "products" ? "/products" : "/services"}>
                   {mode === "products" ? "Browse Products" : "Browse Services"}
                   <ArrowRight className="w-4 h-4 ml-2" />
@@ -154,7 +154,7 @@ export default function Home() {
             <motion.div
               initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8, delay: 0.6 }}
               className="flex flex-wrap items-center justify-center gap-6 mt-10 pt-8"
-              style={{ borderTop: "1px solid oklch(0.87 0.015 75)" }}
+              style={{ borderTop: "1px solid oklch(0.92 0.018 86)" }}
             >
               {[
                 { value: "10,000+", label: "Products" },
@@ -207,7 +207,7 @@ export default function Home() {
                   <Link href={cat.href}
                     className="flex flex-col items-center gap-2 p-3 rounded-xl hover:bg-secondary transition-all duration-200 group text-center">
                     <div className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl transition-transform duration-200 group-hover:scale-110"
-                      style={{ background: "oklch(0.58 0.13 75 / 0.08)", border: "1px solid oklch(0.87 0.015 75)" }}>
+                      style={{ background: "oklch(0.58 0.13 75 / 0.08)", border: "1px solid oklch(0.92 0.018 86)" }}>
                       {cat.icon}
                     </div>
                     <span className="text-xs font-medium text-foreground group-hover:text-primary transition-colors leading-tight">{cat.name}</span>
@@ -285,7 +285,7 @@ export default function Home() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
               { icon: Shield, title: "Halal Verified", desc: "All products and services are screened for halal compliance by our team.", color: "oklch(0.40 0.12 140)" },
-              { icon: Award, title: "Trusted Sellers", desc: "Every seller is verified and rated by the community for accountability.", color: "oklch(0.58 0.13 75)" },
+              { icon: Award, title: "Trusted Sellers", desc: "Every seller is verified and rated by the community for accountability.", color: "oklch(0.83 0.19 88)" },
               { icon: Truck, title: "Global Delivery", desc: "Sellers ship worldwide with tracked delivery and buyer protection.", color: "oklch(0.45 0.10 220)" },
               { icon: Users, title: "Ummah First", desc: "A portion of every commission supports Islamic charities globally.", color: "oklch(0.50 0.12 30)" },
             ].map(({ icon: Icon, title, desc, color }, i) => (
@@ -306,13 +306,13 @@ export default function Home() {
       </section>
 
       {/* ── Sell on Noor CTA ──────────────────────────────────────────────── */}
-      <section className="py-16 relative overflow-hidden" style={{ background: "linear-gradient(135deg, oklch(0.14 0.025 40) 0%, oklch(0.20 0.03 45) 100%)" }}>
+      <section className="py-16 relative overflow-hidden" style={{ background: "linear-gradient(135deg, oklch(0.12 0.018 42) 0%, oklch(0.18 0.022 45) 100%)" }}>
         <div className="absolute inset-0 pointer-events-none opacity-10"
           style={{ backgroundImage: "url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23d4a017' fill-opacity='0.3'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E\")" }} />
         <div className="container relative">
           <div className="max-w-2xl mx-auto text-center">
             <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
-              <span className="font-arabic text-3xl block mb-3" style={{ color: "oklch(0.75 0.12 75)" }}>بارك الله فيك</span>
+              <span className="font-arabic text-3xl block mb-3" style={{ color: "oklch(0.88 0.17 88)" }}>بارك الله فيك</span>
               <h2 className="font-serif text-3xl lg:text-4xl font-semibold mb-4" style={{ color: "oklch(0.96 0.006 85)" }}>
                 Start Selling on Noor
               </h2>
@@ -323,13 +323,13 @@ export default function Home() {
               <div className="flex flex-wrap justify-center gap-4 mb-8">
                 {["Free 14-day trial", "Only 7% commission", "0.5% to charity", "Global reach"].map((f) => (
                   <div key={f} className="flex items-center gap-2 text-sm" style={{ color: "oklch(0.85 0.01 80)" }}>
-                    <CheckCircle className="w-4 h-4" style={{ color: "oklch(0.75 0.12 75)" }} />
+                    <CheckCircle className="w-4 h-4" style={{ color: "oklch(0.88 0.17 88)" }} />
                     {f}
                   </div>
                 ))}
               </div>
               <Button size="lg" className="h-12 px-10 rounded-xl font-medium text-foreground hover:opacity-90 transition-opacity"
-                style={{ background: "linear-gradient(135deg, oklch(0.75 0.12 75), oklch(0.62 0.13 72))" }} asChild>
+                style={{ background: "linear-gradient(135deg, oklch(0.88 0.17 88), oklch(0.75 0.20 86))" }} asChild>
                 <Link href="/seller/dashboard">
                   <Store className="w-4 h-4 mr-2" />
                   Open Your Shop
@@ -458,7 +458,7 @@ function ServiceCard({ service }: { service: {
           {service.locationType && (
             <div className="absolute bottom-2 left-2">
               <span className="text-[10px] font-medium px-2 py-0.5 rounded-full"
-                style={{ background: "oklch(0.18 0.025 40 / 0.7)", color: "oklch(0.87 0.015 75)" }}>
+                style={{ background: "oklch(0.12 0.018 42 / 0.75)", color: "oklch(0.92 0.018 86)" }}>
                 {service.locationType === "online" ? "🖥 Online" : service.locationType === "in_person" ? "📍 In Person" : "🔄 Both"}
               </span>
             </div>
@@ -494,7 +494,7 @@ function EmptyState({ mode }: { mode: "products" | "services" }) {
   return (
     <div className="col-span-full py-16 text-center">
       <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4"
-        style={{ background: "oklch(0.58 0.13 75 / 0.08)", border: "1px solid oklch(0.87 0.015 75)" }}>
+        style={{ background: "oklch(0.58 0.13 75 / 0.08)", border: "1px solid oklch(0.92 0.018 86)" }}>
         {mode === "products" ? <ShoppingBag className="w-7 h-7 text-primary" /> : <Calendar className="w-7 h-7 text-primary" />}
       </div>
       <h3 className="font-serif text-lg font-semibold text-foreground mb-2">
@@ -504,7 +504,7 @@ function EmptyState({ mode }: { mode: "products" | "services" }) {
         Be the first to list your {mode === "products" ? "halal products" : "Islamic services"} on Noor Marketplace.
       </p>
       <Button asChild className="text-primary-foreground"
-        style={{ background: "linear-gradient(135deg, oklch(0.58 0.13 75), oklch(0.45 0.14 60))" }}>
+        style={{ background: "linear-gradient(135deg, oklch(0.83 0.19 88), oklch(0.72 0.21 85))" }}>
         <Link href="/seller/dashboard">
           <Sparkles className="w-4 h-4 mr-2" />
           {mode === "products" ? "Add Your First Product" : "Offer Your Service"}

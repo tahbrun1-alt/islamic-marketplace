@@ -93,7 +93,7 @@ export default function Navbar() {
   return (
     <>
       {/* Top announcement bar */}
-      <div className="text-center py-2 text-xs font-medium tracking-wide" style={{ background: "oklch(0.18 0.025 40)", color: "oklch(0.87 0.015 75)" }}>
+      <div className="text-center py-2 text-xs font-medium tracking-wide" style={{ background: "linear-gradient(90deg, oklch(0.15 0.020 45), oklch(0.12 0.015 40), oklch(0.15 0.020 45))", color: "oklch(0.92 0.14 86)" }}>
         <span className="font-arabic text-sm mr-2">بسم الله</span>
         Free for 14 days — then just 7% commission (incl. 0.5% auto-donated to charity ❤️). Join the Ummah marketplace today!
       </div>
@@ -107,7 +107,7 @@ export default function Navbar() {
           <div className="flex items-center justify-between h-16 gap-4">
             {/* Logo */}
             <Link href="/" className="flex items-center gap-2 shrink-0">
-              <div className="w-9 h-9 rounded-lg flex items-center justify-center text-white font-bold text-lg" style={{ background: "linear-gradient(135deg, oklch(0.58 0.13 75), oklch(0.45 0.14 60))" }}>
+              <div className="w-9 h-9 rounded-lg flex items-center justify-center text-white font-bold text-lg" style={{ background: "linear-gradient(135deg, oklch(0.83 0.19 88), oklch(0.72 0.21 85))" }}>
                 ن
               </div>
               <div className="hidden sm:block">
@@ -314,7 +314,7 @@ export default function Navbar() {
                   <Button variant="ghost" size="sm" asChild className="hidden sm:flex">
                     <Link href="/login">Sign In</Link>
                   </Button>
-                  <Button size="sm" asChild className="text-primary-foreground hover:opacity-90" style={{ background: "linear-gradient(135deg, oklch(0.58 0.13 75), oklch(0.45 0.14 60))" }}>
+                  <Button size="sm" asChild className="text-primary-foreground hover:opacity-90" style={{ background: "linear-gradient(135deg, oklch(0.83 0.19 88), oklch(0.72 0.21 85))" }}>
                     <Link href="/register">Get Started</Link>
                   </Button>
                 </>
