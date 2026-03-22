@@ -98,7 +98,7 @@ export default function Sellers() {
                     </div>
 
                     <Button size="sm" variant="outline" className="w-full mt-3 text-xs" asChild>
-                      <Link href={`/products?shop=${shop.id}`}>
+                      <Link href={`/shop/${(shop as unknown as { slug: string }).slug}`}>
                         <Package className="w-3.5 h-3.5 mr-1.5" /> View Shop
                       </Link>
                     </Button>

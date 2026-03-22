@@ -1,312 +1,144 @@
-# Noor Marketplace — Islamic Products & Services Platform
+# Noor Marketplace — The Islamic Marketplace for the Global Ummah
 
-A full-featured, production-ready marketplace for halal products and Islamic services. Built with React, Express, tRPC, Tailwind CSS, and PostgreSQL.
-
-**GitHub:** [tahbrun1-alt/islamic-marketplace](https://github.com/tahbrun1-alt/islamic-marketplace)
+A full-stack, production-ready Islamic e-commerce marketplace connecting Muslim buyers and sellers worldwide, with built-in Sadaqah (charity) on every transaction.
 
 ---
 
-## Features
+## Overview
+
+Noor Marketplace is a complete, investor-ready platform that enables Muslim entrepreneurs to sell halal products and services to a global audience. Every transaction automatically donates **0.5% to Islamic charities** — making commerce an act of worship.
+
+| Feature | Details |
+|---|---|
+| **Commission Model** | 7% total (6.5% platform + 0.5% Sadaqah charity) |
+| **Charity Mechanism** | Auto-donated on every order via Stripe |
+| **Authentication** | Email/password (bcrypt + JWT) — fully custom, no third-party OAuth |
+| **Payments** | Stripe Checkout (products + service deposits) |
+| **AI Product Import** | Scrape any URL and auto-populate products with images |
+| **Admin Access** | Locked to designated admin email only (triple-layer security) |
+
+---
+
+## Key Features
 
 ### For Buyers
-- **Browse Products & Services** — Search, filter by category, price, gender, and ratings
-- **Smart Cart** — Add items, manage quantities, apply coupon codes
-- **Secure Checkout** — Stripe payments with order tracking
-- **Wishlist** — Save favourite products and services for later
-- **Reviews & Ratings** — Leave verified purchase reviews
-- **Order History** — Track all past purchases and bookings
-- **Service Booking** — Calendar-based booking with deposits and availability
+- Browse halal products and Islamic services
+- Full cart, checkout, and order tracking with visual status timeline
+- Wishlist, coupon codes, and verified purchase reviews
+- Real-time notification centre
+- See exactly how much charity was donated from each order
 
 ### For Sellers
-- **Seller Dashboard** — Manage products, services, orders, and bookings
-- **Product Management** — Create, edit, delete products with images and descriptions
-- **Service Management** — Offer services with booking system, deposits, and availability
-- **AI Product Importer** — Paste a website URL and auto-import products (titles, descriptions, prices, images)
-- **Order Management** — View orders, track shipments, manage commissions
-- **Shop Profile** — Customize your shop, set commission rates, halal certification
-- **Analytics** — View sales, revenue, and customer insights
+- Create a branded shop with logo, banner, and description
+- **Import products from any URL** — AI scrapes title, description, price, and images automatically
+- Manage products, services, orders, and bookings from one dashboard
+- Real-time revenue analytics: gross sales, net earnings, charity contributed
+- Coupon creation and promotional tools
+- Public shop profile page at /shop/:slug
 
-### For Admins
-- **Admin Panel** — User management, shop verification, analytics
-- **Commission Model** — 6.5% commission with 14-day free trial
-- **Moderation** — Verify shops, manage listings, handle disputes
-- **Notifications** — Real-time alerts for new orders and activities
-
-### Platform Features
-- **Halal Certification** — Verify and badge halal-certified shops
-- **Multi-Vendor Support** — Multiple sellers on one platform
-- **Coupon Codes** — Create percentage or fixed-amount discounts
-- **Messaging** — Direct communication between buyers and sellers
-- **PWA Ready** — Install as app on iOS/Android
-- **SEO Optimized** — Meta tags, structured data, sitemap
-- **Responsive Design** — Mobile-first, elegant white/cream/gold UI
-
----
-
-## Tech Stack
-
-- **Frontend:** React 19, Tailwind CSS 4, Framer Motion, shadcn/ui
-- **Backend:** Express 4, tRPC 11, Node.js
-- **Database:** PostgreSQL with Drizzle ORM
-- **Auth:** Standalone JWT with bcrypt (no OAuth dependency)
-- **Payments:** Stripe Checkout Sessions + Webhooks
-- **Storage:** Cloudinary (free tier image uploads)
-- **Fonts:** Cormorant Garamond + Inter (Google Fonts)
-
----
-
-## Quick Start
-
-### Prerequisites
-- Node.js 18+
-- MySQL 8+ or TiDB (or any MySQL-compatible database)
-- Stripe account (for payments)
-- Cloudinary account (free tier, for image uploads)
-
-### Installation
-
-```bash
-# Clone the repository
-git clone https://github.com/tahbrun1-alt/islamic-marketplace.git
-cd islamic-marketplace
-
-# Install dependencies
-pnpm install
-
-# Start development server
-pnpm dev
-```
-
-The app will be available at `http://localhost:3000`.
-
----
-
-## Environment Variables
-
-Create a `.env.local` file with the following:
-
-```env
-# Database (MySQL / TiDB)
-DATABASE_URL=mysql://user:password@localhost:3306/noor_marketplace
-
-# Auth (standalone JWT — no OAuth required)
-JWT_SECRET=your-super-secret-jwt-key-change-in-production
-
-# Stripe
-STRIPE_SECRET_KEY=sk_test_...
-STRIPE_WEBHOOK_SECRET=whsec_...
-VITE_STRIPE_PUBLISHABLE_KEY=pk_test_...
-
-# Cloudinary (image uploads — optional)
-CLOUDINARY_CLOUD_NAME=your-cloud-name
-CLOUDINARY_API_KEY=your-api-key
-CLOUDINARY_API_SECRET=your-api-secret
-```
-
----
-
-## Project Structure
-
-```
-islamic-marketplace/
-├── client/                    # React frontend
-│   ├── src/
-│   │   ├── pages/            # Page components
-│   │   ├── components/       # Reusable UI components
-│   │   ├── stores/           # Zustand state (cart)
-│   │   ├── lib/              # tRPC client, utilities
-│   │   ├── App.tsx           # Routes
-│   │   └── index.css         # Global styles (white/cream/gold)
-│   ├── public/               # Static assets, PWA manifest
-│   └── index.html            # HTML entry with SEO meta tags
-├── server/                    # Express backend
-│   ├── db.ts                 # Database queries
-│   ├── routers.ts            # tRPC procedures
-│   ├── storage.ts            # S3 upload helpers
-│   └── _core/                # Auth, OAuth, context
-├── drizzle/                   # Database schema & migrations
-├── prisma/                    # Prisma schema (if using)
-├── package.json              # Dependencies
-├── tailwind.config.ts        # Tailwind config (cream/gold palette)
-└── README.md                 # This file
-```
-
----
-
-## Key Pages & Routes
-
-| Route | Purpose |
-|-------|---------|
-| `/` | Homepage with Products/Services toggle |
-| `/products` | Product listing with search & filters |
-| `/products/:id` | Product detail page |
-| `/services` | Service listing with booking |
-| `/services/:id` | Service detail & booking form |
-| `/cart` | Shopping cart |
-| `/checkout` | Secure checkout with coupon codes |
-| `/orders` | Order history & tracking |
-| `/bookings` | Service booking history |
-| `/wishlist` | Saved products & services |
-| `/sellers` | Seller directory |
-| `/sellers/:id` | Public shop page |
-| `/seller/dashboard` | Seller dashboard (products, services, orders) |
-| `/admin` | Admin panel (stats, user management) |
-| `/profile` | User profile & settings |
-| `/how-it-works` | Platform guide |
-| `/terms` | Terms & conditions |
-
----
-
-## Database Schema
-
-### Core Tables
-- **users** — User accounts, roles (admin/user)
-- **shops** — Seller profiles, commission rates
-- **products** — Product listings with images, pricing
-- **services** — Service offerings with booking
-- **orders** — Product orders with items
-- **bookings** — Service bookings with deposits
-- **reviews** — Product & service reviews
-- **wishlist** — Saved items
-- **coupons** — Discount codes
-- **messages** — Buyer-seller messaging
-- **notifications** — System & user notifications
-
-See `drizzle/schema.ts` for full schema.
-
----
-
-## API Routes (tRPC)
-
-All API calls use tRPC. Key routers:
-
-- `products.list` — Get products with filters
-- `products.create` — Create product (seller only)
-- `products.update` — Update product (seller only)
-- `services.list` — Get services
-- `services.book` — Book a service
-- `orders.create` — Create order
-- `wishlist.add` / `.remove` — Manage wishlist
-- `coupons.validate` — Validate coupon code
-- `auth.me` — Get current user
-- `admin.getStats` — Admin dashboard stats
+### For Administrators (restricted access)
+- Full platform analytics: GMV, platform revenue, charity donated
+- User and shop management with verification controls
+- Order oversight with charity breakdown per transaction
+- Dedicated charity impact dashboard
 
 ---
 
 ## Commission Model
 
-- **Standard Rate:** 6.5% per order
-- **Free Trial:** 14 days (0% commission)
-- **Minimum Order:** £5
-- **Payment Cycle:** Weekly payouts to seller bank account
+Every sale on Noor Marketplace carries a **7% total commission**:
+
+    Sale Price: 100.00
+    Seller receives:  93.00 (93%)
+    Platform fee:      6.50 (6.5%)
+    Charity (Sadaqah): 0.50 (0.5%)
 
 ---
 
-## Testing
+## Tech Stack
+
+| Layer | Technology |
+|---|---|
+| **Frontend** | React 18, TypeScript, TailwindCSS v4, Framer Motion |
+| **Backend** | Node.js, Express, tRPC (fully type-safe API) |
+| **Database** | MySQL / TiDB (Drizzle ORM) |
+| **Auth** | Custom email/password (bcrypt + JWT HTTP-only cookies) |
+| **Payments** | Stripe Checkout + Webhooks |
+| **AI Import** | OpenAI GPT-4 (product scraping from any URL) |
+
+---
+
+## Getting Started
 
 ```bash
-# Run all tests
-pnpm test
-
-# Run tests in watch mode
-pnpm test --watch
-
-# Run specific test file
-pnpm test server/marketplace.test.ts
-```
-
-17 tests included covering auth, products, services, orders, and wishlist.
-
----
-
-## Building for Production
-
-```bash
-# Build frontend & backend
-pnpm build
-
-# Start production server
-pnpm start
-```
-
----
-
-## Deployment
-
-### Docker
-```dockerfile
-FROM node:18-alpine
-WORKDIR /app
-COPY . .
-RUN pnpm install && pnpm build
-EXPOSE 3000
-CMD ["pnpm", "start"]
-```
-
-### Other Platforms (Vercel, Railway, etc.)
-Update `package.json` scripts and environment variables as needed.
-
----
-
-## Features Roadmap
-
-- [ ] Live chat with sellers
-- [ ] Seller analytics dashboard
-- [ ] Subscription products
-- [ ] Gift cards
-- [ ] Affiliate program
-- [ ] Multi-currency support
-- [ ] Advanced search (AI-powered)
-- [ ] Video product reviews
-
----
-
-## Troubleshooting
-
-### "Cannot find module" errors
-```bash
+git clone https://github.com/tahbrun1-alt/islamic-marketplace
+cd islamic-marketplace
 pnpm install
 ```
 
-### Database connection failed
-- Check `DATABASE_URL` in your environment
-- Ensure MySQL/TiDB is running
+Create a .env file with:
+- DATABASE_URL
+- SESSION_SECRET
+- STRIPE_SECRET_KEY / STRIPE_WEBHOOK_SECRET / VITE_STRIPE_PUBLISHABLE_KEY
+- OPENAI_API_KEY
 
-### Stripe payments not working
-- Verify `STRIPE_SECRET_KEY` and `VITE_STRIPE_PUBLISHABLE_KEY`
-- Check Stripe webhook is configured at `/api/stripe/webhook`
-- Test with Stripe test card: `4242 4242 4242 4242`
+Seed admin account:
+```bash
+node scripts/seed-admin.mjs
+```
 
-### Image uploads not working
-- Verify Cloudinary credentials
-- Without Cloudinary, a placeholder image is used (app still works)
-
-### Auth not working
-- Verify `JWT_SECRET` is set
-- Clear browser cookies and try again
-
----
-
-## Support & Contributing
-
-- **Issues:** [GitHub Issues](https://github.com/tahbrun1-alt/islamic-marketplace/issues)
-- **Discussions:** [GitHub Discussions](https://github.com/tahbrun1-alt/islamic-marketplace/discussions)
-- **Email:** support@noormarketplace.com
+Run development:
+```bash
+pnpm run dev
+```
 
 ---
 
-## License
+## Pages & Routes
 
-MIT License — See LICENSE file for details.
+| Route | Description |
+|---|---|
+| `/` | Home — hero, featured products/services, categories |
+| `/products` | Product catalogue with search and filters |
+| `/services` | Service catalogue |
+| `/products/:id` | Product detail with reviews and add to cart |
+| `/services/:id` | Service detail with booking |
+| `/shop/:slug` | Public seller shop profile |
+| `/sellers` | Browse all verified sellers |
+| `/cart` | Shopping cart |
+| `/checkout` | Stripe-powered checkout |
+| `/orders` | Order history with status timeline and charity breakdown |
+| `/bookings` | Service booking history |
+| `/wishlist` | Saved items |
+| `/notifications` | Real-time notification centre |
+| `/profile` | Account management |
+| `/seller/dashboard` | Seller analytics, products, orders, settings |
+| `/import-product` | AI-powered product import from URL |
+| `/admin` | Admin panel (restricted to admin email) |
+| `/how-it-works` | Platform guide with charity section |
+| `/terms` | Terms of service |
 
 ---
 
-## Acknowledgments
+## Security
 
-Built with ❤️ for the Muslim community. Designed to be halal-first, accessible, and beautiful.
-
-**Noor** (نور) means *Light* in Arabic — bringing light to Islamic commerce.
+- Admin access is triple-locked: backend API guard, frontend page component, and Navbar links
+- All passwords hashed with bcrypt (12 rounds)
+- JWT tokens in HTTP-only cookies (XSS-safe)
+- All seller mutations verify shop ownership before proceeding
+- Stripe webhooks verified with webhook secret
 
 ---
 
-**Noor** (نور) means *Light* in Arabic — bringing light to Islamic commerce.
+## Investor Notes
+
+- **Market**: 1.8 billion Muslims globally, halal economy estimated at $3.2 trillion
+- **Differentiation**: Built-in Sadaqah mechanism aligns with Islamic values and creates loyalty
+- **Revenue Model**: 7% commission on all transactions, scalable with zero marginal cost
+- **Network Effects**: More sellers => more products => more buyers => more charity impact
+- **AI Advantage**: URL import tool dramatically lowers seller onboarding friction
+- **Trust**: Halal verification, transparent charity tracking, and Islamic branding build deep community trust
+
+---
+
+*Noor (noor) means Light in Arabic — bringing light to Islamic commerce.*

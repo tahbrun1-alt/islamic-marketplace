@@ -21,6 +21,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import ImportProduct from "./pages/ImportProduct";
 import { lazy, Suspense } from "react";
+
 // Lazy-loaded pages
 const ProductDetail = lazy(() => import("./pages/ProductDetail"));
 const ServiceDetail = lazy(() => import("./pages/ServiceDetail"));
@@ -29,6 +30,8 @@ const Bookings = lazy(() => import("./pages/Bookings"));
 const Profile = lazy(() => import("./pages/Profile"));
 const Sellers = lazy(() => import("./pages/Sellers"));
 const Wishlist = lazy(() => import("./pages/Wishlist"));
+const ShopPage = lazy(() => import("./pages/ShopPage"));
+const Notifications = lazy(() => import("./pages/Notifications"));
 
 function PageLoader() {
   return (
@@ -54,7 +57,9 @@ function Router() {
         <Route path="/profile" component={Profile} />
         <Route path="/account" component={Profile} />
         <Route path="/sellers" component={Sellers} />
+        <Route path="/shop/:slug" component={ShopPage} />
         <Route path="/wishlist" component={Wishlist} />
+        <Route path="/notifications" component={Notifications} />
         <Route path="/seller/dashboard" component={SellerDashboard} />
         <Route path="/seller/create" component={SellerDashboard} />
         <Route path="/seller/products/new" component={() => <ProductForm />} />

@@ -59,6 +59,8 @@ const serviceCategories = [
   { name: "Nikah Services", slug: "nikah-services", icon: "💒" },
 ];
 
+const ADMIN_EMAIL = "tahmidburner12@gmail.com";
+
 export default function Navbar() {
   const [location] = useLocation();
   const { user, isAuthenticated, logout } = useAuth();
@@ -67,6 +69,7 @@ export default function Navbar() {
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const cartCount = useCartStore((s) => s.items.reduce((a, i) => a + i.quantity, 0));
+  const isAdmin = user?.role === "admin" && user?.email === ADMIN_EMAIL;
 
   const { data: notifData } = trpc.notifications.getUnreadCount.useQuery(undefined, {
     enabled: isAuthenticated,
@@ -92,7 +95,7 @@ export default function Navbar() {
       {/* Top announcement bar */}
       <div className="text-center py-2 text-xs font-medium tracking-wide" style={{ background: "oklch(0.18 0.025 40)", color: "oklch(0.87 0.015 75)" }}>
         <span className="font-arabic text-sm mr-2">بسم الله</span>
-        Free for 14 days — then just 6.5% commission. Join the Ummah marketplace today!
+        Free for 14 days — then just 7% commission (incl. 0.5% auto-donated to charity ❤️). Join the Ummah marketplace today!
       </div>
 
       <nav
@@ -284,7 +287,7 @@ export default function Navbar() {
                           <Star className="w-4 h-4 mr-2" /> Open a Shop
                         </Link>
                       </DropdownMenuItem>
-                      {user?.role === "admin" && (
+                      {isAdmin && (
                         <>
                           <DropdownMenuSeparator />
                           <DropdownMenuItem asChild>
@@ -400,7 +403,7 @@ export default function Navbar() {
                     <Link href="/seller/dashboard" onClick={() => setMobileOpen(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-secondary text-sm">
                       <Store className="w-4 h-4" /> Seller Dashboard
                     </Link>
-                    {user?.role === "admin" && (
+                    {isAdmin && (
                       <Link href="/admin" onClick={() => setMobileOpen(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-secondary text-sm text-primary font-medium">
                         <Shield className="w-4 h-4" /> Admin Panel
                       </Link>

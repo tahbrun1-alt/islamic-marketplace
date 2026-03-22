@@ -92,7 +92,7 @@ export default function SellerDashboard() {
               <Store className="w-8 h-8 text-primary" />
             </div>
             <h2 className="text-2xl font-bold text-foreground mb-2">Open Your Shop</h2>
-            <p className="text-muted-foreground">Join 3,200+ Muslim sellers on Noor Marketplace. Free for 14 days, then just 6.5% commission.</p>
+            <p className="text-muted-foreground">Join 3,200+ Muslim sellers on Noor Marketplace. Free for 14 days, then just 7% total commission (incl. 0.5% auto-donated to charity).</p>
           </div>
 
           <div className="space-y-4">
@@ -118,7 +118,7 @@ export default function SellerDashboard() {
           </div>
 
           <div className="mt-6 grid grid-cols-3 gap-4 text-center">
-            {[{ icon: "🆓", label: "14-day free trial" }, { icon: "💰", label: "6.5% commission" }, { icon: "🌍", label: "Global reach" }].map((item) => (
+            {[{ icon: "🆓", label: "14-day free trial" }, { icon: "💰", label: "7% commission" }, { icon: "❤️", label: "0.5% to charity" }].map((item) => (
               <div key={item.label}>
                 <div className="text-2xl mb-1">{item.icon}</div>
                 <p className="text-xs text-muted-foreground">{item.label}</p>
@@ -174,7 +174,7 @@ export default function SellerDashboard() {
 
       <div className="container py-6">
         {/* Stats */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
           {[
             { icon: Package, label: "Products", value: stats?.products ?? 0, color: "text-blue-600 bg-blue-50" },
             { icon: ShoppingBag, label: "Orders", value: stats?.orders ?? 0, color: "text-emerald-600 bg-emerald-50" },
@@ -196,6 +196,32 @@ export default function SellerDashboard() {
             </Card>
           ))}
         </div>
+        {/* Revenue Stats */}
+        {stats && (stats as { netRevenue?: number; charityFee?: number }).netRevenue !== undefined && (
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+            <Card className="border-0 shadow-sm bg-gradient-to-br from-emerald-50 to-emerald-100/50">
+              <CardContent className="p-4">
+                <p className="text-xs text-emerald-700 font-medium mb-1">Your Net Earnings</p>
+                <p className="text-2xl font-bold text-emerald-700">£{((stats as { netRevenue?: number }).netRevenue ?? 0).toFixed(2)}</p>
+                <p className="text-xs text-emerald-600 mt-0.5">After 7% platform fee</p>
+              </CardContent>
+            </Card>
+            <Card className="border-0 shadow-sm bg-gradient-to-br from-blue-50 to-blue-100/50">
+              <CardContent className="p-4">
+                <p className="text-xs text-blue-700 font-medium mb-1">Gross Sales</p>
+                <p className="text-2xl font-bold text-blue-700">£{((stats as { grossRevenue?: number }).grossRevenue ?? 0).toFixed(2)}</p>
+                <p className="text-xs text-blue-600 mt-0.5">Total customer payments</p>
+              </CardContent>
+            </Card>
+            <Card className="border-0 shadow-sm bg-gradient-to-br from-rose-50 to-rose-100/50">
+              <CardContent className="p-4">
+                <p className="text-xs text-rose-700 font-medium mb-1 flex items-center gap-1">❤️ Charity Donated</p>
+                <p className="text-2xl font-bold text-rose-700">£{((stats as { charityFee?: number }).charityFee ?? 0).toFixed(2)}</p>
+                <p className="text-xs text-rose-600 mt-0.5">0.5% to Islamic charities</p>
+              </CardContent>
+            </Card>
+          </div>
+        )}
 
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab}>

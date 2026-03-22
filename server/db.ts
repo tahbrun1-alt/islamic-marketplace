@@ -575,34 +575,54 @@ export async function setPlatformSetting(key: string, value: string) {
 export async function getAdminStats() {
   const db = await getDb();
   if (!db) return null;
-  const [userCount, shopCount, productCount, orderCount, bookingCount] = await Promise.all([
+  const [userCount, shopCount, productCount, orderCount, bookingCount, revenueData, serviceCount] = await Promise.all([
     db.select({ count: sql<number>`count(*)` }).from(users),
     db.select({ count: sql<number>`count(*)` }).from(shops),
     db.select({ count: sql<number>`count(*)` }).from(products),
     db.select({ count: sql<number>`count(*)` }).from(orders),
     db.select({ count: sql<number>`count(*)` }).from(bookings),
+    db.select({ total: sql<string>`COALESCE(SUM(total), 0)` }).from(orders).where(sql`status != 'cancelled'`),
+    db.select({ count: sql<number>`count(*)` }).from(services),
   ]);
+  const grossRevenue = Number(revenueData[0]?.total ?? 0);
+  const platformRevenue = grossRevenue * 0.065;
+  const charityDonated = grossRevenue * 0.005;
   return {
     users: userCount[0]?.count ?? 0,
     shops: shopCount[0]?.count ?? 0,
     products: productCount[0]?.count ?? 0,
+    services: serviceCount[0]?.count ?? 0,
     orders: orderCount[0]?.count ?? 0,
     bookings: bookingCount[0]?.count ?? 0,
+    grossRevenue,
+    platformRevenue,
+    charityDonated,
   };
 }
 
 export async function getShopStats(shopId: number) {
   const db = await getDb();
   if (!db) return null;
-  const [productCount, orderCount, bookingCount] = await Promise.all([
+  const [productCount, orderCount, bookingCount, revenueData, serviceCount] = await Promise.all([
     db.select({ count: sql<number>`count(*)` }).from(products).where(eq(products.shopId, shopId)),
     db.select({ count: sql<number>`count(*)` }).from(orders).where(eq(orders.shopId, shopId)),
     db.select({ count: sql<number>`count(*)` }).from(bookings).where(eq(bookings.providerId, shopId)),
+    db.select({ total: sql<string>`COALESCE(SUM(total), 0)` }).from(orders).where(and(eq(orders.shopId, shopId), sql`status != 'cancelled'`)),
+    db.select({ count: sql<number>`count(*)` }).from(services).where(eq(services.shopId, shopId)),
   ]);
+  const grossRevenue = Number(revenueData[0]?.total ?? 0);
+  const platformFee = grossRevenue * 0.065;
+  const charityFee = grossRevenue * 0.005;
+  const netRevenue = grossRevenue - platformFee - charityFee;
   return {
     products: productCount[0]?.count ?? 0,
     orders: orderCount[0]?.count ?? 0,
     bookings: bookingCount[0]?.count ?? 0,
+    services: serviceCount[0]?.count ?? 0,
+    grossRevenue,
+    platformFee,
+    charityFee,
+    netRevenue,
   };
 }
 

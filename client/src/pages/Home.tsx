@@ -318,10 +318,10 @@ export default function Home() {
               </h2>
               <p className="text-base mb-8 leading-relaxed" style={{ color: "oklch(0.75 0.01 80)" }}>
                 Join hundreds of Muslim entrepreneurs. List products or services for free for 14 days,
-                then just 6.5% commission — lower than any mainstream platform.
+                then just 7% commission (6.5% platform + 0.5% auto-donated to charity) — lower than any mainstream platform.
               </p>
               <div className="flex flex-wrap justify-center gap-4 mb-8">
-                {["Free 14-day trial", "6.5% commission only", "Instant payouts", "Global reach"].map((f) => (
+                {["Free 14-day trial", "Only 7% commission", "0.5% to charity", "Global reach"].map((f) => (
                   <div key={f} className="flex items-center gap-2 text-sm" style={{ color: "oklch(0.85 0.01 80)" }}>
                     <CheckCircle className="w-4 h-4" style={{ color: "oklch(0.75 0.12 75)" }} />
                     {f}

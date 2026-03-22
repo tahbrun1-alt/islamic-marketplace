@@ -8,10 +8,13 @@ import { systemRouter } from "./_core/systemRouter";
 import { protectedProcedure, publicProcedure, router } from "./_core/trpc";
 import * as db from "./db";
 
-// Admin guard 
+// Admin guard — only the designated admin email may access admin routes
+const ADMIN_EMAIL = "tahmidburner12@gmail.com";
 
 const adminProcedure = protectedProcedure.use(({ ctx, next }) => {
-  if (ctx.user.role !== "admin") throw new TRPCError({ code: "FORBIDDEN", message: "Admin access required" });
+  if (ctx.user.role !== "admin" || ctx.user.email !== ADMIN_EMAIL) {
+    throw new TRPCError({ code: "FORBIDDEN", message: "Admin access required" });
+  }
   return next({ ctx });
 });
 

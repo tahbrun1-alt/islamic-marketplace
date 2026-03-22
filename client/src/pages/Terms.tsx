@@ -53,7 +53,7 @@ Sellers who violate Islamic principles will have their accounts suspended immedi
 
 Commission Structure:
 • 14-day free trial for all new sellers — no commission charged during this period
-• After the trial period: 6.5% commission on all sales (products and services)
+• After the trial period: 7% total commission on all sales (6.5% platform fee + 0.5% automatically donated to charity)
 • Commission is automatically deducted from each transaction
 • No monthly subscription fees or listing fees
 
