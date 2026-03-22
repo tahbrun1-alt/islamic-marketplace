@@ -87,6 +87,12 @@ export async function getUserById(id: number) {
   const result = await db.select().from(users).where(eq(users.id, id)).limit(1);
   return result[0];
 }
+export async function getUserByEmail(email: string) {
+  const db = await getDb();
+  if (!db) return undefined;
+  const result = await db.select().from(users).where(eq(users.email, email)).limit(1);
+  return result[0];
+}
 
 export async function updateUser(id: number, data: Partial<typeof users.$inferInsert>) {
   const db = await getDb();

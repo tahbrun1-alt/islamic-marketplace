@@ -1,0 +1,9 @@
+{
+  "query": "ALTER TABLE `bookings` ADD `depositPaid` boolean DEFAULT false NOT NULL;\nALTER TABLE `bookings` ADD `platformFee` decimal(10,2) DEFAULT '0.00';\nALTER TABLE `bookings` ADD `charityFee` decimal(10,2) DEFAULT '0.00';\nALTER TABLE `orders` ADD `platformFee` decimal(10,2) DEFAULT '0.00';\nALTER TABLE `orders` ADD `charityFee` decimal(10,2) DEFAULT '0.00';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway04.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 28ZER5jxikPpY7d.root --database dBEP68RMdARFiNqG3Sgkye --execute ALTER TABLE `bookings` ADD `depositPaid` boolean DEFAULT false NOT NULL;\nALTER TABLE `bookings` ADD `platformFee` decimal(10,2) DEFAULT '0.00';\nALTER TABLE `bookings` ADD `charityFee` decimal(10,2) DEFAULT '0.00';\nALTER TABLE `orders` ADD `platformFee` decimal(10,2) DEFAULT '0.00';\nALTER TABLE `orders` ADD `charityFee` decimal(10,2) DEFAULT '0.00';",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 4291
+}

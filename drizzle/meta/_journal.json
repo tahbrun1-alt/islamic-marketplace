@@ -15,6 +15,20 @@
       "when": 1774183764691,
       "tag": "0001_safe_vertigo",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1774189531924,
+      "tag": "0002_petite_piledriver",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "5",
+      "when": 1774190364837,
+      "tag": "0003_silly_lilandra",
+      "breakpoints": true
     }
   ]
 }

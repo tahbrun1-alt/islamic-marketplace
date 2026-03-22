@@ -3,22 +3,19 @@ import { useLocation } from "wouter";
 import { trpc } from "@/lib/trpc";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { useCartStore } from "@/stores/cartStore";
-import { getLoginUrl } from "@/const";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import { ShieldCheck, Lock, CreditCard, Truck, Tag, CheckCircle2, X } from "lucide-react";
+import { ShieldCheck, Lock, CreditCard, Truck, Tag, CheckCircle2, X, Heart } from "lucide-react";
 
 export default function Checkout() {
   const [, navigate] = useLocation();
   const { isAuthenticated, loading } = useAuth();
   const items = useCartStore((s) => s.items);
   const getTotal = useCartStore((s) => s.getTotal);
-  const clearCart = useCartStore((s) => s.clearCart);
   const total = getTotal();
 
   const [name, setName] = useState("");
@@ -27,15 +24,15 @@ export default function Checkout() {
   const [city, setCity] = useState("");
   const [postcode, setPostcode] = useState("");
   const [country, setCountry] = useState("United Kingdom");
-  const [coupon, setCoupon] = useState("");
   const [couponInput, setCouponInput] = useState("");
+  const [coupon, setCoupon] = useState("");
   const [discount, setDiscount] = useState(0);
   const [discountType, setDiscountType] = useState<"percentage" | "fixed">("fixed");
   const [couponApplied, setCouponApplied] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
 
   const validateCouponMutation = trpc.coupons.validate.useMutation({
-    onSuccess: (data) => {
+    onSuccess: (data: { coupon: { type: string; value: string | number } }) => {
       setCoupon(couponInput);
       setCouponApplied(true);
       const type = data.coupon.type as "percentage" | "fixed";
@@ -44,7 +41,7 @@ export default function Checkout() {
       setDiscount(value);
       toast.success(`Coupon applied! You save ${type === "percentage" ? value + "%" : "£" + value.toFixed(2)}`);
     },
-    onError: (e) => toast.error(e.message || "Invalid coupon code"),
+    onError: (e: { message?: string }) => toast.error(e.message || "Invalid coupon code"),
   });
 
   const discountAmount = couponApplied
@@ -53,22 +50,33 @@ export default function Checkout() {
       : Math.min(discount, total)
     : 0;
   const finalTotal = Math.max(0, total - discountAmount);
+  const charityAmount = finalTotal * 0.005; // 0.5% charity
 
-  const createOrderMutation = trpc.payments.createOrderIntent.useMutation({
-    onSuccess: (data) => {
-      clearCart();
-      toast.success("Order placed! Redirecting to payment...");
-      // In production, redirect to Stripe checkout
-      navigate("/orders");
+  // Get the shopId from the first cart item (all items should be from one shop ideally)
+  const shopId = items[0]?.shopId ?? 0;
+
+  const createCheckoutMutation = trpc.payments.createOrderCheckout.useMutation({
+    onSuccess: (data: { checkoutUrl: string | null; orderNumber: string }) => {
+      if (data.checkoutUrl) {
+        toast.success("Redirecting to secure payment...");
+        window.location.href = data.checkoutUrl;
+      } else {
+        toast.error("Failed to create checkout session");
+      }
+      setIsProcessing(false);
     },
-    onError: (e) => {
-      toast.error(e.message);
+    onError: (e: { message?: string }) => {
+      toast.error(e.message || "Payment failed. Please try again.");
       setIsProcessing(false);
     },
   });
 
   if (loading) {
-    return <div className="min-h-screen flex items-center justify-center"><div className="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full" /></div>;
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full" />
+      </div>
+    );
   }
 
   if (!isAuthenticated) {
@@ -78,7 +86,7 @@ export default function Checkout() {
           <Lock className="w-16 h-16 text-primary mx-auto mb-4" />
           <h2 className="text-2xl font-bold mb-2 text-foreground">Sign in to checkout</h2>
           <p className="text-muted-foreground mb-6">Create an account or sign in to complete your purchase</p>
-          <Button asChild><a href={getLoginUrl()}>Sign In</a></Button>
+          <Button asChild><a href="/login">Sign In</a></Button>
         </div>
       </div>
     );
@@ -97,10 +105,17 @@ export default function Checkout() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!shopId) {
+      toast.error("Could not determine shop. Please try again.");
+      return;
+    }
     setIsProcessing(true);
-    createOrderMutation.mutate({
+    createCheckoutMutation.mutate({
       items: items.map((i) => ({ productId: i.productId, quantity: i.quantity, variation: i.variation })),
+      shopId,
+      shippingAddress: { name, email, address, city, postcode, country },
       couponCode: coupon || undefined,
+      origin: window.location.origin,
     });
   };
 
@@ -163,7 +178,8 @@ export default function Checkout() {
                   <div className="bg-secondary/50 rounded-xl p-4 text-center">
                     <ShieldCheck className="w-8 h-8 text-emerald-500 mx-auto mb-2" />
                     <p className="text-sm font-medium text-foreground">Secure Payment via Stripe</p>
-                    <p className="text-xs text-muted-foreground mt-1">Your payment details are encrypted and never stored</p>
+                    <p className="text-xs text-muted-foreground mt-1">You'll be redirected to Stripe's secure checkout page</p>
+                    <p className="text-xs text-muted-foreground mt-1">Test card: 4242 4242 4242 4242 · Any future date · Any CVC</p>
                   </div>
                   <div className="mt-4">
                     <Label className="flex items-center gap-1.5"><Tag className="w-3.5 h-3.5" /> Coupon Code</Label>
@@ -233,12 +249,17 @@ export default function Checkout() {
                     {couponApplied && (
                       <div className="flex justify-between text-primary">
                         <span className="flex items-center gap-1">
-                          <Tag className="w-3 h-3" />
-                          Discount ({coupon})
+                          <Tag className="w-3 h-3" /> Discount ({coupon})
                         </span>
                         <span>-£{discountAmount.toFixed(2)}</span>
                       </div>
                     )}
+                    <div className="flex justify-between text-emerald-600">
+                      <span className="flex items-center gap-1">
+                        <Heart className="w-3 h-3 fill-current" /> Charity (0.5%)
+                      </span>
+                      <span>£{charityAmount.toFixed(2)}</span>
+                    </div>
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Shipping</span>
                       <span className="text-muted-foreground">Calculated at delivery</span>
@@ -253,13 +274,13 @@ export default function Checkout() {
                     type="submit"
                     className="w-full btn-gold"
                     size="lg"
-                    disabled={isProcessing || !name || !email || !address}
+                    disabled={isProcessing || !name || !email || !address || !city || !postcode}
                   >
-                    {isProcessing ? "Processing..." : `Pay £${finalTotal.toFixed(2)}`}
+                    {isProcessing ? "Creating checkout..." : `Pay £${finalTotal.toFixed(2)} via Stripe`}
                   </Button>
                   <p className="text-xs text-muted-foreground text-center mt-3 flex items-center justify-center gap-1">
                     <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
-                    SSL encrypted • Halal verified sellers
+                    SSL encrypted · 0.5% donated to charity
                   </p>
                 </CardContent>
               </Card>

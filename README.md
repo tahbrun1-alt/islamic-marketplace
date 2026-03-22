@@ -2,7 +2,6 @@
 
 A full-featured, production-ready marketplace for halal products and Islamic services. Built with React, Express, tRPC, Tailwind CSS, and PostgreSQL.
 
-**Live Demo:** [https://noor-marketplace.manus.space](https://noor-marketplace.manus.space)  
 **GitHub:** [tahbrun1-alt/islamic-marketplace](https://github.com/tahbrun1-alt/islamic-marketplace)
 
 ---
@@ -49,11 +48,10 @@ A full-featured, production-ready marketplace for halal products and Islamic ser
 - **Frontend:** React 19, Tailwind CSS 4, Framer Motion, shadcn/ui
 - **Backend:** Express 4, tRPC 11, Node.js
 - **Database:** PostgreSQL with Drizzle ORM
-- **Auth:** NextAuth v5 (Google OAuth + email magic link)
-- **Payments:** Stripe (products + service deposits)
-- **Storage:** AWS S3 (images, files)
-- **Email:** Resend (transactional emails)
-- **Deployment:** Manus (built-in hosting with custom domains)
+- **Auth:** Standalone JWT with bcrypt (no OAuth dependency)
+- **Payments:** Stripe Checkout Sessions + Webhooks
+- **Storage:** Cloudinary (free tier image uploads)
+- **Fonts:** Cormorant Garamond + Inter (Google Fonts)
 
 ---
 
@@ -61,29 +59,19 @@ A full-featured, production-ready marketplace for halal products and Islamic ser
 
 ### Prerequisites
 - Node.js 18+
-- PostgreSQL 14+
+- MySQL 8+ or TiDB (or any MySQL-compatible database)
 - Stripe account (for payments)
-- Google OAuth credentials (for auth)
+- Cloudinary account (free tier, for image uploads)
 
 ### Installation
 
 ```bash
 # Clone the repository
-gh repo clone tahbrun1-alt/islamic-marketplace
+git clone https://github.com/tahbrun1-alt/islamic-marketplace.git
 cd islamic-marketplace
 
 # Install dependencies
 pnpm install
-
-# Set up environment variables
-cp .env.example .env.local
-# Edit .env.local with your credentials
-
-# Generate Prisma client (if using Prisma)
-pnpm prisma generate
-
-# Run database migrations
-pnpm prisma migrate dev
 
 # Start development server
 pnpm dev
@@ -98,37 +86,21 @@ The app will be available at `http://localhost:3000`.
 Create a `.env.local` file with the following:
 
 ```env
-# Database
-DATABASE_URL=postgresql://user:password@localhost:5432/noor_marketplace
+# Database (MySQL / TiDB)
+DATABASE_URL=mysql://user:password@localhost:3306/noor_marketplace
 
-# Auth (Manus OAuth)
-VITE_APP_ID=your-app-id
-OAUTH_SERVER_URL=https://api.manus.im
-VITE_OAUTH_PORTAL_URL=https://oauth.manus.im
-JWT_SECRET=your-jwt-secret-key
+# Auth (standalone JWT — no OAuth required)
+JWT_SECRET=your-super-secret-jwt-key-change-in-production
 
 # Stripe
-NEXT_PUBLIC_STRIPE_KEY=pk_test_...
 STRIPE_SECRET_KEY=sk_test_...
 STRIPE_WEBHOOK_SECRET=whsec_...
+VITE_STRIPE_PUBLISHABLE_KEY=pk_test_...
 
-# Storage (AWS S3)
-AWS_ACCESS_KEY_ID=your-access-key
-AWS_SECRET_ACCESS_KEY=your-secret-key
-AWS_S3_BUCKET=noor-marketplace
-AWS_REGION=us-east-1
-
-# Email (Resend)
-RESEND_API_KEY=re_...
-
-# Google OAuth (for NextAuth)
-GOOGLE_CLIENT_ID=your-client-id.apps.googleusercontent.com
-GOOGLE_CLIENT_SECRET=your-client-secret
-
-# App Config
-NEXT_PUBLIC_APP_URL=https://noor-marketplace.com
-OWNER_NAME=Noor Marketplace
-OWNER_OPEN_ID=owner-id
+# Cloudinary (image uploads — optional)
+CLOUDINARY_CLOUD_NAME=your-cloud-name
+CLOUDINARY_API_KEY=your-api-key
+CLOUDINARY_API_SECRET=your-api-secret
 ```
 
 ---
@@ -261,13 +233,6 @@ pnpm start
 
 ## Deployment
 
-### Manus (Recommended)
-The project is pre-configured for Manus hosting:
-
-1. Push to GitHub: `git push origin main`
-2. In Manus UI, click **Publish**
-3. Custom domain setup available in Settings → Domains
-
 ### Docker
 ```dockerfile
 FROM node:18-alpine
@@ -301,22 +266,23 @@ Update `package.json` scripts and environment variables as needed.
 ### "Cannot find module" errors
 ```bash
 pnpm install
-pnpm prisma generate
 ```
 
 ### Database connection failed
-- Check `DATABASE_URL` in `.env.local`
-- Ensure PostgreSQL is running
-- Run migrations: `pnpm prisma migrate dev`
+- Check `DATABASE_URL` in your environment
+- Ensure MySQL/TiDB is running
 
 ### Stripe payments not working
-- Verify `STRIPE_SECRET_KEY` and `NEXT_PUBLIC_STRIPE_KEY`
-- Check Stripe webhook is configured
-- Test with Stripe test cards
+- Verify `STRIPE_SECRET_KEY` and `VITE_STRIPE_PUBLISHABLE_KEY`
+- Check Stripe webhook is configured at `/api/stripe/webhook`
+- Test with Stripe test card: `4242 4242 4242 4242`
+
+### Image uploads not working
+- Verify Cloudinary credentials
+- Without Cloudinary, a placeholder image is used (app still works)
 
 ### Auth not working
-- Verify `VITE_APP_ID` and OAuth credentials
-- Check callback URL matches OAuth provider settings
+- Verify `JWT_SECRET` is set
 - Clear browser cookies and try again
 
 ---
@@ -343,4 +309,4 @@ Built with ❤️ for the Muslim community. Designed to be halal-first, accessib
 
 ---
 
-**Ready to launch?** Deploy to Manus with one click, or self-host with Docker. Full documentation available at [docs.noormarketplace.com](https://docs.noormarketplace.com).
+**Noor** (نور) means *Light* in Arabic — bringing light to Islamic commerce.

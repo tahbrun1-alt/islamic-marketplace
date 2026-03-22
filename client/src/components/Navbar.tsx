@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "@/_core/hooks/useAuth";
-import { getLoginUrl } from "@/const";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -310,10 +309,10 @@ export default function Navbar() {
               ) : (
                 <>
                   <Button variant="ghost" size="sm" asChild className="hidden sm:flex">
-                    <a href={getLoginUrl()}>Sign In</a>
+                    <Link href="/login">Sign In</Link>
                   </Button>
                   <Button size="sm" asChild className="text-primary-foreground hover:opacity-90" style={{ background: "linear-gradient(135deg, oklch(0.58 0.13 75), oklch(0.45 0.14 60))" }}>
-                    <a href={getLoginUrl()}>Get Started</a>
+                    <Link href="/register">Get Started</Link>
                   </Button>
                 </>
               )}
@@ -413,9 +412,9 @@ export default function Navbar() {
                 ) : (
                   <>
                     <hr className="my-2" />
-                    <a href={getLoginUrl()} className="flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg bg-primary text-primary-foreground text-sm font-medium">
+                    <Link href="/login" className="flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg bg-primary text-primary-foreground text-sm font-medium">
                       Sign In / Get Started
-                    </a>
+                    </Link>
                   </>
                 )}
               </div>

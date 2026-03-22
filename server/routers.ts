@@ -8,14 +8,14 @@ import { systemRouter } from "./_core/systemRouter";
 import { protectedProcedure, publicProcedure, router } from "./_core/trpc";
 import * as db from "./db";
 
-// ─── Admin guard ─────────────────────────────────────────────────────────────
+// Admin guard 
 
 const adminProcedure = protectedProcedure.use(({ ctx, next }) => {
   if (ctx.user.role !== "admin") throw new TRPCError({ code: "FORBIDDEN", message: "Admin access required" });
   return next({ ctx });
 });
 
-// ─── Helpers ─────────────────────────────────────────────────────────────────
+// Helpers 
 
 function slugify(text: string) {
   return text.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
@@ -34,12 +34,12 @@ function calcCommission(amount: number, trialEndsAt: Date | null | undefined) {
   return parseFloat((amount * COMMISSION_RATE).toFixed(2));
 }
 
-// ─── Main Router ─────────────────────────────────────────────────────────────
+// Main Router 
 
 export const appRouter = router({
   system: systemRouter,
 
-  // ─── Auth ─────────────────────────────────────────────────────────────────
+  // Auth 
   auth: router({
     me: publicProcedure.query((opts) => opts.ctx.user),
     logout: publicProcedure.mutation(({ ctx }) => {
@@ -61,14 +61,14 @@ export const appRouter = router({
       }),
   }),
 
-  // ─── Categories ───────────────────────────────────────────────────────────
+  // Categories 
   categories: router({
     list: publicProcedure
       .input(z.object({ type: z.enum(["product", "service"]).optional() }))
       .query(({ input }) => db.getCategories(input.type)),
   }),
 
-  // ─── Shops ────────────────────────────────────────────────────────────────
+  // Shops 
   shops: router({
     create: protectedProcedure
       .input(z.object({
@@ -129,7 +129,7 @@ export const appRouter = router({
     }),
   }),
 
-  // ─── Products ─────────────────────────────────────────────────────────────
+  // Products 
   products: router({
     list: publicProcedure
       .input(z.object({
@@ -222,7 +222,7 @@ export const appRouter = router({
       }),
   }),
 
-  // ─── Services ─────────────────────────────────────────────────────────────
+  // Services 
   services: router({
     list: publicProcedure
       .input(z.object({
@@ -314,7 +314,7 @@ export const appRouter = router({
       }),
   }),
 
-  // ─── Orders ───────────────────────────────────────────────────────────────
+  // Orders 
   orders: router({
     myOrders: protectedProcedure.query(({ ctx }) => db.getOrdersByBuyer(ctx.user.id)),
     shopOrders: protectedProcedure.query(async ({ ctx }) => {
@@ -360,7 +360,7 @@ export const appRouter = router({
       .query(({ input }) => db.getAllOrders(input.limit, input.offset)),
   }),
 
-  // ─── Bookings ─────────────────────────────────────────────────────────────
+  // Bookings 
   bookings: router({
     myBookings: protectedProcedure.query(({ ctx }) => db.getBookingsByClient(ctx.user.id)),
     providerBookings: protectedProcedure.query(({ ctx }) => db.getBookingsByProvider(ctx.user.id)),
@@ -443,7 +443,7 @@ export const appRouter = router({
       .query(({ input }) => db.getAllBookings(input.limit, input.offset)),
   }),
 
-  // ─── Reviews ──────────────────────────────────────────────────────────────
+  // Reviews 
   reviews: router({
     list: publicProcedure
       .input(z.object({
@@ -470,7 +470,7 @@ export const appRouter = router({
       }),
   }),
 
-  // ─── Messages ─────────────────────────────────────────────────────────────
+  // Messages 
   messages: router({
     conversations: protectedProcedure.query(({ ctx }) => db.getConversationsByUser(ctx.user.id)),
     getMessages: protectedProcedure
@@ -504,7 +504,7 @@ export const appRouter = router({
       }),
   }),
 
-  // ─── Notifications ────────────────────────────────────────────────────────
+  // Notifications 
   notifications: router({
     list: protectedProcedure.query(({ ctx }) => db.getNotifications(ctx.user.id, 20)),
     getUnreadCount: protectedProcedure.query(({ ctx }) =>
@@ -513,7 +513,7 @@ export const appRouter = router({
     markRead: protectedProcedure.mutation(({ ctx }) => db.markNotificationsRead(ctx.user.id)),
   }),
 
-  // ─── Wishlist ─────────────────────────────────────────────────────────────
+  // Wishlist 
   wishlist: router({
     list: protectedProcedure.query(({ ctx }) => db.getWishlist(ctx.user.id)),
     add: protectedProcedure
@@ -527,7 +527,7 @@ export const appRouter = router({
       .query(({ ctx, input }) => db.isInWishlist(ctx.user.id, input.productId, input.serviceId)),
   }),
 
-  // ─── Coupons ──────────────────────────────────────────────────────────────
+  // Coupons 
   coupons: router({
     validate: protectedProcedure
       .input(z.object({ code: z.string(), amount: z.number() }))
@@ -537,7 +537,7 @@ export const appRouter = router({
         if (coupon.expiresAt && new Date() > coupon.expiresAt) throw new TRPCError({ code: "BAD_REQUEST", message: "Coupon has expired" });
         if (coupon.maxUses && coupon.usedCount >= coupon.maxUses) throw new TRPCError({ code: "BAD_REQUEST", message: "Coupon usage limit reached" });
         if (coupon.minOrderAmount && input.amount < Number(coupon.minOrderAmount)) {
-          throw new TRPCError({ code: "BAD_REQUEST", message: `Minimum order amount is £${coupon.minOrderAmount}` });
+          throw new TRPCError({ code: "BAD_REQUEST", message: `Minimum order amount is ${coupon.minOrderAmount}` });
         }
         const discount = coupon.type === "percentage"
           ? (input.amount * Number(coupon.value)) / 100
@@ -572,7 +572,7 @@ export const appRouter = router({
       }),
   }),
 
-  // ─── Addresses ────────────────────────────────────────────────────────────
+  // Addresses 
   addresses: router({
     list: protectedProcedure.query(({ ctx }) => db.getAddresses(ctx.user.id)),
     create: protectedProcedure
@@ -612,7 +612,7 @@ export const appRouter = router({
       .mutation(({ input }) => db.deleteAddress(input.id)),
   }),
 
-  // ─── Reports ──────────────────────────────────────────────────────────────
+  // Reports 
   reports: router({
     create: protectedProcedure
       .input(z.object({
@@ -627,14 +627,14 @@ export const appRouter = router({
       .query(({ input }) => db.getAllReports(input.limit, input.offset)),
   }),
 
-  // ─── Promotions ───────────────────────────────────────────────────────────
+  // Promotions 
   promotions: router({
     list: publicProcedure
       .input(z.object({ type: z.string().optional() }))
       .query(({ input }) => db.getActivePromotions(input.type)),
   }),
 
-  // ─── Admin ────────────────────────────────────────────────────────────────
+  // Admin 
   admin: router({
     stats: adminProcedure.query(() => db.getAdminStats()),
     users: adminProcedure
@@ -657,37 +657,39 @@ export const appRouter = router({
       .mutation(({ input }) => db.setPlatformSetting(input.key, input.value)),
   }),
 
-  // ─── Payments (Stripe) ────────────────────────────────────────────────────
+  // Payments (Stripe)
   payments: router({
-    createOrderIntent: protectedProcedure
+    // Real Stripe Checkout Session for product orders
+    createOrderCheckout: protectedProcedure
       .input(z.object({
         items: z.array(z.object({
           productId: z.number(),
           quantity: z.number().int().positive(),
           variation: z.any().optional(),
         })),
-        shippingAddressId: z.number().optional(),
+        shopId: z.number(),
+        shippingAddress: z.any().optional(),
         couponCode: z.string().optional(),
+        origin: z.string(),
       }))
       .mutation(async ({ ctx, input }) => {
-        // Calculate total from products
+        const { stripe, PLATFORM_FEE_PERCENT, CHARITY_FEE_PERCENT } = await import("./stripe");
+        if (!stripe) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Payments not configured. Please add Stripe keys in Settings." });
         let subtotal = 0;
+        const lineItems: Array<{ price_data: { currency: string; product_data: { name: string; images?: string[] }; unit_amount: number }; quantity: number }> = [];
         const orderItemsData: Array<{ productId: number; title: string; price: number; quantity: number; image?: string; variation?: unknown }> = [];
-
         for (const item of input.items) {
           const product = await db.getProductById(item.productId);
           if (!product || !product.isActive) throw new TRPCError({ code: "NOT_FOUND", message: `Product ${item.productId} not found` });
-          subtotal += Number(product.price) * item.quantity;
-          orderItemsData.push({
-            productId: item.productId,
-            title: product.title,
-            price: Number(product.price),
+          const price = Number(product.price);
+          subtotal += price * item.quantity;
+          const images = product.images as string[] | null;
+          lineItems.push({
+            price_data: { currency: "gbp", product_data: { name: product.title, ...(images?.[0] ? { images: [images[0]] } : {}) }, unit_amount: Math.round(price * 100) },
             quantity: item.quantity,
-            image: (product.images as string[])?.[0],
-            variation: item.variation,
           });
+          orderItemsData.push({ productId: item.productId, title: product.title, price, quantity: item.quantity, image: images?.[0], variation: item.variation });
         }
-
         let discount = 0;
         if (input.couponCode) {
           const coupon = await db.getCouponByCode(input.couponCode);
@@ -696,21 +698,62 @@ export const appRouter = router({
             await db.useCoupon(coupon.id);
           }
         }
-
-        const total = Math.max(0, subtotal - discount);
-
-        // In production, create Stripe PaymentIntent here
-        // For now, return a mock intent
+        const total = Math.max(0.50, subtotal - discount);
+        const platformFeePence = Math.round(total * PLATFORM_FEE_PERCENT / 100 * 100);
+        const charityFeePence = Math.round(total * CHARITY_FEE_PERCENT / 100 * 100);
         const orderNumber = "ORD-" + nanoid(10).toUpperCase();
-
-        return {
-          orderNumber,
-          subtotal,
-          discount,
-          total,
-          clientSecret: `mock_${nanoid(20)}`, // Replace with real Stripe intent
-          orderItemsData,
-        };
+        const session = await stripe.checkout.sessions.create({
+          payment_method_types: ["card"],
+          line_items: lineItems,
+          mode: "payment",
+          customer_email: ctx.user.email ?? undefined,
+          allow_promotion_codes: true,
+          client_reference_id: ctx.user.id.toString(),
+          metadata: {
+            type: "product_order",
+            user_id: ctx.user.id.toString(),
+            order_number: orderNumber,
+            shop_id: input.shopId.toString(),
+            platform_fee_pence: platformFeePence.toString(),
+            charity_fee_pence: charityFeePence.toString(),
+          },
+          success_url: `${input.origin}/orders?success=1&order=${orderNumber}`,
+          cancel_url: `${input.origin}/cart?cancelled=1`,
+        });
+        // Pre-create order as pending; webhook will mark it paid
+        const shop = await db.getShopById(input.shopId);
+        const commission = calcCommission(total, shop?.trialEndsAt);
+        await db.createOrder(
+          { orderNumber, buyerId: ctx.user.id, shopId: input.shopId, subtotal: subtotal.toFixed(2) as unknown as typeof import("../drizzle/schema").orders.$inferInsert.subtotal, discountAmount: discount.toFixed(2) as unknown as typeof import("../drizzle/schema").orders.$inferInsert.discountAmount, commissionAmount: commission.toFixed(2) as unknown as typeof import("../drizzle/schema").orders.$inferInsert.commissionAmount, total: total.toFixed(2) as unknown as typeof import("../drizzle/schema").orders.$inferInsert.total, couponCode: input.couponCode, shippingAddress: input.shippingAddress, status: "pending" },
+          orderItemsData.map((item) => ({ orderId: 0, productId: item.productId, title: item.title, price: item.price.toFixed(2) as unknown as typeof import("../drizzle/schema").orderItems.$inferInsert.price, quantity: item.quantity, image: item.image, variation: item.variation }))
+        );
+        return { checkoutUrl: session.url, orderNumber, subtotal, discount, total };
+      }),
+    // Real Stripe Checkout Session for booking deposits
+    createBookingCheckout: protectedProcedure
+      .input(z.object({ bookingId: z.number(), origin: z.string() }))
+      .mutation(async ({ ctx, input }) => {
+        const { stripe } = await import("./stripe");
+        if (!stripe) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Payments not configured" });
+        const dbInst = await import("./db").then(m => m.getDb());
+        if (!dbInst) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "DB not available" });
+        const { bookings: bookingsTable, services: servicesTable } = await import("../drizzle/schema");
+        const { eq } = await import("drizzle-orm");
+        const [booking] = await dbInst.select().from(bookingsTable).where(eq(bookingsTable.id, input.bookingId)).limit(1);
+        if (!booking || booking.clientId !== ctx.user.id) throw new TRPCError({ code: "NOT_FOUND" });
+        const [service] = await dbInst.select().from(servicesTable).where(eq(servicesTable.id, booking.serviceId)).limit(1);
+        const depositPence = Math.max(50, Math.round(Number(booking.depositAmount) * 100));
+        const session = await stripe.checkout.sessions.create({
+          payment_method_types: ["card"],
+          line_items: [{ price_data: { currency: "gbp", product_data: { name: `Deposit: ${service?.title ?? "Service Booking"}` }, unit_amount: depositPence }, quantity: 1 }],
+          mode: "payment",
+          customer_email: ctx.user.email ?? undefined,
+          client_reference_id: ctx.user.id.toString(),
+          metadata: { type: "booking_deposit", booking_id: input.bookingId.toString(), user_id: ctx.user.id.toString() },
+          success_url: `${input.origin}/bookings?success=1&booking=${booking.bookingNumber}`,
+          cancel_url: `${input.origin}/bookings?cancelled=1`,
+        });
+        return { checkoutUrl: session.url };
       }),
     confirmOrder: protectedProcedure
       .input(z.object({
@@ -767,7 +810,7 @@ export const appRouter = router({
             userId: shop.ownerId,
             type: "new_order",
             title: "New Order Received!",
-            body: `Order #${input.orderNumber} for £${input.total.toFixed(2)}`,
+            body: `Order #${input.orderNumber} for ${input.total.toFixed(2)}`,
             data: { orderNumber: input.orderNumber },
           });
         }
@@ -775,7 +818,103 @@ export const appRouter = router({
         return { success: true, orderNumber: input.orderNumber };
       }),
   }),
-  // ─── Upload ───────────────────────────────────────────────────────────────────
+  // Product Importer (AI-powered URL scraper)
+  importer: router({
+    importFromUrl: protectedProcedure
+      .input(z.object({ url: z.string().url() }))
+      .mutation(async ({ input }) => {
+        // Fetch the webpage HTML
+        let html = "";
+        try {
+          const res = await fetch(input.url, {
+            headers: { "User-Agent": "Mozilla/5.0 (compatible; NoorMarketplace/1.0; +https://noormarketplace.com)" },
+            signal: AbortSignal.timeout(10000),
+          });
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          html = await res.text();
+        } catch (err) {
+          throw new TRPCError({ code: "BAD_REQUEST", message: `Could not fetch URL: ${(err as Error).message}` });
+        }
+
+        // Strip scripts/styles and truncate to ~8000 chars for LLM
+        const cleaned = html
+          .replace(/<script[\s\S]*?<\/script>/gi, "")
+          .replace(/<style[\s\S]*?<\/style>/gi, "")
+          .replace(/<[^>]+>/g, " ")
+          .replace(/\s+/g, " ")
+          .trim()
+          .slice(0, 8000);
+
+        // Extract og:image from HTML
+        const ogImageMatch = html.match(/<meta[^>]+property=["']og:image["'][^>]+content=["']([^"']+)["']/i)
+          || html.match(/<meta[^>]+content=["']([^"']+)["'][^>]+property=["']og:image["']/i);
+        const ogImage = ogImageMatch?.[1] ?? null;
+
+        // Use LLM to extract product data
+        const { invokeLLM } = await import("./_core/llm");
+        let extracted: { title: string; description: string; price: number | null; currency: string; images: string[] } = {
+          title: "", description: "", price: null, currency: "GBP", images: []
+        };
+        try {
+          const result = await invokeLLM({
+            messages: [
+              {
+                role: "system",
+                content: "You are a product data extractor. Extract product information from webpage text and return valid JSON only. Be concise.",
+              },
+              {
+                role: "user",
+                content: `Extract product information from this webpage text. Return a JSON object with:\n- title: product name (string)\n- description: product description max 500 chars (string)\n- price: price as number or null\n- currency: currency code like GBP, USD, EUR (string)\n- images: array of image URLs found in the text (array of strings, max 5)\n\nWebpage text:\n${cleaned}`,
+              },
+            ],
+            response_format: {
+              type: "json_schema",
+              json_schema: {
+                name: "product_data",
+                strict: true,
+                schema: {
+                  type: "object",
+                  properties: {
+                    title: { type: "string" },
+                    description: { type: "string" },
+                    price: { type: ["number", "null"] },
+                    currency: { type: "string" },
+                    images: { type: "array", items: { type: "string" } },
+                  },
+                  required: ["title", "description", "price", "currency", "images"],
+                  additionalProperties: false,
+                },
+              },
+            },
+          });
+          const content = result.choices?.[0]?.message?.content;
+          if (content) {
+            extracted = typeof content === "string" ? JSON.parse(content) : (content as unknown as typeof extracted);
+          }
+        } catch (err) {
+          console.error("[Importer] LLM extraction failed:", err);
+          // Fall back to basic extraction from HTML
+          const titleMatch = html.match(/<title[^>]*>([^<]+)<\/title>/i);
+          extracted.title = titleMatch?.[1]?.trim() ?? "Imported Product";
+        }
+
+        // Add og:image if not already in images
+        if (ogImage && !extracted.images.includes(ogImage)) {
+          extracted.images.unshift(ogImage);
+        }
+
+        return {
+          title: extracted.title || "Imported Product",
+          description: extracted.description || "",
+          price: extracted.price,
+          currency: extracted.currency || "GBP",
+          images: extracted.images.slice(0, 5),
+          sourceUrl: input.url,
+        };
+      }),
+  }),
+
+  // Upload 
   upload: router({
     image: protectedProcedure
       .input(z.object({

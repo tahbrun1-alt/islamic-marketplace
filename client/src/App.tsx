@@ -17,8 +17,10 @@ import Terms from "./pages/Terms";
 import HowItWorks from "./pages/HowItWorks";
 import ProductForm from "./pages/ProductForm";
 import ServiceForm from "./pages/ServiceForm";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import ImportProduct from "./pages/ImportProduct";
 import { lazy, Suspense } from "react";
-
 // Lazy-loaded pages
 const ProductDetail = lazy(() => import("./pages/ProductDetail"));
 const ServiceDetail = lazy(() => import("./pages/ServiceDetail"));
@@ -62,6 +64,9 @@ function Router() {
         <Route path="/admin" component={AdminPanel} />
         <Route path="/how-it-works" component={HowItWorks} />
         <Route path="/terms" component={Terms} />
+        <Route path="/login" component={Login} />
+        <Route path="/register" component={Register} />
+        <Route path="/import-product" component={ImportProduct} />
         <Route path="/404" component={NotFound} />
         <Route component={NotFound} />
       </Switch>

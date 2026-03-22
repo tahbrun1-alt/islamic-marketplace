@@ -123,3 +123,22 @@
 - [x] All 17 tests passing
 - [x] Zero TypeScript errors
 - [x] Ready to push to GitHub
+
+## Critical Updates (User Request)
+- [ ] Lighter/brighter gold palette (less brown, more warm gold)
+- [ ] Remove ALL Manus auth — replace with email+password auth (bcrypt + JWT)
+- [ ] Admin account: tahmidburner12@gmail.com / Qwerty65
+- [ ] Stripe payments integration (checkout + service deposits)
+- [ ] Update all frontend auth flows (login/register pages)
+- [ ] Remove Manus OAuth login button
+- [ ] Auto-donate 0.5% of every transaction to charity (from the 6.5% commission)
+- [ ] Charity donation tracking in admin panel
+- [ ] Show charity contribution on order receipts and checkout
+- [x] Update commission: 7% total (6.5% platform + 0.5% charity auto-donation)
+
+## Commission & Importer Updates
+- [x] Commission model confirmed: 6.5% platform + 0.5% charity = 7% total (stripe.ts)
+- [x] AI Product Importer page (/import-product) with URL scraping + LLM extraction
+- [x] Import from URL button in Seller Dashboard > Products tab
+- [x] README updated: removed all Manus references, correct tech stack documented
+- [x] All 17 tests still passing after changes

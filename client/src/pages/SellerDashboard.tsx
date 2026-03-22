@@ -16,7 +16,7 @@ import { Link, useLocation } from "wouter";
 import {
   Package, ShoppingBag, Star, TrendingUp, Plus, Edit, Trash2,
   Settings, BarChart3, MessageSquare, Calendar, Store, CheckCircle,
-  Clock, AlertCircle, DollarSign
+  Clock, AlertCircle, DollarSign, Sparkles
 } from "lucide-react";
 
 export default function SellerDashboard() {
@@ -275,11 +275,18 @@ export default function SellerDashboard() {
           <TabsContent value="products">
             <div className="flex items-center justify-between mb-4">
               <h2 className="font-bold text-lg text-foreground">My Products ({myProducts?.length ?? 0})</h2>
-              <Button size="sm" asChild>
-                <Link href="/seller/products/new">
-                  <Plus className="w-4 h-4 mr-2" /> Add Product
-                </Link>
-              </Button>
+              <div className="flex gap-2">
+                <Button size="sm" variant="outline" asChild>
+                  <Link href="/import-product">
+                    <Sparkles className="w-4 h-4 mr-2" /> Import from URL
+                  </Link>
+                </Button>
+                <Button size="sm" asChild>
+                  <Link href="/seller/products/new">
+                    <Plus className="w-4 h-4 mr-2" /> Add Product
+                  </Link>
+                </Button>
+              </div>
             </div>
 
             {myProducts && myProducts.length > 0 ? (

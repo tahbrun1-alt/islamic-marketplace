@@ -1,0 +1,9 @@
+{
+  "query": "\nINSERT INTO users (openId, name, email, passwordHash, loginMethod, role, createdAt, updatedAt, lastSignedIn)\nVALUES (\n  'admin_tahmid_001',\n  'Tahmid',\n  'tahmidburner12@gmail.com',\n  '$2b$12$JDxx64WdNc/VG.fmP6Qx1uSQ22sy2eNak2/ChUZTv9/IP/pyEDOv.',\n  'email',\n  'admin',\n  NOW(),\n  NOW(),\n  NOW()\n)\nON DUPLICATE KEY UPDATE\n  passwordHash = '$2b$12$JDxx64WdNc/VG.fmP6Qx1uSQ22sy2eNak2/ChUZTv9/IP/pyEDOv.',\n  role = 'admin',\n  name = 'Tahmid',\n  loginMethod = 'email',\n  updatedAt = NOW();\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway04.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 28ZER5jxikPpY7d.root --database dBEP68RMdARFiNqG3Sgkye --execute \nINSERT INTO users (openId, name, email, passwordHash, loginMethod, role, createdAt, updatedAt, lastSignedIn)\nVALUES (\n  'admin_tahmid_001',\n  'Tahmid',\n  'tahmidburner12@gmail.com',\n  '$2b$12$JDxx64WdNc/VG.fmP6Qx1uSQ22sy2eNak2/ChUZTv9/IP/pyEDOv.',\n  'email',\n  'admin',\n  NOW(),\n  NOW(),\n  NOW()\n)\nON DUPLICATE KEY UPDATE\n  passwordHash = '$2b$12$JDxx64WdNc/VG.fmP6Qx1uSQ22sy2eNak2/ChUZTv9/IP/pyEDOv.',\n  role = 'admin',\n  name = 'Tahmid',\n  loginMethod = 'email',\n  updatedAt = NOW();\n",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 1340
+}
