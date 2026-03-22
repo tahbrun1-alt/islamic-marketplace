@@ -56,10 +56,9 @@ async function startServer() {
       const mysql2 = await import("mysql2/promise");
       log.push("imports ok");
 
-      // Use a direct connection with SSL (required for Railway MySQL)
+      // Use a direct connection to Railway MySQL (internal network, no SSL needed)
       const conn = await mysql2.default.createConnection({
         uri: process.env.DATABASE_URL!,
-        ssl: { rejectUnauthorized: false },
         connectTimeout: 30000,
       });
       log.push("direct connection ok");
