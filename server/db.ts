@@ -31,14 +31,21 @@ let _pool: mysql.Pool | null = null;
 export async function getDb() {
   if (!_db && process.env.DATABASE_URL) {
     try {
+      const dbUrl = new URL(process.env.DATABASE_URL);
+      
       _pool = mysql.createPool({
-        uri: process.env.DATABASE_URL,
+        host: dbUrl.hostname,
+        port: parseInt(dbUrl.port || '3306'),
+        user: dbUrl.username,
+        password: dbUrl.password,
+        database: dbUrl.pathname.slice(1),
         waitForConnections: true,
         connectionLimit: 10,
         queueLimit: 0,
         enableKeepAlive: true,
         keepAliveInitialDelay: 10000,
         connectTimeout: 30000,
+        ssl: 'amazon',
       });
       _db = drizzle(_pool);
       console.log("[Database] Connected via pool");
