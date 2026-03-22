@@ -52,17 +52,10 @@ async function startServer() {
     if (token !== "noor-seed-2026") return res.status(403).json({ error: "forbidden" });
     try {
       const bcryptjs = await import("bcryptjs");
-      const mysql2 = await import("mysql2/promise");
-      const url = new URL(process.env.DATABASE_URL || "");
-      const conn = await mysql2.default.createConnection({
-        host: url.hostname,
-        port: parseInt(url.port || "3306"),
-        user: url.username,
-        password: url.password,
-        database: url.pathname.slice(1),
-        ssl: url.hostname.includes("railway.internal") ? undefined : { rejectUnauthorized: false },
-      });
-      // Run missing migrations (safe — uses IF NOT EXISTS / IGNORE)
+      const { getDb } = await import("../db");
+      const { sql } = await import("drizzle-orm");
+      const db = await getDb();
+      // Run missing migrations using the existing drizzle connection pool
       const migrations = [
         "ALTER TABLE `users` ADD COLUMN IF NOT EXISTS `passwordHash` text",
         "ALTER TABLE `users` ADD COLUMN IF NOT EXISTS `phone` varchar(30)",
@@ -76,28 +69,31 @@ async function startServer() {
         "ALTER TABLE `bookings` ADD COLUMN IF NOT EXISTS `charityFee` decimal(10,2) DEFAULT '0.00'",
         "ALTER TABLE `orders` ADD COLUMN IF NOT EXISTS `platformFee` decimal(10,2) DEFAULT '0.00'",
         "ALTER TABLE `orders` ADD COLUMN IF NOT EXISTS `charityFee` decimal(10,2) DEFAULT '0.00'",
-        "ALTER TABLE `users` ADD UNIQUE IF NOT EXISTS `users_email_unique` (`email`)",
       ];
       const migrationResults: string[] = [];
-      for (const sql of migrations) {
-        try { await conn.execute(sql); migrationResults.push(`OK: ${sql.slice(0, 60)}`); }
-        catch (e: any) { migrationResults.push(`SKIP: ${e.message.slice(0, 80)}`); }
+      for (const migSql of migrations) {
+        try {
+          await db.execute(sql.raw(migSql));
+          migrationResults.push(`OK: ${migSql.slice(0, 60)}`);
+        } catch (e: any) {
+          migrationResults.push(`SKIP: ${e.message.slice(0, 80)}`);
+        }
       }
       // Seed admin user
       const hash = await bcryptjs.default.hash("Qwerty65", 12);
       const openId = "local_admin_tahmid";
-      const [existing] = await conn.execute("SELECT id FROM users WHERE email = ?", ["tahmidburner12@gmail.com"]);
+      const existing = await db.execute(sql.raw(`SELECT id FROM users WHERE email = 'tahmidburner12@gmail.com' LIMIT 1`));
       let action = "";
-      if ((existing as any[]).length > 0) {
-        await conn.execute("UPDATE users SET passwordHash = ?, role = 'admin', name = 'Admin', openId = ? WHERE email = ?", [hash, openId, "tahmidburner12@gmail.com"]);
+      const rows = existing[0] as any[];
+      if (rows.length > 0) {
+        await db.execute(sql.raw(`UPDATE users SET passwordHash = '${hash}', role = 'admin', name = 'Admin', openId = '${openId}' WHERE email = 'tahmidburner12@gmail.com'`));
         action = "updated";
       } else {
-        await conn.execute("INSERT INTO users (openId, name, email, passwordHash, role) VALUES (?, 'Admin', ?, ?, 'admin')", [openId, "tahmidburner12@gmail.com", hash]);
+        await db.execute(sql.raw(`INSERT INTO users (openId, name, email, passwordHash, role) VALUES ('${openId}', 'Admin', 'tahmidburner12@gmail.com', '${hash}', 'admin')`));
         action = "created";
       }
       // Update commission rate
-      await conn.execute("UPDATE platformSettings SET value = '7' WHERE `key` = 'commission_rate'").catch(() => {});
-      await conn.end();
+      try { await db.execute(sql.raw("UPDATE platformSettings SET value = '7' WHERE `key` = 'commission_rate'")); } catch {}
       return res.json({ ok: true, action, migrations: migrationResults });
     } catch (e: any) {
       return res.status(500).json({ error: e.message });
