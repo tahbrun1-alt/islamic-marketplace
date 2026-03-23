@@ -41,12 +41,13 @@ export async function getDb() {
         password: dbUrl.password,
         database: dbUrl.pathname.slice(1),
         waitForConnections: true,
-        connectionLimit: 10,
+        connectionLimit: 20,
         queueLimit: 0,
         enableKeepAlive: true,
         keepAliveInitialDelay: 10000,
-        connectTimeout: 30000,
+        connectTimeout: 60000,
         ssl: { rejectUnauthorized: false },
+        multipleStatements: true,
       });
       _db = drizzle(_pool);
       console.log("[Database] Connected via pool");
