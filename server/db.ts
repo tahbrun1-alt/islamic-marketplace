@@ -46,7 +46,7 @@ export async function getDb() {
         enableKeepAlive: true,
         keepAliveInitialDelay: 10000,
         connectTimeout: 30000,
-        ssl: 'amazon',
+        ssl: { rejectUnauthorized: false },
       });
       _db = drizzle(_pool);
       console.log("[Database] Connected via pool");
