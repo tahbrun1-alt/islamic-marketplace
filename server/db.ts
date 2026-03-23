@@ -8,6 +8,7 @@ import {
   categories,
   conversations,
   coupons,
+  follows,
   messages,
   notifications,
   orderItems,
@@ -215,6 +216,7 @@ export async function getProducts(opts: {
   minPrice?: number;
   maxPrice?: number;
   gender?: string;
+  occasion?: string;
   isFeatured?: boolean;
   limit?: number;
   offset?: number;
@@ -228,6 +230,20 @@ export async function getProducts(opts: {
   if (opts.shopId) conditions.push(eq(products.shopId, opts.shopId));
   if (opts.categoryId) conditions.push(eq(products.categoryId, opts.categoryId));
   if (opts.isFeatured) conditions.push(eq(products.isFeatured, true));
+  if (opts.gender && opts.gender !== "all") {
+    conditions.push(
+      or(
+        eq(products.gender, opts.gender as "all" | "male" | "female" | "children"),
+        eq(products.gender, "all")
+      ) as ReturnType<typeof eq>
+    );
+  }
+  if (opts.occasion) {
+    // occasion is stored as a JSON array — use JSON_CONTAINS for MySQL
+    conditions.push(
+      sql`JSON_CONTAINS(${products.occasion}, ${JSON.stringify(opts.occasion)})` as unknown as ReturnType<typeof eq>
+    );
+  }
   if (opts.search) {
     conditions.push(
       or(
@@ -693,4 +709,37 @@ export async function deleteAddress(id: number) {
   const db = await getDb();
   if (!db) return;
   await db.delete(addresses).where(eq(addresses.id, id));
+}
+
+// ─── Follows ──────────────────────────────────────────────────────────────────
+
+export async function followShop(followerId: number, shopId: number) {
+  const db = await getDb();
+  if (!db) return;
+  await db.insert(follows).values({ followerId, shopId }).onDuplicateKeyUpdate({ set: { shopId } });
+  await db.update(shops).set({ followerCount: sql`followerCount + 1` }).where(eq(shops.id, shopId));
+}
+
+export async function unfollowShop(followerId: number, shopId: number) {
+  const db = await getDb();
+  if (!db) return;
+  await db.delete(follows).where(and(eq(follows.followerId, followerId), eq(follows.shopId, shopId)));
+  await db.update(shops).set({ followerCount: sql`GREATEST(followerCount - 1, 0)` }).where(eq(shops.id, shopId));
+}
+
+export async function isFollowingShop(followerId: number, shopId: number) {
+  const db = await getDb();
+  if (!db) return false;
+  const result = await db.select().from(follows)
+    .where(and(eq(follows.followerId, followerId), eq(follows.shopId, shopId))).limit(1);
+  return result.length > 0;
+}
+
+export async function getFollowedShops(followerId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  const rows = await db.select().from(follows).where(eq(follows.followerId, followerId));
+  if (!rows.length) return [];
+  const shopIds = rows.map((r) => r.shopId);
+  return db.select().from(shops).where(inArray(shops.id, shopIds));
 }

@@ -106,7 +106,7 @@ export default function Bookings() {
                         </Button>
                       )}
                       {booking.depositPaid && (
-                        <p className="text-xs text-emerald-600 font-medium mt-1">✓ Deposit paid</p>
+                        <p className="text-xs text-emerald-600 font-medium mt-1 flex items-center gap-1"><CheckCircle className="w-3 h-3" /> Deposit paid</p>
                       )}
                     </div>
                   </div>

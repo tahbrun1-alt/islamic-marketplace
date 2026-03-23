@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { Calendar, Clock, MapPin, Star, Shield, CheckCircle, ArrowLeft, MessageSquare } from "lucide-react";
 import { Link } from "wouter";
+import ReviewSection from "@/components/ReviewSection";
 
 export default function ServiceDetail() {
   const [, params] = useRoute("/services/:id");
@@ -97,7 +98,7 @@ export default function ServiceDetail() {
               {service.images && (service.images as string[]).length > 0 ? (
                 <img src={(service.images as string[])[0]} alt={service.title} className="w-full h-full object-cover" />
               ) : (
-                <div className="w-full h-full flex items-center justify-center text-6xl">🌙</div>
+                <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/10 to-primary/5"><Calendar className="w-16 h-16 text-primary/40" /></div>
               )}
             </div>
 
@@ -210,6 +211,15 @@ export default function ServiceDetail() {
             </Card>
           </div>
         </div>
+
+        {/* Reviews */}
+        {service && (
+          <ReviewSection
+            type="service"
+            targetId={service.id}
+            targetTitle={service.title}
+          />
+        )}
       </div>
     </div>
   );

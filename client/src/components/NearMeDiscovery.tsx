@@ -1,5 +1,6 @@
+import React from "react";
 import { useState } from "react";
-import { MapPin, Navigation, Filter, Clock, Star, ChevronRight, ToggleLeft, ToggleRight } from "lucide-react";
+import { MapPin, Navigation, Filter, Clock, Star, ChevronRight, ToggleLeft, ToggleRight, Activity, BookOpen, Scissors, Building2, Utensils, Sparkles } from "lucide-react";
 import { Link } from "wouter";
 
 interface NearMeDiscoveryProps {
@@ -7,12 +8,12 @@ interface NearMeDiscoveryProps {
 }
 
 const LOCAL_CATEGORIES = [
-  { id: "hijama", label: "Hijama Clinics", icon: "🩺", color: "bg-red-100 text-red-700" },
-  { id: "tutors", label: "Tutors", icon: "📚", color: "bg-blue-100 text-blue-700" },
-  { id: "tailors", label: "Tailors", icon: "✂️", color: "bg-purple-100 text-purple-700" },
-  { id: "mosque", label: "Near Mosque", icon: "🕌", color: "bg-green-100 text-green-700" },
-  { id: "food", label: "Halal Food", icon: "🍽️", color: "bg-orange-100 text-orange-700" },
-  { id: "beauty", label: "Modest Beauty", icon: "💄", color: "bg-pink-100 text-pink-700" },
+  { id: "hijama", label: "Hijama Clinics", Icon: Activity, color: "bg-red-100 text-red-700" },
+  { id: "tutors", label: "Tutors", Icon: BookOpen, color: "bg-blue-100 text-blue-700" },
+  { id: "tailors", label: "Tailors", Icon: Scissors, color: "bg-purple-100 text-purple-700" },
+  { id: "mosque", label: "Near Mosque", Icon: Building2, color: "bg-green-100 text-green-700" },
+  { id: "food", label: "Halal Food", Icon: Utensils, color: "bg-orange-100 text-orange-700" },
+  { id: "beauty", label: "Modest Beauty", Icon: Sparkles, color: "bg-pink-100 text-pink-700" },
 ];
 
 const MOCK_LOCAL_LISTINGS = [
@@ -160,7 +161,7 @@ export default function NearMeDiscovery({ className = "" }: NearMeDiscoveryProps
                   : "bg-white text-gray-600 border border-gray-200 hover:border-amber-300"
               }`}
             >
-              <span>{cat.icon}</span>
+              <span><cat.Icon className="w-4 h-4" /></span>
               {cat.label}
             </button>
           ))}

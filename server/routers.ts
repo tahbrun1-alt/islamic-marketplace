@@ -99,6 +99,9 @@ export const appRouter = router({
     getBySlug: publicProcedure
       .input(z.object({ slug: z.string() }))
       .query(({ input }) => db.getShopBySlug(input.slug)),
+    getById: publicProcedure
+      .input(z.object({ id: z.number() }))
+      .query(({ input }) => db.getShopById(input.id)),
     update: protectedProcedure
       .input(z.object({
         name: z.string().min(2).max(128).optional(),
@@ -140,6 +143,7 @@ export const appRouter = router({
         categoryId: z.number().optional(),
         search: z.string().optional(),
         gender: z.string().optional(),
+        occasion: z.string().optional(),
         isFeatured: z.boolean().optional(),
         sortBy: z.string().optional(),
         limit: z.number().default(24),
@@ -462,6 +466,7 @@ export const appRouter = router({
         title: z.string().max(256).optional(),
         body: z.string().max(2000).optional(),
         images: z.array(z.string()).optional(),
+        videos: z.array(z.string()).optional(),
         orderId: z.number().optional(),
         bookingId: z.number().optional(),
       }))
@@ -932,6 +937,59 @@ export const appRouter = router({
         const buffer = Buffer.from(input.base64, "base64");
         const { url } = await storagePut(key, buffer, input.mimeType);
         return { url };
+      }),
+    file: protectedProcedure
+      .input(z.object({
+        base64: z.string(),
+        mimeType: z.string(),
+        filename: z.string().optional(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        const ext = input.mimeType.split("/")[1] ?? "bin";
+        const filename = input.filename ?? `file-${Date.now()}.${ext}`;
+        const key = `uploads/${ctx.user.id}/${Date.now()}-${filename}`;
+        const buffer = Buffer.from(input.base64, "base64");
+        const { url } = await storagePut(key, buffer, input.mimeType);
+        return { url };
+      }),
+  }),
+
+  // Follows — users following shops
+  follows: router({
+    isFollowing: protectedProcedure
+      .input(z.object({ shopId: z.number() }))
+      .query(({ ctx, input }) => db.isFollowingShop(ctx.user.id, input.shopId)),
+    follow: protectedProcedure
+      .input(z.object({ shopId: z.number() }))
+      .mutation(async ({ ctx, input }) => {
+        await db.followShop(ctx.user.id, input.shopId);
+        return { success: true };
+      }),
+    unfollow: protectedProcedure
+      .input(z.object({ shopId: z.number() }))
+      .mutation(async ({ ctx, input }) => {
+        await db.unfollowShop(ctx.user.id, input.shopId);
+        return { success: true };
+      }),
+    myFollowedShops: protectedProcedure.query(({ ctx }) =>
+      db.getFollowedShops(ctx.user.id)
+    ),
+  }),
+
+  // Global search — searches both products and services in one call
+  search: router({
+    global: publicProcedure
+      .input(z.object({ q: z.string().min(1).max(200), limit: z.number().default(5) }))
+      .query(async ({ input }) => {
+        const [productResults, serviceResults] = await Promise.all([
+          db.getProducts({ search: input.q, limit: input.limit }),
+          db.getServices({ search: input.q, limit: input.limit }),
+        ]);
+        return {
+          products: productResults,
+          services: serviceResults,
+          total: productResults.length + serviceResults.length,
+        };
       }),
   }),
 });

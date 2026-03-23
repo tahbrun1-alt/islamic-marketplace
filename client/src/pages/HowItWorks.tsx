@@ -1,3 +1,4 @@
+import React from "react";
 import { motion } from "framer-motion";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
@@ -6,8 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import {
   ShoppingBag, Store, CreditCard, Truck, Star, Shield,
   Calendar, CheckCircle, Users, Package, ArrowRight, Sparkles,
-  Heart, Search, Globe, Lock, Zap
-} from "lucide-react";
+  Heart, Search, Globe, Lock, Zap, Building2, GraduationCap, Utensils } from "lucide-react";
 
 const buyerSteps = [
   { icon: Search, step: "1", title: "Browse & Discover", desc: "Search thousands of halal products and Islamic services from verified Muslim sellers worldwide." },
@@ -222,12 +222,12 @@ export default function HowItWorks() {
 
               <div className="grid sm:grid-cols-3 gap-6 mb-10">
                 {[
-                  { icon: "🕌", title: "Masjid Building", desc: "Supporting the construction of mosques in underserved communities." },
-                  { icon: "📚", title: "Islamic Education", desc: "Funding Quran schools and Islamic learning centres worldwide." },
-                  { icon: "🍽️", title: "Food Relief", desc: "Feeding families in need across Muslim-majority countries." },
+                  { Icon: Building2, title: "Masjid Building", desc: "Supporting the construction of mosques in underserved communities." },
+                  { Icon: GraduationCap, title: "Islamic Education", desc: "Funding Quran schools and Islamic learning centres worldwide." },
+                  { Icon: Utensils, title: "Food Relief", desc: "Feeding families in need across Muslim-majority countries." },
                 ].map((item) => (
                   <div key={item.title} className="bg-white/10 rounded-xl p-5 text-center">
-                    <div className="text-3xl mb-3">{item.icon}</div>
+                    <div className="text-3xl mb-3"><item.Icon className="w-5 h-5" /></div>
                     <h3 className="font-bold text-white mb-2">{item.title}</h3>
                     <p className="text-white/65 text-sm leading-relaxed">{item.desc}</p>
                   </div>

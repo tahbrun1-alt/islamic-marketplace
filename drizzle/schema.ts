@@ -78,6 +78,7 @@ export const shops = mysqlTable("shops", {
   trialEndsAt: timestamp("trialEndsAt"),
   stripeAccountId: varchar("stripeAccountId", { length: 128 }),
   totalSales: int("totalSales").default(0).notNull(),
+  followerCount: int("followerCount").default(0).notNull(),
   rating: decimal("rating", { precision: 3, scale: 2 }).default("0.00"),
   reviewCount: int("reviewCount").default(0).notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
@@ -258,6 +259,7 @@ export const reviews = mysqlTable("reviews", {
   title: varchar("title", { length: 256 }),
   body: text("body"),
   images: json("images"),
+  videos: json("videos"),
   isVerifiedPurchase: boolean("isVerifiedPurchase").default(false).notNull(),
   isVisible: boolean("isVisible").default(true).notNull(),
   sellerReply: text("sellerReply"),
@@ -300,6 +302,15 @@ export const notifications = mysqlTable("notifications", {
   body: text("body"),
   data: json("data"),
   isRead: boolean("isRead").default(false).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+// ─── Follows ──────────────────────────────────────────────────────────────────
+
+export const follows = mysqlTable("follows", {
+  id: int("id").autoincrement().primaryKey(),
+  followerId: int("followerId").notNull(),
+  shopId: int("shopId").notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
 });
 

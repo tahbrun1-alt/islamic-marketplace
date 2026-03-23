@@ -1,3 +1,4 @@
+import React from "react";
 import { useState } from "react";
 import { TrendingUp, Star, Users, Package, ChevronRight, Award, Zap } from "lucide-react";
 import { Link } from "wouter";
@@ -11,7 +12,7 @@ interface NewSeller {
   joinedDaysAgo: number;
   rating: number;
   totalSales: number;
-  emoji: string;
+  Icon: React.ElementType;
   badge: string;
   featuredProduct: string;
   featuredPrice: string;
@@ -28,7 +29,7 @@ const NEW_SELLERS: NewSeller[] = [
     joinedDaysAgo: 3,
     rating: 5.0,
     totalSales: 12,
-    emoji: "🧁",
+    Icon: ShoppingBag,
     badge: "New Seller",
     featuredProduct: "Ramadan Cookie Gift Box",
     featuredPrice: "£18",
@@ -43,7 +44,7 @@ const NEW_SELLERS: NewSeller[] = [
     joinedDaysAgo: 7,
     rating: 4.9,
     totalSales: 28,
-    emoji: "🌿",
+    Icon: Leaf,
     badge: "Rising Star",
     featuredProduct: "Black Seed Oil Bundle",
     featuredPrice: "£24",
@@ -58,7 +59,7 @@ const NEW_SELLERS: NewSeller[] = [
     joinedDaysAgo: 14,
     rating: 5.0,
     totalSales: 45,
-    emoji: "🖋️",
+    Icon: Pen,
     badge: "Top New Seller",
     featuredProduct: "Custom Bismillah Canvas",
     featuredPrice: "£55",
@@ -73,7 +74,7 @@ const NEW_SELLERS: NewSeller[] = [
     joinedDaysAgo: 10,
     rating: 4.8,
     totalSales: 19,
-    emoji: "📚",
+    Icon: BookOpen,
     badge: "New Seller",
     featuredProduct: "Arabic for Beginners Course",
     featuredPrice: "£35/mo",
@@ -112,7 +113,7 @@ export function NewSellerSpotlight() {
                 {/* Seller Header */}
                 <div className="bg-gradient-to-r from-amber-50 to-yellow-50 p-4 border-b border-gray-100">
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-3xl">{seller.emoji}</span>
+                    <span className="text-3xl"><seller.Icon className="w-5 h-5" /></span>
                     <span
                       className={`text-xs px-2 py-0.5 rounded-full font-medium border ${
                         seller.isNew
@@ -160,7 +161,7 @@ export function NewSellerSpotlight() {
         {/* Become a Seller CTA */}
         <div className="mt-8 bg-gradient-to-r from-amber-500 to-orange-500 rounded-2xl p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="text-white text-center sm:text-left">
-            <p className="font-bold text-lg">🚀 Start Selling on Noor Today</p>
+            <p className="font-bold text-lg">Start Selling on Noor Today</p>
             <p className="text-white/80 text-sm">
               Join 500+ Muslim sellers. Free to start. No monthly fees. Just 8% commission.
             </p>

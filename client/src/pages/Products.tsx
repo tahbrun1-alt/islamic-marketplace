@@ -62,6 +62,7 @@ export default function Products() {
   const [sortBy, setSortBy] = useState("newest");
   const [priceRange, setPriceRange] = useState([0, 500]);
   const [gender, setGender] = useState("");
+  const [occasion, setOccasion] = useState("");
   const [page, setPage] = useState(0);
   const addItem = useCartStore((s) => s.addItem);
 
@@ -82,6 +83,8 @@ export default function Products() {
 
   const { data: products, isLoading } = trpc.products.list.useQuery({
     search: debouncedSearch || undefined,
+    gender: gender || undefined,
+    occasion: occasion || undefined,
     sortBy,
     limit: 24,
     offset: page * 24,
@@ -139,6 +142,25 @@ export default function Products() {
       </div>
 
       <div>
+        <h3 className="font-semibold text-sm mb-3 text-foreground">Occasion</h3>
+        <div className="flex flex-wrap gap-2">
+          {["", "eid", "nikah", "aqiqah", "ramadan", "hajj", "birthday", "general"].map((occ) => (
+            <button
+              key={occ || "all"}
+              onClick={() => setOccasion(occ)}
+              className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-colors ${
+                occasion === occ
+                  ? "bg-primary text-primary-foreground border-primary"
+                  : "border-border hover:border-primary text-foreground"
+              }`}
+            >
+              {occ === "" ? "All" : occ.charAt(0).toUpperCase() + occ.slice(1)}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div>
         <h3 className="font-semibold text-sm mb-3 text-foreground">Gender</h3>
         <div className="flex flex-wrap gap-2">
           {["All", "Female", "Male", "Children"].map((g) => (
@@ -161,7 +183,7 @@ export default function Products() {
         variant="outline"
         size="sm"
         className="w-full"
-        onClick={() => { setCategory(""); setPriceRange([0, 500]); setGender(""); setSearch(""); }}
+        onClick={() => { setCategory(""); setPriceRange([0, 500]); setGender(""); setOccasion(""); setSearch(""); }}
       >
         <X className="w-4 h-4 mr-2" /> Clear Filters
       </Button>
@@ -216,7 +238,7 @@ export default function Products() {
           </div>
 
           {/* Active filters */}
-          {(category || gender || debouncedSearch) && (
+          {(category || gender || occasion || debouncedSearch) && (
             <div className="flex flex-wrap gap-2 mt-3">
               {category && (
                 <Badge variant="secondary" className="gap-1">
@@ -228,6 +250,12 @@ export default function Products() {
                 <Badge variant="secondary" className="gap-1">
                   {gender}
                   <X className="w-3 h-3 cursor-pointer" onClick={() => setGender("")} />
+                </Badge>
+              )}
+              {occasion && (
+                <Badge variant="secondary" className="gap-1">
+                  {occasion.charAt(0).toUpperCase() + occasion.slice(1)}
+                  <X className="w-3 h-3 cursor-pointer" onClick={() => setOccasion("")} />
                 </Badge>
               )}
               {debouncedSearch && (
@@ -289,7 +317,7 @@ export default function Products() {
                                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                               />
                             ) : (
-                              <div className="w-full h-full flex items-center justify-center text-4xl">🛍️</div>
+                              <div className="w-full h-full flex items-center justify-center bg-muted"><ShoppingBag className="w-8 h-8 text-muted-foreground" /></div>
                             )}
                             {product.comparePrice && (
                               <Badge className="absolute top-2 left-2 bg-destructive text-destructive-foreground text-xs">
@@ -346,10 +374,10 @@ export default function Products() {
               </>
             ) : (
               <div className="text-center py-20">
-                <div className="text-6xl mb-4">🔍</div>
+                <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mx-auto mb-4"><Search className="w-8 h-8 text-muted-foreground" /></div>
                 <h3 className="text-xl font-bold mb-2 text-foreground">No products found</h3>
                 <p className="text-muted-foreground mb-6">Try adjusting your search or filters</p>
-                <Button onClick={() => { setSearch(""); setCategory(""); setGender(""); }}>Clear All Filters</Button>
+                <Button onClick={() => { setSearch(""); setCategory(""); setGender(""); setOccasion(""); }}>Clear All Filters</Button>
               </div>
             )}
           </div>

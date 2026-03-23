@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Package, Scissors, Star, ChevronRight, Plus, Check, Tag } from "lucide-react";
+import { Package, Scissors, Star, ChevronRight, Plus, Check, Tag, Shirt, Activity, Leaf, BookOpen, GraduationCap } from "lucide-react";
 import { Link } from "wouter";
 
 interface BundleItem {
@@ -8,7 +8,7 @@ interface BundleItem {
   price: string;
   seller: string;
   rating: number;
-  emoji: string;
+  Icon: React.ElementType;
 }
 
 interface Bundle {
@@ -29,8 +29,8 @@ const SMART_BUNDLES: Bundle[] = [
     title: "Abaya + Tailoring Bundle",
     description: "Buy a premium abaya and get it tailored to your exact measurements",
     items: [
-      { type: "product", name: "Premium Nida Abaya", price: "£65", seller: "Al-Noor Abayas", rating: 4.9, emoji: "👗" },
-      { type: "service", name: "Custom Tailoring Session", price: "£25", seller: "Madinah Tailors", rating: 4.8, emoji: "✂️" },
+      { type: "product", name: "Premium Nida Abaya", price: "£65", seller: "Al-Noor Abayas", rating: 4.9, Icon: Shirt },
+      { type: "service", name: "Custom Tailoring Session", price: "£25", seller: "Madinah Tailors", rating: 4.8, Icon: Scissors },
     ],
     totalPrice: "£90",
     bundlePrice: "£75",
@@ -43,8 +43,8 @@ const SMART_BUNDLES: Bundle[] = [
     title: "Hijama + Aftercare Bundle",
     description: "Full hijama session with premium aftercare oils and recovery kit",
     items: [
-      { type: "service", name: "Full Hijama Session", price: "£55", seller: "Al-Shifa Clinic", rating: 5.0, emoji: "🩺" },
-      { type: "product", name: "Black Seed Aftercare Oil", price: "£18", seller: "Sunnah Wellness", rating: 4.7, emoji: "🌿" },
+      { type: "service", name: "Full Hijama Session", price: "£55", seller: "Al-Shifa Clinic", rating: 5.0, Icon: Activity },
+      { type: "product", name: "Black Seed Aftercare Oil", price: "£18", seller: "Sunnah Wellness", rating: 4.7, Icon: Leaf },
     ],
     totalPrice: "£73",
     bundlePrice: "£60",
@@ -56,8 +56,8 @@ const SMART_BUNDLES: Bundle[] = [
     title: "Quran + Tutor Bundle",
     description: "Beautiful Quran with 4 personalised Quran lessons for beginners",
     items: [
-      { type: "product", name: "Tajweed Quran (Large Print)", price: "£22", seller: "Islamic Books UK", rating: 4.8, emoji: "📖" },
-      { type: "service", name: "4x Quran Lessons (1hr each)", price: "£80", seller: "Ustadha Maryam", rating: 5.0, emoji: "📚" },
+      { type: "product", name: "Tajweed Quran (Large Print)", price: "£22", seller: "Islamic Books UK", rating: 4.8, Icon: BookOpen },
+      { type: "service", name: "4x Quran Lessons (1hr each)", price: "£80", seller: "Ustadha Maryam", rating: 5.0, Icon: GraduationCap },
     ],
     totalPrice: "£102",
     bundlePrice: "£85",
@@ -70,8 +70,8 @@ const SMART_BUNDLES: Bundle[] = [
     title: "Henna + Outfit Bundle",
     description: "Perfect for Eid — a stunning modest outfit with professional henna",
     items: [
-      { type: "product", name: "Eid Kaftan Set", price: "£55", seller: "Modest Luxe", rating: 4.6, emoji: "👘" },
-      { type: "service", name: "Bridal Henna Design", price: "£45", seller: "Henna by Zara", rating: 4.9, emoji: "🌸" },
+      { type: "product", name: "Eid Kaftan Set", price: "£55", seller: "Modest Luxe", rating: 4.6, Icon: Shirt },
+      { type: "service", name: "Bridal Henna Design", price: "£45", seller: "Henna by Zara", rating: 4.9, Icon: Leaf },
     ],
     totalPrice: "£100",
     bundlePrice: "£82",
@@ -156,7 +156,7 @@ export default function SmartBundles() {
                           item.type === "product" ? "bg-blue-50" : "bg-purple-50"
                         }`}
                       >
-                        {item.emoji}
+                        <item.Icon className="w-5 h-5 text-primary" />
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium text-gray-900 truncate">{item.name}</p>

@@ -7,10 +7,12 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { toast } from "sonner";
-import { ShoppingCart, Star, Shield, Truck, ArrowLeft, Plus, Minus, CheckCircle, MessageSquare, Heart } from "lucide-react";
+import { ShoppingCart, Star, Shield, Truck, ArrowLeft, Plus, Minus, CheckCircle, MessageSquare, Heart, Package } from "lucide-react";
 import { trpc as trpcClient } from "@/lib/trpc";
 import { Link } from "wouter";
 import { motion } from "framer-motion";
+import { WhatsAppButton } from "@/components/WhatsAppFallback";
+import ReviewSection from "@/components/ReviewSection";
 
 export default function ProductDetail() {
   const [, params] = useRoute("/products/:id");
@@ -20,10 +22,16 @@ export default function ProductDetail() {
   const addItem = useCartStore((s) => s.addItem);
   const [quantity, setQuantity] = useState(1);
   const [selectedImage, setSelectedImage] = useState(0);
+  const [selectedVariations, setSelectedVariations] = useState<Record<string, string>>({});
 
   const { data: product, isLoading } = trpc.products.getById.useQuery(
     { id: productId },
     { enabled: productId > 0 }
+  );
+
+  const { data: shopData } = trpc.shops.getById.useQuery(
+    { id: product?.shopId ?? 0 },
+    { enabled: !!product?.shopId }
   );
 
   if (isLoading) {
@@ -82,7 +90,7 @@ export default function ProductDetail() {
               {images.length > 0 ? (
                 <img src={images[selectedImage]} alt={product.title} className="w-full h-full object-cover" />
               ) : (
-                <div className="w-full h-full flex items-center justify-center text-6xl">🛍️</div>
+                <div className="w-full h-full flex items-center justify-center bg-muted"><Package className="w-12 h-12 text-muted-foreground" /></div>
               )}
             </div>
             {images.length > 1 && (
@@ -139,6 +147,42 @@ export default function ProductDetail() {
               <p className="text-muted-foreground text-sm leading-relaxed mb-6">{product.description}</p>
             )}
 
+            {/* Variation selectors */}
+            {product.variations && (() => {
+              type VariationGroup = { name: string; options: string[] };
+              const vars = product.variations as VariationGroup[] | null;
+              if (!vars || vars.length === 0) return null;
+              return (
+                <div className="space-y-4 mb-6">
+                  {vars.map((group) => (
+                    <div key={group.name}>
+                      <p className="text-sm font-medium text-foreground mb-2">
+                        {group.name}
+                        {selectedVariations[group.name] && (
+                          <span className="font-normal text-muted-foreground ml-2">— {selectedVariations[group.name]}</span>
+                        )}
+                      </p>
+                      <div className="flex flex-wrap gap-2">
+                        {group.options.map((opt) => (
+                          <button
+                            key={opt}
+                            onClick={() => setSelectedVariations((prev) => ({ ...prev, [group.name]: opt }))}
+                            className={`px-3 py-1.5 rounded-lg border text-sm font-medium transition-all ${
+                              selectedVariations[group.name] === opt
+                                ? "border-primary bg-primary/10 text-primary"
+                                : "border-border bg-background text-foreground hover:border-primary/50"
+                            }`}
+                          >
+                            {opt}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              );
+            })()}
+
             {/* Quantity */}
             <div className="flex items-center gap-4 mb-6">
               <div className="flex items-center gap-3 border border-border rounded-xl px-3 py-2">
@@ -170,18 +214,25 @@ export default function ProductDetail() {
                 Buy Now
               </Button>
             </div>
-            {isAuthenticated && (
-              <Button
-                variant="outline"
-                className="w-full mb-6"
-                asChild
-              >
-                <Link href={`/messages`}>
-                  <MessageSquare className="w-4 h-4 mr-2" />
-                  Message Seller
-                </Link>
-              </Button>
-            )}
+            {/* Contact seller */}
+            <div className="flex gap-2 mb-6">
+              {shopData?.phone && (
+                <WhatsAppButton
+                  sellerPhone={shopData.phone.replace(/[^0-9]/g, "")}
+                  sellerName={shopData.name}
+                  productName={product.title}
+                  size="md"
+                />
+              )}
+              {isAuthenticated && (
+                <Button variant="outline" className="flex-1" asChild>
+                  <Link href="/messages">
+                    <MessageSquare className="w-4 h-4 mr-2" />
+                    Message Seller
+                  </Link>
+                </Button>
+              )}
+            </div>
 
             {/* Trust Badges */}
             <div className="grid grid-cols-2 gap-3">
@@ -195,6 +246,15 @@ export default function ProductDetail() {
               </div>
             </div>
           </div>
+        </div>
+
+        {/* Reviews */}
+        <div className="mt-4">
+          <ReviewSection
+            type="product"
+            targetId={product.id}
+            targetTitle={product.title}
+          />
         </div>
       </div>
     </div>

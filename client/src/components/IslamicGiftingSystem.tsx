@@ -1,6 +1,27 @@
+import React from "react";
 import { useState } from "react";
-import { Gift, Heart, Star, ChevronRight, Plus, Minus, Check } from "lucide-react";
+import { Gift, Heart, Star, ChevronRight, Plus, Minus, Check, Moon, Sparkles, Baby, MapPin, GraduationCap, Leaf, Circle } from "lucide-react";
 import { Link } from "wouter";
+
+// Custom Ring icon since it's missing from lucide-react
+const Ring = (props: any) => (
+  <svg
+    {...props}
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <circle cx="12" cy="14" r="7" />
+    <path d="M12 7V2" />
+    <path d="M9 4h6" />
+  </svg>
+);
 
 interface GiftBundle {
   id: string;
@@ -9,7 +30,7 @@ interface GiftBundle {
   price: string;
   originalPrice?: string;
   items: string[];
-  emoji: string;
+  Icon: React.ElementType;
   popular?: boolean;
   charity?: string;
 }
@@ -22,7 +43,7 @@ const GIFT_BUNDLES: GiftBundle[] = [
     price: "£45",
     originalPrice: "£62",
     items: ["Premium Medjool Dates (500g)", "Prayer Mat", "Tasbih Beads", "Ramadan Planner", "Attar Perfume"],
-    emoji: "🌙",
+    Icon: Moon,
     popular: true,
     charity: "Donates £2 to Islamic Relief",
   },
@@ -32,7 +53,7 @@ const GIFT_BUNDLES: GiftBundle[] = [
     occasion: "Eid",
     price: "£35",
     items: ["Eid Card", "Luxury Sweets Box", "Henna Kit", "Eid Mubarak Decoration"],
-    emoji: "🌟",
+    Icon: Sparkles,
     charity: "Donates £1.75 to Human Appeal",
   },
   {
@@ -41,7 +62,7 @@ const GIFT_BUNDLES: GiftBundle[] = [
     occasion: "New Baby",
     price: "£55",
     items: ["Silver Aqiqah Frame", "Islamic Baby Book", "Soft Prayer Mat", "Bismillah Wall Art", "Organic Baby Dates"],
-    emoji: "👶",
+    Icon: Baby,
     popular: true,
   },
   {
@@ -51,7 +72,7 @@ const GIFT_BUNDLES: GiftBundle[] = [
     price: "£75",
     originalPrice: "£95",
     items: ["Quran Set (His & Hers)", "Luxury Attar Duo", "Islamic Home Decor", "Dua Cards", "Dates & Sweets"],
-    emoji: "💍",
+    Icon: Ring,
     charity: "Donates £3.75 to Muslim Aid",
   },
   {
@@ -60,7 +81,7 @@ const GIFT_BUNDLES: GiftBundle[] = [
     occasion: "Hajj / Umrah",
     price: "£65",
     items: ["Ihram Set", "Travel Dua Book", "Zamzam Bottle", "Prayer Beads", "Hajj Journal"],
-    emoji: "🕋",
+    Icon: MapPin,
   },
   {
     id: "graduation",
@@ -68,7 +89,7 @@ const GIFT_BUNDLES: GiftBundle[] = [
     occasion: "Graduation",
     price: "£40",
     items: ["Personalised Quran", "Islamic Success Journal", "Dua for Knowledge Card", "Attar Perfume"],
-    emoji: "🎓",
+    Icon: GraduationCap,
   },
 ];
 
@@ -84,12 +105,12 @@ function GiftCardBuilder({ onClose }: GiftCardBuilderProps) {
   const [selectedDesign, setSelectedDesign] = useState(0);
 
   const designs = [
-    { emoji: "🌙", label: "Ramadan" },
-    { emoji: "🌟", label: "Eid" },
-    { emoji: "🕋", label: "Hajj" },
-    { emoji: "💚", label: "Islamic" },
-    { emoji: "🌸", label: "Floral" },
-    { emoji: "📿", label: "Classic" },
+    { Icon: Moon, label: "Ramadan" },
+    { Icon: Sparkles, label: "Eid" },
+    { Icon: MapPin, label: "Hajj" },
+    { Icon: Heart, label: "Islamic" },
+    { Icon: Leaf, label: "Floral" },
+    { Icon: Circle, label: "Classic" },
   ];
 
   return (
@@ -122,7 +143,7 @@ function GiftCardBuilder({ onClose }: GiftCardBuilderProps) {
                   selectedDesign === i ? "border-amber-500 bg-amber-50" : "border-gray-200"
                 }`}
               >
-                {d.emoji}
+                <d.Icon className="w-5 h-5" />
               </button>
             ))}
           </div>
@@ -199,7 +220,7 @@ export default function IslamicGiftingSystem() {
         {/* Gift Card Builder CTA */}
         <div className="bg-gradient-to-r from-rose-500 to-pink-500 rounded-2xl p-5 mb-8 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="text-white">
-            <p className="font-bold text-lg">💌 Add a Gift Message</p>
+            <p className="font-bold text-lg">Add a Gift Message</p>
             <p className="text-white/80 text-sm">Personalise any order with a beautiful Islamic e-card</p>
           </div>
           <button
@@ -237,7 +258,7 @@ export default function IslamicGiftingSystem() {
               {/* Header */}
               <div className="bg-gradient-to-r from-rose-50 to-pink-50 p-4 border-b border-gray-100">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-3xl">{bundle.emoji}</span>
+                  <span className="text-3xl"><bundle.Icon className="w-5 h-5" /></span>
                   <div className="flex gap-1.5">
                     {bundle.popular && (
                       <span className="text-xs bg-amber-100 text-amber-700 border border-amber-200 px-2 py-0.5 rounded-full font-medium">
@@ -265,7 +286,7 @@ export default function IslamicGiftingSystem() {
 
                 {bundle.charity && (
                   <p className="text-xs text-teal-600 bg-teal-50 rounded-lg px-3 py-1.5 mb-3">
-                    💚 {bundle.charity}
+                    {bundle.charity}
                   </p>
                 )}
 

@@ -125,7 +125,7 @@ function OrderCard({ order }: { order: OrderType }) {
                     {order.items.map((item, i) => (
                       <div key={i} className="flex items-center gap-3">
                         <div className="w-12 h-12 rounded-lg bg-secondary overflow-hidden shrink-0">
-                          {item.image ? <img src={item.image} alt={item.title} className="w-full h-full object-cover" /> : <div className="w-full h-full flex items-center justify-center text-xl">🛍️</div>}
+                          {item.image ? <img src={item.image} alt={item.title} className="w-full h-full object-cover" /> : <div className="w-full h-full flex items-center justify-center bg-secondary"><Package className="w-5 h-5 text-muted-foreground" /></div>}
                         </div>
                         <div className="flex-1 min-w-0">
                           {item.productId ? (

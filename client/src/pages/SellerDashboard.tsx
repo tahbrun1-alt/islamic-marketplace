@@ -119,9 +119,9 @@ export default function SellerDashboard() {
           </div>
 
           <div className="mt-6 grid grid-cols-3 gap-4 text-center">
-            {[{ icon: "🆓", label: "14-day free trial" }, { icon: "💰", label: "7% commission" }, { icon: "❤️", label: "0.5% to charity" }].map((item) => (
+            {[{ icon: "check", label: "14-day free trial" }, { icon: "percent", label: "7% commission" }, { icon: "heart", label: "0.5% to charity" }].map((item) => (
               <div key={item.label}>
-                <div className="text-2xl mb-1">{item.icon}</div>
+                <div className="text-2xl mb-1"><item.Icon className="w-4 h-4" /></div>
                 <p className="text-xs text-muted-foreground">{item.label}</p>
               </div>
             ))}
@@ -152,7 +152,7 @@ export default function SellerDashboard() {
                   <Badge variant={shop.status === "active" ? "default" : "secondary"} className="text-xs">
                     {shop.status}
                   </Badge>
-                  {shop.isVerified && <span className="verified-badge">✓ Verified</span>}
+                  {shop.isVerified && <span className="verified-badge flex items-center gap-1"><CheckCircle className="w-3 h-3" /> Verified</span>}
                   {isInTrial && (
                     <Badge className="bg-amber-100 text-amber-700 border-amber-200 text-xs">
                       {trialDaysLeft}d trial left
@@ -216,7 +216,7 @@ export default function SellerDashboard() {
             </Card>
             <Card className="border-0 shadow-sm bg-gradient-to-br from-rose-50 to-rose-100/50">
               <CardContent className="p-4">
-                <p className="text-xs text-rose-700 font-medium mb-1 flex items-center gap-1">❤️ Charity Donated</p>
+                <p className="text-xs text-rose-700 font-medium mb-1 flex items-center gap-1"><Heart className="w-3 h-3 fill-rose-600 text-rose-600" /> Charity Donated</p>
                 <p className="text-2xl font-bold text-rose-700">£{((stats as { charityFee?: number }).charityFee ?? 0).toFixed(2)}</p>
                 <p className="text-xs text-rose-600 mt-0.5">0.5% to Islamic charities</p>
               </CardContent>
@@ -234,7 +234,7 @@ export default function SellerDashboard() {
             <TabsTrigger value="bookings">Bookings</TabsTrigger>
             <TabsTrigger value="analytics"><BarChart3 className="w-3.5 h-3.5 mr-1" />Analytics</TabsTrigger>
             <TabsTrigger value="messages"><MessageSquare className="w-3.5 h-3.5 mr-1" />Messages</TabsTrigger>
-            <TabsTrigger value="marketing">📣 Marketing</TabsTrigger>
+            <TabsTrigger value="marketing">Marketing</TabsTrigger>
             <TabsTrigger value="settings">Settings</TabsTrigger>
           </TabsList>
 
@@ -327,7 +327,7 @@ export default function SellerDashboard() {
                       {(product.images as string[])?.[0] ? (
                         <img src={(product.images as string[])[0]} alt={product.title} className="w-full h-full object-cover" />
                       ) : (
-                        <div className="w-full h-full flex items-center justify-center text-4xl">🛍️</div>
+                        <div className="w-full h-full flex items-center justify-center bg-muted"><Package className="w-8 h-8 text-muted-foreground" /></div>
                       )}
                       <Badge className={`absolute top-2 right-2 text-xs ${product.isActive ? "bg-emerald-500" : "bg-gray-400"}`}>
                         {product.isActive ? "Active" : "Inactive"}

@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Link } from "wouter";
-import { ChevronRight, X } from "lucide-react";
+import { ChevronRight, X, Gift, Circle, BookOpen, Shirt, Leaf, Mail, Heart, ShoppingBag, Droplets, BookMarked, Moon, Image, FlaskConical, Calendar, Store, MapPin, LucideIcon, Lamp, Backpack, Sparkles } from "lucide-react";
 
 type Season = "ramadan" | "eid" | "hajj" | "muharram" | "normal";
 
@@ -15,7 +15,7 @@ interface SeasonConfig {
   textColor: string;
   accentColor: string;
   emoji: string;
-  categories: { label: string; href: string; icon: string }[];
+  categories: { label: string; href: string; Icon: LucideIcon }[];
 }
 
 const SEASON_CONFIGS: Record<Season, SeasonConfig> = {
@@ -31,12 +31,12 @@ const SEASON_CONFIGS: Record<Season, SeasonConfig> = {
     accentColor: "text-amber-300",
     emoji: "🌙",
     categories: [
-      { label: "Dates & Sweets", href: "/products?category=dates", icon: "🌴" },
-      { label: "Prayer Essentials", href: "/products?category=prayer", icon: "🧿" },
-      { label: "Iftar Gifts", href: "/products?category=gifts", icon: "🎁" },
-      { label: "Quran & Books", href: "/products?category=books", icon: "📖" },
-      { label: "Modest Fashion", href: "/products?category=fashion", icon: "👗" },
-      { label: "Ramadan Decor", href: "/products?category=decor", icon: "🪔" },
+      { label: "Dates & Sweets", href: "/products?category=dates", Icon: Gift },
+      { label: "Prayer Essentials", href: "/products?category=prayer", Icon: Circle },
+      { label: "Iftar Gifts", href: "/products?category=gifts", Icon: Gift },
+      { label: "Quran & Books", href: "/products?category=books", Icon: BookOpen },
+      { label: "Modest Fashion", href: "/products?category=fashion", Icon: Shirt },
+      { label: "Ramadan Decor", href: "/products?category=decor", Icon: Lamp },
     ],
   },
   eid: {
@@ -49,14 +49,14 @@ const SEASON_CONFIGS: Record<Season, SeasonConfig> = {
     bgGradient: "from-emerald-700 via-teal-700 to-emerald-800",
     textColor: "text-white",
     accentColor: "text-yellow-300",
-    emoji: "🌟",
+    emoji: "✨",
     categories: [
-      { label: "Eid Gifts", href: "/products?category=eid-gifts", icon: "🎁" },
-      { label: "Eid Outfits", href: "/products?category=eid-fashion", icon: "👘" },
-      { label: "Sweets & Treats", href: "/products?category=sweets", icon: "🍬" },
-      { label: "Henna & Beauty", href: "/services?category=beauty", icon: "🌸" },
-      { label: "Eid Cards", href: "/products?category=cards", icon: "💌" },
-      { label: "Charity Gifts", href: "/products?category=charity", icon: "💚" },
+      { label: "Eid Gifts", href: "/products?category=eid-gifts", Icon: Gift },
+      { label: "Eid Outfits", href: "/products?category=eid-fashion", Icon: Shirt },
+      { label: "Sweets & Treats", href: "/products?category=sweets", Icon: Gift },
+      { label: "Henna & Beauty", href: "/services?category=beauty", Icon: Leaf },
+      { label: "Eid Cards", href: "/products?category=cards", Icon: Mail },
+      { label: "Charity Gifts", href: "/products?category=charity", Icon: Heart },
     ],
   },
   hajj: {
@@ -71,12 +71,12 @@ const SEASON_CONFIGS: Record<Season, SeasonConfig> = {
     accentColor: "text-yellow-200",
     emoji: "🕋",
     categories: [
-      { label: "Ihram Sets", href: "/products?category=ihram", icon: "🤍" },
-      { label: "Travel Bags", href: "/products?category=travel", icon: "🎒" },
-      { label: "Dua Books", href: "/products?category=duas", icon: "📿" },
-      { label: "Prayer Mats", href: "/products?category=prayer-mats", icon: "🧎" },
-      { label: "Zamzam Bottles", href: "/products?category=zamzam", icon: "💧" },
-      { label: "Hajj Guides", href: "/products?category=guides", icon: "📚" },
+      { label: "Ihram Sets", href: "/products?category=ihram", Icon: ShoppingBag },
+      { label: "Travel Bags", href: "/products?category=travel", Icon: Backpack },
+      { label: "Dua Books", href: "/products?category=duas", Icon: BookOpen },
+      { label: "Prayer Mats", href: "/products?category=prayer-mats", Icon: Circle },
+      { label: "Zamzam Bottles", href: "/products?category=zamzam", Icon: Droplets },
+      { label: "Hajj Guides", href: "/products?category=guides", Icon: BookMarked },
     ],
   },
   muharram: {
@@ -89,14 +89,14 @@ const SEASON_CONFIGS: Record<Season, SeasonConfig> = {
     bgGradient: "from-slate-800 via-blue-900 to-slate-800",
     textColor: "text-white",
     accentColor: "text-sky-300",
-    emoji: "🌙",
+    emoji: "🗓️",
     categories: [
-      { label: "Islamic Books", href: "/products?category=books", icon: "📚" },
-      { label: "Journals", href: "/products?category=journals", icon: "📓" },
-      { label: "Prayer Beads", href: "/products?category=tasbih", icon: "📿" },
-      { label: "Wall Art", href: "/products?category=art", icon: "🖼️" },
-      { label: "Attar & Oud", href: "/products?category=fragrance", icon: "🌹" },
-      { label: "Charity Packs", href: "/products?category=charity", icon: "💚" },
+      { label: "Islamic Books", href: "/products?category=books", Icon: BookOpen },
+      { label: "Journals", href: "/products?category=journals", Icon: BookMarked },
+      { label: "Prayer Beads", href: "/products?category=tasbih", Icon: Circle },
+      { label: "Wall Art", href: "/products?category=art", Icon: Image },
+      { label: "Attar & Oud", href: "/products?category=fragrance", Icon: FlaskConical },
+      { label: "Charity Packs", href: "/products?category=charity", Icon: Heart },
     ],
   },
   normal: {
@@ -109,14 +109,14 @@ const SEASON_CONFIGS: Record<Season, SeasonConfig> = {
     bgGradient: "from-amber-600 via-orange-600 to-amber-700",
     textColor: "text-white",
     accentColor: "text-yellow-200",
-    emoji: "✨",
+    emoji: "🕌",
     categories: [
-      { label: "Products", href: "/products", icon: "🛍️" },
-      { label: "Services", href: "/services", icon: "🤝" },
-      { label: "Sellers", href: "/sellers", icon: "🏪" },
-      { label: "New Arrivals", href: "/products?sort=newest", icon: "🆕" },
-      { label: "Featured", href: "/products?featured=true", icon: "⭐" },
-      { label: "Near Me", href: "/services?view=local", icon: "📍" },
+      { label: "Products", href: "/products", Icon: ShoppingBag },
+      { label: "Services", href: "/services", Icon: Calendar },
+      { label: "Sellers", href: "/sellers", Icon: Store },
+      { label: "New Arrivals", href: "/products?sort=newest", Icon: Sparkles },
+      { label: "Featured", href: "/products?featured=true", Icon: Star },
+      { label: "Near Me", href: "/services?view=local", Icon: MapPin },
     ],
   },
 };
@@ -127,7 +127,6 @@ function detectSeason(): Season {
   const day = now.getDate();
 
   // Approximate Hijri calendar detection (simplified)
-  // In production this would use a proper Hijri calendar library
   // For 2026: Ramadan ~Feb/Mar, Eid al-Fitr ~Mar, Eid al-Adha ~Jun, Hajj ~Jun, Muharram ~Jul
   if (month === 3 && day <= 30) return "ramadan";
   if (month === 4 && day <= 10) return "eid";
@@ -205,7 +204,7 @@ export function SeasonalSection({ forceSeason }: SeasonalSectionProps) {
           {config.categories.map((cat) => (
             <Link key={cat.href} href={cat.href}>
               <div className="flex flex-col items-center gap-2 bg-white/10 hover:bg-white/20 rounded-xl p-3 cursor-pointer transition-all group">
-                <span className="text-2xl">{cat.icon}</span>
+                <span className="text-2xl"><cat.Icon className="w-5 h-5" /></span>
                 <span className={`text-xs font-medium ${config.textColor} text-center leading-tight`}>
                   {cat.label}
                 </span>

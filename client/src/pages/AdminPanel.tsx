@@ -607,12 +607,12 @@ export default function AdminPanel() {
                 <CardContent>
                   <div className="grid sm:grid-cols-3 gap-4">
                     {[
-                      { name: "Islamic Relief", cause: "Food & Water Relief", icon: "🍽️", allocation: "40%" },
-                      { name: "Muslim Aid", cause: "Education & Schools", icon: "📚", allocation: "35%" },
-                      { name: "Penny Appeal", cause: "Orphan Care", icon: "🤲", allocation: "25%" },
+                      { name: "Islamic Relief", cause: "Food & Water Relief", Icon: Utensils, allocation: "40%" },
+                      { name: "Muslim Aid", cause: "Education & Schools", Icon: GraduationCap, allocation: "35%" },
+                      { name: "Penny Appeal", cause: "Orphan Care", Icon: Heart, allocation: "25%" },
                     ].map((partner) => (
                       <div key={partner.name} className="p-4 rounded-xl bg-rose-50 border border-rose-100 text-center">
-                        <div className="text-2xl mb-2">{partner.icon}</div>
+                        <div className="text-2xl mb-2"><partner.Icon className="w-4 h-4" /></div>
                         <p className="font-semibold text-foreground text-sm">{partner.name}</p>
                         <p className="text-xs text-muted-foreground mt-0.5">{partner.cause}</p>
                         <Badge className="mt-2 bg-rose-100 text-rose-700 text-xs">{partner.allocation} of donations</Badge>

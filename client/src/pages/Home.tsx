@@ -18,30 +18,32 @@ import { Badge } from "@/components/ui/badge";
 import {
   ShoppingBag, Calendar, Star, ArrowRight, Shield, Truck,
   Award, Users, Package, ChevronRight, Heart, MapPin,
-  CheckCircle, Sparkles, Store, Clock
+  CheckCircle, Store, Clock, Shirt, Circle, BookOpen,
+  Home, Utensils, Gem, Camera, Leaf, Handshake, Languages,
+  Activity, Gift, Moon, GraduationCap, Ring, Scissors, LucideIcon
 } from "lucide-react";
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
-const PRODUCT_CATEGORIES = [
-  { name: "Modest Fashion", icon: "👗", href: "/products?category=modest-fashion" },
-  { name: "Prayer Items",   icon: "📿", href: "/products?category=prayer-items" },
-  { name: "Islamic Books",  icon: "📚", href: "/products?category=qurans-books" },
-  { name: "Home & Decor",   icon: "🏠", href: "/products?category=gifts-decor" },
-  { name: "Halal Food",     icon: "🍽️", href: "/products?category=halal-food" },
-  { name: "Jewellery",      icon: "💎", href: "/products?category=jewellery" },
-  { name: "Abayas",         icon: "🧕", href: "/products?category=abayas-jilbabs" },
-  { name: "Ramadan & Eid",  icon: "🌙", href: "/products?category=ramadan-eid" },
+const PRODUCT_CATEGORIES: { name: string; Icon: LucideIcon; href: string }[] = [
+  { name: "Modest Fashion", Icon: Shirt,     href: "/products?category=modest-fashion" },
+  { name: "Prayer Items",   Icon: Circle,    href: "/products?category=prayer-items" },
+  { name: "Islamic Books",  Icon: BookOpen,  href: "/products?category=qurans-books" },
+  { name: "Home & Decor",   Icon: Home,      href: "/products?category=gifts-decor" },
+  { name: "Halal Food",     Icon: Utensils,  href: "/products?category=halal-food" },
+  { name: "Jewellery",      Icon: Gem,       href: "/products?category=jewellery" },
+  { name: "Abayas",         Icon: Shirt,     href: "/products?category=abayas-jilbabs" },
+  { name: "Ramadan & Eid",  Icon: Moon,      href: "/products?category=ramadan-eid" },
 ];
 
-const SERVICE_CATEGORIES = [
-  { name: "Quran Tutoring",  icon: "📖", href: "/services?category=quran-tutoring" },
-  { name: "Nikah Services",  icon: "💍", href: "/services?category=nikah-services" },
-  { name: "Halal Catering",  icon: "🍲", href: "/services?category=halal-catering" },
-  { name: "Photography",     icon: "📷", href: "/services?category=photography" },
-  { name: "Henna & Beauty",  icon: "🌿", href: "/services?category=henna-beauty" },
-  { name: "Islamic Counsel", icon: "🤝", href: "/services?category=islamic-counselling" },
-  { name: "Arabic Lessons",  icon: "🔤", href: "/services?category=arabic-lessons" },
-  { name: "Hijama Therapy",  icon: "⚕️", href: "/services?category=hijama-therapy" },
+const SERVICE_CATEGORIES: { name: string; Icon: LucideIcon; href: string }[] = [
+  { name: "Quran Tutoring",  Icon: GraduationCap, href: "/services?category=quran-tutoring" },
+  { name: "Nikah Services",  Icon: Ring,          href: "/services?category=nikah-services" },
+  { name: "Halal Catering",  Icon: Utensils,      href: "/services?category=halal-catering" },
+  { name: "Photography",     Icon: Camera,        href: "/services?category=photography" },
+  { name: "Henna & Beauty",  Icon: Leaf,          href: "/services?category=henna-beauty" },
+  { name: "Islamic Counsel", Icon: Handshake,     href: "/services?category=islamic-counselling" },
+  { name: "Arabic Lessons",  Icon: Languages,     href: "/services?category=arabic-lessons" },
+  { name: "Hijama Therapy",  Icon: Activity,      href: "/services?category=hijama-therapy" },
 ];
 
 function StarRating({ rating }: { rating: number }) {
@@ -168,10 +170,10 @@ export default function Home() {
               style={{ borderTop: "1px solid oklch(0.92 0.018 86)" }}
             >
               {[
-                { value: "10,000+", label: "Products" },
-                { value: "500+", label: "Verified Sellers" },
-                { value: "50+", label: "Countries" },
-                { value: "4.9★", label: "Avg Rating" },
+                { value: "Halal", label: "Verified Products" },
+                { value: "Trusted", label: "Seller Community" },
+                { value: "UK & Global", label: "Delivery" },
+                { value: "Free", label: "To Start Selling" },
               ].map((stat) => (
                 <div key={stat.label} className="text-center">
                   <div className="font-serif font-semibold text-xl text-foreground">{stat.value}</div>
@@ -217,9 +219,9 @@ export default function Home() {
                   transition={{ duration: 0.4, delay: i * 0.04 }}>
                   <Link href={cat.href}
                     className="flex flex-col items-center gap-2 p-3 rounded-xl hover:bg-secondary transition-all duration-200 group text-center">
-                    <div className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl transition-transform duration-200 group-hover:scale-110"
+                    <div className="w-12 h-12 rounded-xl flex items-center justify-center transition-transform duration-200 group-hover:scale-110"
                       style={{ background: "oklch(0.58 0.13 75 / 0.08)", border: "1px solid oklch(0.92 0.018 86)" }}>
-                      {cat.icon}
+                      <cat.Icon className="w-5 h-5 text-primary" />
                     </div>
                     <span className="text-xs font-medium text-foreground group-hover:text-primary transition-colors leading-tight">{cat.name}</span>
                   </Link>
@@ -360,10 +362,10 @@ export default function Home() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {[
-              { title: "Ramadan", arabic: "رمضان", desc: "Lanterns, prayer sets, iftar essentials & more", icon: "🌙", href: "/products?category=ramadan-eid", color: "oklch(0.18 0.04 260)" },
-              { title: "Eid Collection", arabic: "عيد مبارك", desc: "Gifts, fashion, sweets & celebration items", icon: "🎉", href: "/products?category=ramadan-eid", color: "oklch(0.18 0.05 140)" },
-              { title: "Hajj & Umrah", arabic: "لبيك اللهم", desc: "Ihram, prayer beads, travel essentials", icon: "🕋", href: "/products?category=hajj-umrah", color: "oklch(0.18 0.04 45)" },
-            ].map(({ title, arabic, desc, icon, href, color }, i) => (
+              { title: "Ramadan", arabic: "رمضان", desc: "Lanterns, prayer sets, iftar essentials & more", Icon: Moon, href: "/products?category=ramadan-eid", color: "oklch(0.18 0.04 260)" },
+              { title: "Eid Collection", arabic: "عيد مبارك", desc: "Gifts, fashion, sweets & celebration items", Icon: Gift, href: "/products?category=ramadan-eid", color: "oklch(0.18 0.05 140)" },
+              { title: "Hajj & Umrah", arabic: "لبيك اللهم", desc: "Ihram, prayer beads, travel essentials", Icon: MapPin, href: "/products?category=hajj-umrah", color: "oklch(0.18 0.04 45)" },
+            ].map(({ title, arabic, desc, Icon: OccasionIcon, href, color }, i) => (
               <motion.div key={title}
                 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }} transition={{ duration: 0.5, delay: i * 0.1 }}
@@ -371,7 +373,9 @@ export default function Home() {
                 style={{ background: `linear-gradient(135deg, ${color} 0%, oklch(0.15 0.02 45) 100%)` }}
               >
                 <Link href={href} className="block">
-                  <div className="text-4xl mb-3">{icon}</div>
+                  <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-3" style={{ background: "rgba(255,255,255,0.15)" }}>
+                    <OccasionIcon className="w-5 h-5 text-white" />
+                  </div>
                   <div className="font-arabic text-lg mb-1" style={{ color: "oklch(0.88 0.17 88)" }}>{arabic}</div>
                   <h3 className="font-serif text-xl font-semibold text-white mb-2">{title}</h3>
                   <p className="text-sm mb-4" style={{ color: "rgba(255,255,255,0.7)" }}>{desc}</p>
@@ -527,7 +531,7 @@ function ProductCard({ product }: { product: {
           )}
           {product.isHalalCertified && (
             <div className="absolute top-2 left-2">
-              <span className="halal-badge">✓ Halal</span>
+              <span className="halal-badge flex items-center gap-1"><CheckCircle className="w-3 h-3" /> Halal</span>
             </div>
           )}
           {product.comparePrice && parseFloat(product.comparePrice) > parseFloat(product.price) && (
@@ -588,7 +592,7 @@ function ServiceCard({ service }: { service: {
             <div className="absolute bottom-2 left-2">
               <span className="text-[10px] font-medium px-2 py-0.5 rounded-full"
                 style={{ background: "oklch(0.12 0.018 42 / 0.75)", color: "oklch(0.92 0.018 86)" }}>
-                {service.locationType === "online" ? "🖥 Online" : service.locationType === "in_person" ? "📍 In Person" : "🔄 Both"}
+                {service.locationType === "online" ? "Online" : service.locationType === "in_person" ? "In Person" : "Online & In Person"}
               </span>
             </div>
           )}

@@ -269,13 +269,13 @@ export default function ImportProduct() {
         {!imported && !importMutation.isPending && (
           <div className="mt-6 grid sm:grid-cols-3 gap-4">
             {[
-              { icon: "🔗", title: "Any Product URL", desc: "Works with most e-commerce sites including Etsy, Amazon, eBay, and Shopify stores" },
-              { icon: "🤖", title: "AI Extraction", desc: "Our AI reads the page and intelligently extracts product title, description, price, and images" },
-              { icon: "✏️", title: "Review & Edit", desc: "Review the extracted data, make any adjustments, then publish to your Noor shop" },
+              { Icon: Link, title: "Any Product URL", desc: "Works with most e-commerce sites including Etsy, Amazon, eBay, and Shopify stores" },
+              { Icon: Bot, title: "AI Extraction", desc: "Our AI reads the page and intelligently extracts product title, description, price, and images" },
+              { Icon: Pencil, title: "Review & Edit", desc: "Review the extracted data, make any adjustments, then publish to your Noor shop" },
             ].map((tip) => (
               <Card key={tip.title} className="border-0 shadow-sm">
                 <CardContent className="p-4 text-center">
-                  <div className="text-2xl mb-2">{tip.icon}</div>
+                  <div className="text-2xl mb-2"><tip.Icon className="w-4 h-4" /></div>
                   <p className="font-medium text-sm text-foreground mb-1">{tip.title}</p>
                   <p className="text-xs text-muted-foreground">{tip.desc}</p>
                 </CardContent>

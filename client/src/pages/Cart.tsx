@@ -49,7 +49,7 @@ export default function Cart() {
                         {item.image ? (
                           <img src={item.image} alt={item.title} className="w-full h-full object-cover" />
                         ) : (
-                          <div className="w-full h-full flex items-center justify-center text-2xl">🛍️</div>
+                          <div className="w-full h-full flex items-center justify-center bg-muted"><ShoppingBag className="w-6 h-6 text-muted-foreground" /></div>
                         )}
                       </div>
                       <div className="flex-1">

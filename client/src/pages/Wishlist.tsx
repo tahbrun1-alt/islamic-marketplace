@@ -3,7 +3,7 @@ import { trpc } from "@/lib/trpc";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import { Heart, ShoppingCart, Trash2, Loader2, Package, Sparkles } from "lucide-react";
+import { Heart, ShoppingCart, Trash2, Loader2, Package, Sparkles, Store, MapPin, Star } from "lucide-react";
 import { Link } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
 import { getLoginUrl } from "@/const";
@@ -14,6 +14,17 @@ export default function Wishlist() {
 
   const { data: wishlistItems, isLoading } = trpc.wishlist.list.useQuery(undefined, {
     enabled: isAuthenticated,
+  });
+
+  const { data: followedShops } = trpc.follows.myFollowedShops.useQuery(undefined, {
+    enabled: isAuthenticated,
+  });
+
+  const unfollowMutation = trpc.follows.unfollow.useMutation({
+    onSuccess: () => {
+      utils.follows.myFollowedShops.invalidate();
+      toast.success("Unfollowed shop");
+    },
   });
 
   const removeMutation = trpc.wishlist.remove.useMutation({
@@ -202,6 +213,68 @@ export default function Wishlist() {
                     </motion.div>
                   );
                 })}
+              </AnimatePresence>
+            </div>
+          </section>
+        )}
+
+        {/* Followed Shops */}
+        {followedShops && followedShops.length > 0 && (
+          <section className="mt-10">
+            <h2 className="text-xl font-semibold text-foreground mb-4 flex items-center gap-2">
+              <Store className="w-5 h-5 text-primary" /> Followed Sellers
+              <Badge variant="secondary">{followedShops.length}</Badge>
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              <AnimatePresence>
+                {followedShops.map((shop: any, i: number) => (
+                  <motion.div
+                    key={shop.id}
+                    initial={{ opacity: 0, y: 16 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    transition={{ duration: 0.25, delay: i * 0.05 }}
+                    className="border border-border rounded-xl p-4 flex items-center gap-4 bg-card hover:shadow-sm transition-shadow"
+                  >
+                    <Link href={`/shops/${shop.slug}`} className="flex items-center gap-3 flex-1 min-w-0">
+                      <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center shrink-0 overflow-hidden">
+                        {shop.logo ? (
+                          <img src={shop.logo} alt={shop.name} className="w-full h-full object-cover" />
+                        ) : (
+                          <span className="text-lg font-bold text-primary">
+                            {shop.name.charAt(0).toUpperCase()}
+                          </span>
+                        )}
+                      </div>
+                      <div className="min-w-0">
+                        <p className="font-semibold text-foreground truncate">{shop.name}</p>
+                        <div className="flex items-center gap-2 mt-0.5">
+                          {shop.location && (
+                            <span className="text-xs text-muted-foreground flex items-center gap-0.5">
+                              <MapPin className="w-3 h-3" /> {shop.location}
+                            </span>
+                          )}
+                          {shop.rating && Number(shop.rating) > 0 && (
+                            <span className="text-xs text-muted-foreground flex items-center gap-0.5">
+                              <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
+                              {Number(shop.rating).toFixed(1)}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    </Link>
+                    <Button
+                      size="icon"
+                      variant="ghost"
+                      className="h-8 w-8 text-muted-foreground hover:text-destructive shrink-0"
+                      onClick={() => unfollowMutation.mutate({ shopId: shop.id })}
+                      disabled={unfollowMutation.isPending}
+                      title="Unfollow"
+                    >
+                      <Heart className="w-4 h-4 fill-current text-primary" />
+                    </Button>
+                  </motion.div>
+                ))}
               </AnimatePresence>
             </div>
           </section>

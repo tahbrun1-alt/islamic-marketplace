@@ -22,14 +22,14 @@ import {
 } from "lucide-react";
 
 const BUSINESS_CATEGORIES = [
-  { id: "food", label: "Halal Food & Catering", icon: Utensils, emoji: "🍽️" },
-  { id: "fashion", label: "Modest Fashion & Abayas", icon: Shirt, emoji: "👗" },
-  { id: "services", label: "Islamic Services", icon: Heart, emoji: "🤝" },
-  { id: "beauty", label: "Halal Beauty & Wellness", icon: Star, emoji: "💄" },
-  { id: "education", label: "Tutoring & Education", icon: BookOpen, emoji: "📚" },
-  { id: "tailoring", label: "Tailoring & Alterations", icon: Scissors, emoji: "✂️" },
-  { id: "products", label: "Islamic Products", icon: Package, emoji: "📦" },
-  { id: "other", label: "Other Muslim Business", icon: Store, emoji: "🏪" },
+  { id: "food", label: "Halal Food & Catering", icon: Utensils },
+  { id: "fashion", label: "Modest Fashion & Abayas", icon: Shirt },
+  { id: "services", label: "Islamic Services", icon: Heart },
+  { id: "beauty", label: "Halal Beauty & Wellness", icon: Star },
+  { id: "education", label: "Tutoring & Education", icon: BookOpen },
+  { id: "tailoring", label: "Tailoring & Alterations", icon: Scissors },
+  { id: "products", label: "Islamic Products", icon: Package },
+  { id: "other", label: "Other Muslim Business", icon: Store },
 ];
 
 const STEPS = [
@@ -248,8 +248,8 @@ export default function SellerOnboarding() {
                 <label className="block text-sm font-medium text-gray-700 mb-2">Fulfilment Options</label>
                 <div className="space-y-2">
                   {[
-                    { key: "acceptsLocalPickup", label: "Local Pickup", icon: "📍" },
-                    { key: "acceptsDelivery", label: "Delivery / Shipping", icon: "📦" },
+                    { key: "acceptsLocalPickup", label: "Local Pickup", icon: "pin" },
+                    { key: "acceptsDelivery", label: "Delivery / Shipping", icon: "delivery" },
                   ].map((opt) => (
                     <label key={opt.key} className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl cursor-pointer">
                       <input
@@ -259,7 +259,7 @@ export default function SellerOnboarding() {
                         className="w-4 h-4 accent-amber-500"
                       />
                       <span className="text-sm text-gray-700">
-                        {opt.icon} {opt.label}
+                        <opt.Icon className="w-4 h-4" /> {opt.label}
                       </span>
                     </label>
                   ))}
@@ -271,8 +271,8 @@ export default function SellerOnboarding() {
                 <label className="block text-sm font-medium text-gray-700 mb-2">Trust Badges</label>
                 <div className="space-y-2">
                   {[
-                    { key: "isMuslimOwned", label: "Muslim-Owned Business", icon: "💚" },
-                    { key: "isHalalCertified", label: "Halal Certified Products/Services", icon: "✅" },
+                    { key: "isMuslimOwned", label: "Muslim-Owned Business", icon: "verified" },
+                    { key: "isHalalCertified", label: "Halal Certified Products/Services", icon: "halal" },
                   ].map((opt) => (
                     <label key={opt.key} className="flex items-center gap-3 p-3 bg-amber-50 border border-amber-100 rounded-xl cursor-pointer">
                       <input
@@ -282,7 +282,7 @@ export default function SellerOnboarding() {
                         className="w-4 h-4 accent-amber-500"
                       />
                       <span className="text-sm text-gray-700">
-                        {opt.icon} {opt.label}
+                        <opt.Icon className="w-4 h-4" /> {opt.label}
                       </span>
                     </label>
                   ))}

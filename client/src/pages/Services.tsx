@@ -226,7 +226,7 @@ export default function Services() {
                                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                               />
                             ) : (
-                              <div className="w-full h-full flex items-center justify-center text-5xl bg-gradient-to-br from-primary/10 to-accent/10">🌟</div>
+                              <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/10 to-primary/5"><Calendar className="w-12 h-12 text-primary/40" /></div>
                             )}
                             {service.requireDeposit && (
                               <Badge className="absolute top-2 left-2 bg-amber-500 text-white text-xs">Deposit Required</Badge>
@@ -273,7 +273,7 @@ export default function Services() {
               </>
             ) : (
               <div className="text-center py-20">
-                <div className="text-6xl mb-4">🔍</div>
+                <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mx-auto mb-4"><Search className="w-8 h-8 text-muted-foreground" /></div>
                 <h3 className="text-xl font-bold mb-2 text-foreground">No services found</h3>
                 <p className="text-muted-foreground mb-6">Try adjusting your search or filters</p>
                 <Button onClick={() => { setSearch(""); setCategory(""); setLocationType(""); }}>Clear All Filters</Button>

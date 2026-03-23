@@ -337,7 +337,7 @@ export default function Profile() {
                             />
                           ) : (
                             <div className="w-full h-full flex items-center justify-center text-2xl">
-                              {item.product ? "🛍️" : "⚙️"}
+                              {item.product ? "shopping" : "settings"}
                             </div>
                           )}
                         </div>

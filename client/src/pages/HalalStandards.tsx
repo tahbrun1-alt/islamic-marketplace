@@ -1,10 +1,11 @@
+import React from "react";
 import { motion } from "framer-motion";
-import { Shield, CheckCircle, XCircle, AlertTriangle, Star, BookOpen, Award, Search } from "lucide-react";
+import { Shield, CheckCircle, XCircle, AlertTriangle, Star, BookOpen, Award, Search, Utensils, Sparkles, Banknote, GraduationCap, Moon } from "lucide-react";
 import { Link } from "wouter";
 
 const halalCategories = [
   {
-    icon: "🍖",
+    Icon: Utensils,
     title: "Food & Beverages",
     allowed: [
       "Halal-certified meat and poultry (with valid certification)",
@@ -23,7 +24,7 @@ const halalCategories = [
     ],
   },
   {
-    icon: "💄",
+    Icon: Sparkles,
     title: "Beauty & Personal Care",
     allowed: [
       "Plant-based and mineral cosmetics",
@@ -40,7 +41,7 @@ const halalCategories = [
     ],
   },
   {
-    icon: "💰",
+    Icon: Banknote,
     title: "Financial Products & Services",
     allowed: [
       "Halal investment products (Shariah-compliant)",
@@ -58,7 +59,7 @@ const halalCategories = [
     ],
   },
   {
-    icon: "🎓",
+    Icon: GraduationCap,
     title: "Education & Services",
     allowed: [
       "Quran tutoring and Islamic education",
@@ -129,7 +130,7 @@ export default function HalalStandards() {
             transition={{ duration: 0.6 }}
           >
             <div className="w-16 h-16 rounded-2xl bg-gold-500 flex items-center justify-center mx-auto mb-6">
-              <span className="text-white text-2xl">🌙</span>
+              <Moon className="w-6 h-6 text-white" />
             </div>
             <h1 className="font-serif text-5xl font-bold mb-4">Halal Standards</h1>
             <p className="text-white/80 text-lg leading-relaxed">
@@ -180,7 +181,7 @@ export default function HalalStandards() {
             <h2 className="font-serif text-2xl font-bold text-ink-800">The Halal Verified Badge</h2>
           </div>
           <p className="text-ink-600 leading-relaxed mb-4">
-            The <strong>🌙 Halal Verified</strong> badge on a listing means the seller has provided valid halal certification from a recognised certification body, and our compliance team has verified its authenticity and current validity.
+            The <strong>Halal Verified</strong> badge on a listing means the seller has provided valid halal certification from a recognised certification body, and our compliance team has verified its authenticity and current validity.
           </p>
           <div className="grid md:grid-cols-3 gap-4">
             {[
@@ -189,7 +190,7 @@ export default function HalalStandards() {
               { icon: <CheckCircle className="w-5 h-5 text-green-600" />, text: "Renewed before expiry" },
             ].map((item, i) => (
               <div key={i} className="flex items-center gap-3 bg-white rounded-xl p-4 border border-gold-100">
-                {item.icon}
+                <item.Icon className="w-6 h-6" />
                 <span className="text-ink-700 text-sm font-medium">{item.text}</span>
               </div>
             ))}
@@ -209,7 +210,7 @@ export default function HalalStandards() {
                 className="bg-white rounded-2xl border border-cream-200 p-6 md:p-8"
               >
                 <div className="flex items-center gap-3 mb-6">
-                  <span className="text-3xl">{cat.icon}</span>
+                  <span className="text-3xl"><cat.Icon className="w-6 h-6" /></span>
                   <h3 className="font-serif text-xl font-bold text-ink-800">{cat.title}</h3>
                 </div>
                 <div className="grid md:grid-cols-2 gap-6">
@@ -221,7 +222,7 @@ export default function HalalStandards() {
                     <ul className="space-y-2">
                       {cat.allowed.map((item) => (
                         <li key={item} className="flex items-start gap-2 text-sm text-ink-600">
-                          <span className="text-green-500 mt-0.5">✓</span>
+                          <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 shrink-0" />
                           {item}
                         </li>
                       ))}
@@ -235,7 +236,7 @@ export default function HalalStandards() {
                     <ul className="space-y-2">
                       {cat.prohibited.map((item) => (
                         <li key={item} className="flex items-start gap-2 text-sm text-ink-600">
-                          <span className="text-red-400 mt-0.5">✗</span>
+                          <XCircle className="w-4 h-4 text-red-400 mt-0.5 shrink-0" />
                           {item}
                         </li>
                       ))}

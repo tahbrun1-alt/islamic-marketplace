@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useParams, Link } from "wouter";
 import { motion } from "framer-motion";
 import { trpc } from "@/lib/trpc";
+import { useAuth } from "@/_core/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
@@ -9,15 +10,17 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   MapPin, Phone, Mail, Globe, Instagram, Star, Package,
   Calendar, CheckCircle, ExternalLink, ArrowLeft, ShoppingBag,
-  Shield, Award, Clock, Heart
+  Shield, Award, Clock, Heart, Users
 } from "lucide-react";
 import { useCartStore } from "@/stores/cartStore";
 import { toast } from "sonner";
+import ReviewSection from "@/components/ReviewSection";
 
 export default function ShopPage() {
   const { slug } = useParams<{ slug: string }>();
   const [activeTab, setActiveTab] = useState("products");
   const addItem = useCartStore((s) => s.addItem);
+  const { isAuthenticated } = useAuth();
 
   const { data: shop, isLoading: shopLoading } = trpc.shops.getBySlug.useQuery(
     { slug: slug ?? "" },
@@ -33,6 +36,28 @@ export default function ShopPage() {
     { shopId: shop?.id, limit: 24 },
     { enabled: !!shop?.id }
   );
+
+  const { data: isFollowing, refetch: refetchFollow } = trpc.follows.isFollowing.useQuery(
+    { shopId: shop?.id ?? 0 },
+    { enabled: !!shop?.id && isAuthenticated }
+  );
+
+  const followMutation = trpc.follows.follow.useMutation({
+    onSuccess: () => { refetchFollow(); toast.success("Following " + shop?.name); },
+  });
+  const unfollowMutation = trpc.follows.unfollow.useMutation({
+    onSuccess: () => { refetchFollow(); toast.success("Unfollowed " + shop?.name); },
+  });
+
+  const handleFollowToggle = () => {
+    if (!isAuthenticated) { toast.error("Sign in to follow sellers"); return; }
+    if (!shop) return;
+    if (isFollowing) {
+      unfollowMutation.mutate({ shopId: shop.id });
+    } else {
+      followMutation.mutate({ shopId: shop.id });
+    }
+  };
 
   if (shopLoading) {
     return (
@@ -133,11 +158,27 @@ export default function ShopPage() {
                 <span className="flex items-center gap-1 text-xs text-muted-foreground">
                   <ShoppingBag className="w-3.5 h-3.5" /> {shop.totalSales} sales
                 </span>
+                {(shop as any).followerCount > 0 && (
+                  <span className="flex items-center gap-1 text-xs text-muted-foreground">
+                    <Users className="w-3.5 h-3.5" /> {(shop as any).followerCount} followers
+                  </span>
+                )}
               </div>
             </div>
 
             {/* Contact Actions */}
             <div className="flex flex-wrap gap-2 pb-2">
+              {/* Follow button */}
+              <Button
+                variant={isFollowing ? "default" : "outline"}
+                size="sm"
+                onClick={handleFollowToggle}
+                disabled={followMutation.isPending || unfollowMutation.isPending}
+                className={isFollowing ? "bg-primary text-primary-foreground" : ""}
+              >
+                <Heart className={`w-4 h-4 mr-1 ${isFollowing ? "fill-current" : ""}`} />
+                {isFollowing ? "Following" : "Follow"}
+              </Button>
               {shop.website && (
                 <Button variant="outline" size="sm" asChild>
                   <a href={shop.website} target="_blank" rel="noopener noreferrer">
@@ -172,6 +213,7 @@ export default function ShopPage() {
             <TabsTrigger value="services">
               Services {services && services.length > 0 && <Badge className="ml-1.5 text-xs">{services.length}</Badge>}
             </TabsTrigger>
+            <TabsTrigger value="reviews">Reviews</TabsTrigger>
             <TabsTrigger value="about">About</TabsTrigger>
           </TabsList>
 
@@ -284,6 +326,15 @@ export default function ShopPage() {
                 <p className="text-muted-foreground">No services listed yet.</p>
               </div>
             )}
+          </TabsContent>
+
+          {/* Reviews */}
+          <TabsContent value="reviews">
+            <ReviewSection
+              type="shop"
+              targetId={shop.id}
+              targetTitle={shop.name}
+            />
           </TabsContent>
 
           {/* About */}

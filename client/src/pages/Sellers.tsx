@@ -60,7 +60,7 @@ export default function Sellers() {
                         {shop.logo ? (
                           <img src={shop.logo} alt={shop.name} className="w-full h-full object-cover rounded-xl" />
                         ) : (
-                          "🏪"
+                          "store"
                         )}
                       </div>
                       <div className="flex-1 min-w-0">

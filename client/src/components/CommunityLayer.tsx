@@ -20,20 +20,20 @@ const COMMUNITY_REVIEWS: Review[] = [
   {
     id: 1,
     author: "Umm Khalid",
-    avatar: "👩‍🦱",
+    avatar: "",
     rating: 5,
     date: "2 days ago",
     text: "Absolutely beautiful abaya! The quality is mashallah excellent. Arrived quickly and the seller was very responsive. Will definitely order again for Eid!",
     likes: 24,
     verified: true,
     hasImage: true,
-    imageEmoji: "👗",
+    imageEmoji: "",
     product: "Premium Nida Abaya",
   },
   {
     id: 2,
     author: "Brother Tariq",
-    avatar: "👨‍🦲",
+    avatar: "",
     rating: 5,
     date: "5 days ago",
     text: "The hijama session was incredible. The practitioner was professional, knowledgeable and made me feel at ease. Highly recommend to the brothers!",
@@ -44,20 +44,20 @@ const COMMUNITY_REVIEWS: Review[] = [
   {
     id: 3,
     author: "Sister Aisha",
-    avatar: "🧕",
+    avatar: "",
     rating: 4,
     date: "1 week ago",
     text: "Good quality dates, arrived well packaged. Slightly smaller box than expected but the taste is amazing. Perfect for Ramadan iftar!",
     likes: 12,
     verified: true,
     hasImage: true,
-    imageEmoji: "🌴",
+    imageEmoji: "",
     product: "Medjool Dates 500g",
   },
   {
     id: 4,
     author: "Abu Musa",
-    avatar: "👴",
+    avatar: "",
     rating: 5,
     date: "2 weeks ago",
     text: "My daughter has been learning Arabic with Ustadha Fatima for 3 months now and her progress is mashallah remarkable. Very patient and knowledgeable teacher.",
@@ -123,7 +123,7 @@ export function ReviewCard({ review }: ReviewCardProps) {
       <div className="flex items-start justify-between mb-3">
         <div className="flex items-center gap-2.5">
           <div className="w-9 h-9 bg-amber-100 rounded-full flex items-center justify-center text-lg">
-            {review.avatar}
+            <span className="text-xs font-bold text-primary">{review.author?.charAt(0) ?? "U"}</span>
           </div>
           <div>
             <div className="flex items-center gap-1.5">
@@ -162,7 +162,7 @@ export function ReviewCard({ review }: ReviewCardProps) {
       {/* Review Image */}
       {review.hasImage && (
         <div className="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center text-2xl mb-3">
-          {review.imageEmoji}
+          <Package className="w-8 h-8 text-muted-foreground" />
         </div>
       )}
 

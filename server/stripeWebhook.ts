@@ -7,7 +7,7 @@ import express from "express";
 import { constructWebhookEvent } from "./stripe";
 import { getDb } from "./db";
 import { orders, bookings } from "../drizzle/schema";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 
 export function registerStripeWebhook(app: Express) {
   app.post(
@@ -79,6 +79,45 @@ export function registerStripeWebhook(app: Express) {
           case "payment_intent.payment_failed": {
             const pi = event.data.object as { id: string; metadata: Record<string, string> };
             console.warn(`[Stripe Webhook] Payment failed for PI: ${pi.id}`);
+            // Mark any matching order as cancelled
+            const db2 = await getDb();
+            if (db2) {
+              await db2.update(orders)
+                .set({ status: "cancelled" })
+                .where(eq(orders.stripePaymentIntentId, pi.id));
+            }
+            break;
+          }
+
+          case "payment_intent.succeeded": {
+            // Fallback: if checkout.session.completed was missed, confirm via PI
+            const pi = event.data.object as { id: string };
+            const db3 = await getDb();
+            if (!db3) break;
+            // Find order by PI id and mark paid if still pending
+            const [pendingOrder] = await db3
+              .select()
+              .from(orders)
+              .where(and(eq(orders.stripePaymentIntentId, pi.id), eq(orders.status, "pending")))
+              .limit(1);
+            if (pendingOrder) {
+              await db3.update(orders)
+                .set({ status: "processing", paidAt: new Date() })
+                .where(eq(orders.id, pendingOrder.id));
+              console.log(`[Stripe Webhook] Order ${pendingOrder.orderNumber} confirmed via payment_intent.succeeded`);
+            }
+            // Find booking by PI id and confirm deposit if still pending
+            const [pendingBooking] = await db3
+              .select()
+              .from(bookings)
+              .where(and(eq(bookings.stripePaymentIntentId, pi.id), eq(bookings.status, "pending")))
+              .limit(1);
+            if (pendingBooking) {
+              await db3.update(bookings)
+                .set({ status: "confirmed", depositPaid: true })
+                .where(eq(bookings.id, pendingBooking.id));
+              console.log(`[Stripe Webhook] Booking ${pendingBooking.id} confirmed via payment_intent.succeeded`);
+            }
             break;
           }
 

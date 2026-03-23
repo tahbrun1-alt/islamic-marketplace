@@ -1,43 +1,43 @@
 import { Link } from "wouter";
-import { Package, Calendar, ArrowRight, TrendingUp, Star } from "lucide-react";
+import { Package, Calendar, ArrowRight, TrendingUp, Star, Shirt, BookOpen, Circle, Utensils, Home, Moon, MapPin, Baby, Gem, FlaskConical, Sparkles, Gift, GraduationCap, Leaf, Camera, Scissors, ChefHat, PartyPopper, Scale, Monitor, Broom, Users, Brain, Car, LucideIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
-const productCategories = [
-  { name: "Islamic Clothing", icon: "👗", slug: "clothing", desc: "Modest fashion, abayas, thobes, hijabs", count: "2,400+" },
-  { name: "Quran & Books", icon: "📖", slug: "books", desc: "Qurans, Islamic literature, children's books", count: "1,200+" },
-  { name: "Prayer Items", icon: "🕌", slug: "prayer", desc: "Prayer mats, tasbeeh, miswak, compasses", count: "800+" },
-  { name: "Halal Food", icon: "🍽️", slug: "food", desc: "Halal snacks, dates, sweets, spices", count: "600+" },
-  { name: "Home & Decor", icon: "🏡", slug: "home-decor", desc: "Islamic art, calligraphy, wall decor", count: "950+" },
-  { name: "Ramadan & Eid", icon: "🌙", slug: "ramadan-eid", desc: "Lanterns, gifts, decorations, kits", count: "1,100+" },
-  { name: "Hajj & Umrah", icon: "🕋", slug: "hajj-umrah", desc: "Ihram, travel essentials, prayer beads", count: "400+" },
-  { name: "Kids & Baby", icon: "👶", slug: "kids", desc: "Islamic toys, clothing, books for children", count: "700+" },
-  { name: "Jewellery", icon: "💍", slug: "jewellery", desc: "Halal-certified modest jewellery", count: "500+" },
-  { name: "Perfumes & Oud", icon: "🌹", slug: "perfumes", desc: "Alcohol-free attar, oud, bakhoor", count: "350+" },
-  { name: "Health & Beauty", icon: "✨", slug: "health-beauty", desc: "Halal cosmetics, natural skincare", count: "450+" },
-  { name: "Gifts & Bundles", icon: "🎁", slug: "gifts", desc: "Curated gift sets for every occasion", count: "300+" },
+const productCategories: { name: string; Icon: LucideIcon; slug: string; desc: string }[] = [
+  { name: "Islamic Clothing", Icon: Shirt,        slug: "clothing",     desc: "Modest fashion, abayas, thobes, hijabs" },
+  { name: "Quran & Books",    Icon: BookOpen,     slug: "books",        desc: "Qurans, Islamic literature, children's books" },
+  { name: "Prayer Items",     Icon: Circle,       slug: "prayer",       desc: "Prayer mats, tasbeeh, miswak, compasses" },
+  { name: "Halal Food",       Icon: Utensils,     slug: "food",         desc: "Halal snacks, dates, sweets, spices" },
+  { name: "Home & Decor",     Icon: Home,         slug: "home-decor",   desc: "Islamic art, calligraphy, wall decor" },
+  { name: "Ramadan & Eid",    Icon: Moon,         slug: "ramadan-eid",  desc: "Lanterns, gifts, decorations, kits" },
+  { name: "Hajj & Umrah",     Icon: MapPin,       slug: "hajj-umrah",   desc: "Ihram, travel essentials, prayer beads" },
+  { name: "Kids & Baby",      Icon: Baby,         slug: "kids",         desc: "Islamic toys, clothing, books for children" },
+  { name: "Jewellery",        Icon: Gem,          slug: "jewellery",    desc: "Halal-certified modest jewellery" },
+  { name: "Perfumes & Oud",   Icon: FlaskConical, slug: "perfumes",     desc: "Alcohol-free attar, oud, bakhoor" },
+  { name: "Health & Beauty",  Icon: Sparkles,     slug: "health-beauty",desc: "Halal cosmetics, natural skincare" },
+  { name: "Gifts & Bundles",  Icon: Gift,         slug: "gifts",        desc: "Curated gift sets for every occasion" },
 ];
 
-const serviceCategories = [
-  { name: "Islamic Education", icon: "📚", slug: "education", desc: "Quran tutors, Arabic lessons, Islamic studies", count: "500+" },
-  { name: "Hijama & Wellness", icon: "🌿", slug: "wellness", desc: "Cupping therapy, ruqyah, holistic health", count: "200+" },
-  { name: "Photography", icon: "📷", slug: "photography", desc: "Nikah, Aqiqah, family & event photography", count: "350+" },
-  { name: "Tailoring", icon: "✂️", slug: "tailoring", desc: "Custom abayas, thobes, alterations", count: "180+" },
-  { name: "Catering & Food", icon: "🍲", slug: "catering", desc: "Halal catering for events and occasions", count: "250+" },
-  { name: "Event Planning", icon: "🎪", slug: "events", desc: "Nikah, Aqiqah, Eid party planning", count: "120+" },
-  { name: "Legal & Finance", icon: "⚖️", slug: "legal-finance", desc: "Islamic wills, halal mortgages, finance advice", count: "90+" },
-  { name: "IT & Tech", icon: "💻", slug: "tech", desc: "Muslim-owned tech services and development", count: "150+" },
-  { name: "Cleaning", icon: "🧹", slug: "cleaning", desc: "Home and commercial cleaning services", count: "200+" },
-  { name: "Childcare", icon: "👨‍👩‍👧", slug: "childcare", desc: "Islamic nurseries, babysitting, tutoring", count: "100+" },
-  { name: "Therapy & Counselling", icon: "🧠", slug: "therapy", desc: "Islamic counselling, marriage guidance", count: "80+" },
-  { name: "Transport", icon: "🚗", slug: "transport", desc: "Airport transfers, wedding cars, logistics", count: "130+" },
+const serviceCategories: { name: string; Icon: LucideIcon; slug: string; desc: string }[] = [
+  { name: "Islamic Education",     Icon: GraduationCap, slug: "education",    desc: "Quran tutors, Arabic lessons, Islamic studies" },
+  { name: "Hijama & Wellness",     Icon: Leaf,          slug: "wellness",     desc: "Cupping therapy, ruqyah, holistic health" },
+  { name: "Photography",           Icon: Camera,        slug: "photography",  desc: "Nikah, Aqiqah, family & event photography" },
+  { name: "Tailoring",             Icon: Scissors,      slug: "tailoring",    desc: "Custom abayas, thobes, alterations" },
+  { name: "Catering & Food",       Icon: ChefHat,       slug: "catering",     desc: "Halal catering for events and occasions" },
+  { name: "Event Planning",        Icon: PartyPopper,   slug: "events",       desc: "Nikah, Aqiqah, Eid party planning" },
+  { name: "Legal & Finance",       Icon: Scale,         slug: "legal-finance",desc: "Islamic wills, halal mortgages, finance advice" },
+  { name: "IT & Tech",             Icon: Monitor,       slug: "tech",         desc: "Muslim-owned tech services and development" },
+  { name: "Cleaning",              Icon: Broom,         slug: "cleaning",     desc: "Home and commercial cleaning services" },
+  { name: "Childcare",             Icon: Users,         slug: "childcare",    desc: "Islamic nurseries, babysitting, tutoring" },
+  { name: "Therapy & Counselling", Icon: Brain,         slug: "therapy",      desc: "Islamic counselling, marriage guidance" },
+  { name: "Transport",             Icon: Car,           slug: "transport",    desc: "Airport transfers, wedding cars, logistics" },
 ];
 
-const trendingCategories = [
-  { name: "Ramadan Kits", icon: "🌙", href: "/products?category=ramadan-eid", badge: "Seasonal" },
-  { name: "Quran Tutors", icon: "📖", href: "/services?category=education", badge: "Popular" },
-  { name: "Modest Fashion", icon: "👗", href: "/products?category=clothing", badge: "Trending" },
-  { name: "Nikah Packages", icon: "💍", href: "/services?category=events", badge: "New" },
+const trendingCategories: { name: string; Icon: LucideIcon; href: string; badge: string }[] = [
+  { name: "Ramadan Kits",  Icon: Moon,        href: "/products?category=ramadan-eid", badge: "Seasonal" },
+  { name: "Quran Tutors",  Icon: BookOpen,    href: "/services?category=education",   badge: "Popular" },
+  { name: "Modest Fashion",Icon: Shirt,       href: "/products?category=clothing",    badge: "Trending" },
+  { name: "Nikah Packages",Icon: PartyPopper, href: "/services?category=events",      badge: "New" },
 ];
 
 export default function Categories() {
@@ -72,7 +72,7 @@ export default function Categories() {
               <Link key={cat.name} href={cat.href}>
                 <div className="group relative bg-card border border-border rounded-xl p-4 hover:border-primary hover:shadow-md transition-all cursor-pointer">
                   <Badge className="absolute top-3 right-3 text-xs" variant="secondary">{cat.badge}</Badge>
-                  <div className="text-3xl mb-2">{cat.icon}</div>
+                  <div className="w-10 h-10 rounded-lg flex items-center justify-center mb-2" style={{background:"oklch(0.58 0.13 75 / 0.1)"}}><cat.Icon className="w-5 h-5 text-primary" /></div>
                   <p className="font-medium text-sm group-hover:text-primary transition-colors">{cat.name}</p>
                   <ArrowRight className="w-3.5 h-3.5 text-muted-foreground mt-1 group-hover:text-primary transition-colors" />
                 </div>
@@ -96,7 +96,7 @@ export default function Categories() {
             {productCategories.map((cat) => (
               <Link key={cat.slug} href={`/products?category=${cat.slug}`}>
                 <div className="group bg-card border border-border rounded-xl p-4 hover:border-primary hover:shadow-md transition-all cursor-pointer text-center">
-                  <div className="text-3xl mb-2">{cat.icon}</div>
+                  <div className="w-10 h-10 rounded-lg flex items-center justify-center mb-2" style={{background:"oklch(0.58 0.13 75 / 0.1)"}}><cat.Icon className="w-5 h-5 text-primary" /></div>
                   <p className="font-medium text-sm group-hover:text-primary transition-colors leading-tight">{cat.name}</p>
                   <p className="text-xs text-muted-foreground mt-1">{cat.count} items</p>
                 </div>
@@ -109,7 +109,7 @@ export default function Categories() {
               <Link key={`detail-${cat.slug}`} href={`/products?category=${cat.slug}`}>
                 <div className="group flex items-center gap-4 bg-card border border-border rounded-xl p-4 hover:border-primary hover:shadow-md transition-all cursor-pointer">
                   <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center text-2xl shrink-0">
-                    {cat.icon}
+                    <cat.Icon className="w-4 h-4 text-primary" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="font-medium text-sm group-hover:text-primary transition-colors">{cat.name}</p>
@@ -138,7 +138,7 @@ export default function Categories() {
             {serviceCategories.map((cat) => (
               <Link key={cat.slug} href={`/services?category=${cat.slug}`}>
                 <div className="group bg-card border border-border rounded-xl p-4 hover:border-primary hover:shadow-md transition-all cursor-pointer text-center">
-                  <div className="text-3xl mb-2">{cat.icon}</div>
+                  <div className="w-10 h-10 rounded-lg flex items-center justify-center mb-2" style={{background:"oklch(0.58 0.13 75 / 0.1)"}}><cat.Icon className="w-5 h-5 text-primary" /></div>
                   <p className="font-medium text-sm group-hover:text-primary transition-colors leading-tight">{cat.name}</p>
                   <p className="text-xs text-muted-foreground mt-1">{cat.count} providers</p>
                 </div>
@@ -151,7 +151,7 @@ export default function Categories() {
               <Link key={`detail-${cat.slug}`} href={`/services?category=${cat.slug}`}>
                 <div className="group flex items-center gap-4 bg-card border border-border rounded-xl p-4 hover:border-primary hover:shadow-md transition-all cursor-pointer">
                   <div className="w-12 h-12 rounded-lg bg-blue-500/10 flex items-center justify-center text-2xl shrink-0">
-                    {cat.icon}
+                    <cat.Icon className="w-4 h-4 text-primary" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="font-medium text-sm group-hover:text-primary transition-colors">{cat.name}</p>

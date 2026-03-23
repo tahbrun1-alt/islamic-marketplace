@@ -74,7 +74,12 @@ export default function Returns() {
                     "Items not as described on the listing",
                     "Wrong item received",
                     "Items not delivered within 30 days",
-                  ].map(i => <li key={i} className="flex gap-2"><span className="text-green-600">✓</span>{i}</li>)}
+                  ].map(i => (
+                    <li key={i} className="flex gap-2">
+                      <CheckCircle className="w-4 h-4 text-green-600 shrink-0 mt-0.5" />
+                      <span>{i}</span>
+                    </li>
+                  ))}
                 </ul>
               </div>
               <div>
@@ -89,7 +94,12 @@ export default function Returns() {
                     "Digital downloads once accessed",
                     "Hygiene products once unsealed (e.g. underwear, earrings)",
                     "Items returned after 14 days without a fault",
-                  ].map(i => <li key={i} className="flex gap-2"><span className="text-red-500">✗</span>{i}</li>)}
+                  ].map(i => (
+                    <li key={i} className="flex gap-2">
+                      <XCircle className="w-4 h-4 text-red-500 shrink-0 mt-0.5" />
+                      <span>{i}</span>
+                    </li>
+                  ))}
                 </ul>
               </div>
             </div>

@@ -102,10 +102,10 @@ function ShareLinkModal({ shopName, shopId, onClose }: ShareLinkModalProps) {
   };
 
   const shareOptions = [
-    { label: "WhatsApp", emoji: "💬", url: `https://wa.me/?text=${encodeURIComponent(`Check out my shop on Noor Marketplace! ${shopUrl}`)}` },
-    { label: "Instagram", emoji: "📸", url: "#" },
-    { label: "Facebook", emoji: "👥", url: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shopUrl)}` },
-    { label: "Twitter/X", emoji: "🐦", url: `https://twitter.com/intent/tweet?text=${encodeURIComponent(`Shop halal on Noor Marketplace! ${shopUrl}`)}` },
+    { label: "WhatsApp", icon: "whatsapp", url: `https://wa.me/?text=${encodeURIComponent(`Check out my shop on Noor Marketplace! ${shopUrl}`)}` },
+    { label: "Instagram", icon: "instagram", url: "#" },
+    { label: "Facebook", icon: "facebook", url: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shopUrl)}` },
+    { label: "Twitter/X", icon: "twitter", url: `https://twitter.com/intent/tweet?text=${encodeURIComponent(`Shop halal on Noor Marketplace! ${shopUrl}`)}` },
   ];
 
   return (
@@ -113,7 +113,7 @@ function ShareLinkModal({ shopName, shopId, onClose }: ShareLinkModalProps) {
       <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-bold text-gray-900">Share Your Shop</h3>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600">✕</button>
+          <button onClick={onClose} className="text-gray-400 hover:text-gray-600"></button>
         </div>
 
         <div className="bg-gray-50 rounded-xl p-3 flex items-center gap-2 mb-4">

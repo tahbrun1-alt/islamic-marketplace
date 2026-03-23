@@ -17,7 +17,7 @@ const CHARITIES: Charity[] = [
   {
     id: "islamic-relief",
     name: "Islamic Relief UK",
-    logo: "🌍",
+    logo: "IR",
     description: "Emergency aid, water, education and sustainable development worldwide.",
     cause: "Global Aid",
     totalRaised: "£12,450",
@@ -27,7 +27,7 @@ const CHARITIES: Charity[] = [
   {
     id: "human-appeal",
     name: "Human Appeal",
-    logo: "💧",
+    logo: "MA",
     description: "Providing clean water, food and shelter to those in need.",
     cause: "Water & Food",
     totalRaised: "£8,320",
@@ -37,7 +37,7 @@ const CHARITIES: Charity[] = [
   {
     id: "muslim-aid",
     name: "Muslim Aid",
-    logo: "🏥",
+    logo: "PA",
     description: "Healthcare, education and emergency relief for vulnerable communities.",
     cause: "Healthcare",
     totalRaised: "£6,180",
@@ -47,7 +47,7 @@ const CHARITIES: Charity[] = [
   {
     id: "penny-appeal",
     name: "Penny Appeal",
-    logo: "🌱",
+    logo: "HB",
     description: "Tackling poverty and transforming lives across the Muslim world.",
     cause: "Poverty Relief",
     totalRaised: "£4,950",
@@ -150,7 +150,7 @@ export function CharityCheckout({ orderTotal, onSelect }: CharityCheckoutProps) 
 
           {selectedCharity && (
             <p className="text-xs text-teal-700 bg-teal-100 rounded-lg px-3 py-1.5">
-              💚 £{donationAmount} will be donated to{" "}
+              £{donationAmount} will be donated to{" "}
               {CHARITIES.find((c) => c.id === selectedCharity)?.name}. Jazakallah Khair!
             </p>
           )}
