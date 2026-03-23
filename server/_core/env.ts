@@ -2,6 +2,7 @@ export const ENV = {
   cookieSecret: process.env.JWT_SECRET ?? "noor-marketplace-secret-change-in-production",
   databaseUrl: process.env.DATABASE_URL ?? "",
   isProduction: process.env.NODE_ENV === "production",
+  ownerOpenId: process.env.OWNER_OPEN_ID ?? "",
   // LLM for AI product import (Groq — OpenAI-compatible)
   llmApiUrl: process.env.LLM_API_URL ?? "https://api.groq.com/openai/v1/chat/completions",
   llmApiKey: process.env.GROQ_API_KEY ?? process.env.OPENAI_API_KEY ?? process.env.LLM_API_KEY ?? "",

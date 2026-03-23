@@ -1,5 +1,5 @@
 import { Link } from "wouter";
-import { Package, Calendar, ArrowRight, TrendingUp, Star, Shirt, BookOpen, Circle, Utensils, Home, Moon, MapPin, Baby, Gem, FlaskConical, Sparkles, Gift, GraduationCap, Leaf, Camera, Scissors, ChefHat, PartyPopper, Scale, Monitor, Broom, Users, Brain, Car, LucideIcon } from "lucide-react";
+import { Package, Calendar, ArrowRight, TrendingUp, Star, Shirt, BookOpen, Circle, Utensils, Home, Moon, MapPin, Baby, Gem, FlaskConical, Sparkles, Gift, GraduationCap, Leaf, Camera, Scissors, ChefHat, PartyPopper, Scale, Monitor, Brush, Users, Brain, Car, LucideIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
@@ -27,7 +27,7 @@ const serviceCategories: { name: string; Icon: LucideIcon; slug: string; desc: s
   { name: "Event Planning",        Icon: PartyPopper,   slug: "events",       desc: "Nikah, Aqiqah, Eid party planning" },
   { name: "Legal & Finance",       Icon: Scale,         slug: "legal-finance",desc: "Islamic wills, halal mortgages, finance advice" },
   { name: "IT & Tech",             Icon: Monitor,       slug: "tech",         desc: "Muslim-owned tech services and development" },
-  { name: "Cleaning",              Icon: Broom,         slug: "cleaning",     desc: "Home and commercial cleaning services" },
+  { name: "Cleaning",              Icon: Brush,         slug: "cleaning",     desc: "Home and commercial cleaning services" },
   { name: "Childcare",             Icon: Users,         slug: "childcare",    desc: "Islamic nurseries, babysitting, tutoring" },
   { name: "Therapy & Counselling", Icon: Brain,         slug: "therapy",      desc: "Islamic counselling, marriage guidance" },
   { name: "Transport",             Icon: Car,           slug: "transport",    desc: "Airport transfers, wedding cars, logistics" },
