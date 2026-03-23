@@ -1,6 +1,6 @@
 import React from "react";
 import { useState } from "react";
-import { TrendingUp, Star, Users, Package, ChevronRight, Award, Zap } from "lucide-react";
+import { TrendingUp, Star, Users, Package, ChevronRight, Award, Zap, ShoppingBag, Leaf, Pen, BookOpen } from "lucide-react";
 import { Link } from "wouter";
 
 interface NewSeller {
