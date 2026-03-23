@@ -19,23 +19,43 @@ import {
   ShoppingBag, Calendar, Star, ArrowRight, Shield, Truck,
   Award, Users, Package, ChevronRight, Heart, MapPin,
   CheckCircle, Store, Clock, Shirt, Circle, BookOpen,
-  Home, Utensils, Gem, Camera, Leaf, Handshake, Languages,
-  Activity, Gift, Moon, GraduationCap, Ring, Scissors, LucideIcon
+  Home as HomeIcon, Utensils, Gem, Camera, Leaf, Handshake, Languages,
+  Activity, Gift, Moon, GraduationCap, Scissors, LucideIcon
 } from "lucide-react";
+
+// Custom Ring icon since it's missing from lucide-react
+const Ring = (props: any) => (
+  <svg
+    {...props}
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <circle cx="12" cy="14" r="7" />
+    <path d="M12 7V2" />
+    <path d="M9 4h6" />
+  </svg>
+);
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 const PRODUCT_CATEGORIES: { name: string; Icon: LucideIcon; href: string }[] = [
   { name: "Modest Fashion", Icon: Shirt,     href: "/products?category=modest-fashion" },
   { name: "Prayer Items",   Icon: Circle,    href: "/products?category=prayer-items" },
   { name: "Islamic Books",  Icon: BookOpen,  href: "/products?category=qurans-books" },
-  { name: "Home & Decor",   Icon: Home,      href: "/products?category=gifts-decor" },
+  { name: "Home & Decor",   Icon: HomeIcon,  href: "/products?category=gifts-decor" },
   { name: "Halal Food",     Icon: Utensils,  href: "/products?category=halal-food" },
   { name: "Jewellery",      Icon: Gem,       href: "/products?category=jewellery" },
   { name: "Abayas",         Icon: Shirt,     href: "/products?category=abayas-jilbabs" },
   { name: "Ramadan & Eid",  Icon: Moon,      href: "/products?category=ramadan-eid" },
 ];
 
-const SERVICE_CATEGORIES: { name: string; Icon: LucideIcon; href: string }[] = [
+const SERVICE_CATEGORIES: { name: string; Icon: any; href: string }[] = [
   { name: "Quran Tutoring",  Icon: GraduationCap, href: "/services?category=quran-tutoring" },
   { name: "Nikah Services",  Icon: Ring,          href: "/services?category=nikah-services" },
   { name: "Halal Catering",  Icon: Utensils,      href: "/services?category=halal-catering" },
@@ -203,286 +223,105 @@ export default function Home() {
                   {mode === "products" ? "Shop by Category" : "Browse by Service"}
                 </h2>
                 <p className="text-sm text-muted-foreground mt-1">
-                  {mode === "products" ? "Halal-certified products across all categories" : "Trusted Islamic service providers"}
+                  {mode === "products" ? "Halal-certified products across all categories" : "Trusted Islamic services for your needs"}
                 </p>
               </div>
-              <Link href={mode === "products" ? "/products" : "/services"}
-                className="text-sm font-medium text-primary hover:underline flex items-center gap-1">
-                View all <ChevronRight className="w-3.5 h-3.5" />
+              <Link href={mode === "products" ? "/products" : "/services"}>
+                <Button variant="ghost" size="sm" className="text-primary font-medium">
+                  View All <ChevronRight className="w-4 h-4 ml-1" />
+                </Button>
               </Link>
             </div>
 
-            <div className="grid grid-cols-4 sm:grid-cols-8 gap-3">
-              {(mode === "products" ? PRODUCT_CATEGORIES : SERVICE_CATEGORIES).map((cat, i) => (
-                <motion.div key={cat.name}
-                  initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.4, delay: i * 0.04 }}>
-                  <Link href={cat.href}
-                    className="flex flex-col items-center gap-2 p-3 rounded-xl hover:bg-secondary transition-all duration-200 group text-center">
-                    <div className="w-12 h-12 rounded-xl flex items-center justify-center transition-transform duration-200 group-hover:scale-110"
-                      style={{ background: "oklch(0.58 0.13 75 / 0.08)", border: "1px solid oklch(0.92 0.018 86)" }}>
-                      <cat.Icon className="w-5 h-5 text-primary" />
+            <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-4">
+              {(mode === "products" ? PRODUCT_CATEGORIES : SERVICE_CATEGORIES).map((cat) => (
+                <Link key={cat.name} href={cat.href}>
+                  <div className="group flex flex-col items-center gap-3 p-5 rounded-2xl bg-secondary/30 border border-border/50 hover:border-primary/30 hover:bg-secondary/60 transition-all cursor-pointer">
+                    <div className="w-12 h-12 rounded-xl bg-card flex items-center justify-center shadow-sm group-hover:shadow-md group-hover:scale-110 transition-all">
+                      <cat.Icon className="w-6 h-6 text-primary" />
                     </div>
-                    <span className="text-xs font-medium text-foreground group-hover:text-primary transition-colors leading-tight">{cat.name}</span>
-                  </Link>
-                </motion.div>
+                    <span className="text-xs font-medium text-center text-foreground group-hover:text-primary transition-colors">
+                      {cat.name}
+                    </span>
+                  </div>
+                </Link>
               ))}
             </div>
           </div>
         </motion.section>
       </AnimatePresence>
 
-      {/* ── Gold divider ─────────────────────────────────────────────────── */}
-      <div className="divider-gold" />
-
-      {/* ── Featured Listings ─────────────────────────────────────────────── */}
-      <AnimatePresence mode="wait">
-        <motion.section
-          key={`featured-${mode}`}
-          initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-          transition={{ duration: 0.3 }}
-          className="py-14 bg-secondary/30"
-        >
-          <div className="container">
-            <div className="flex items-center justify-between mb-8">
-              <div>
-                <h2 className="font-serif text-2xl font-semibold text-foreground">
-                  {mode === "products" ? "Featured Products" : "Featured Services"}
-                </h2>
-                <p className="text-sm text-muted-foreground mt-1">
-                  {mode === "products" ? "Hand-picked halal products from top sellers" : "Highly rated service providers"}
-                </p>
-              </div>
-              <Link href={mode === "products" ? "/products" : "/services"}
-                className="text-sm font-medium text-primary hover:underline flex items-center gap-1">
-                View all <ChevronRight className="w-3.5 h-3.5" />
-              </Link>
-            </div>
-
-            {mode === "products" ? (
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                {displayProducts.length > 0 ? displayProducts.map((product, i) => (
-                  <motion.div key={product.id}
-                    initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.4, delay: i * 0.06 }}>
-                    <ProductCard product={product} />
-                  </motion.div>
-                )) : (
-                  <EmptyState mode="products" />
-                )}
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                {displayServices.length > 0 ? displayServices.map((service, i) => (
-                  <motion.div key={service.id}
-                    initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.4, delay: i * 0.06 }}>
-                    <ServiceCard service={service} />
-                  </motion.div>
-                )) : (
-                  <EmptyState mode="services" />
-                )}
-              </div>
-            )}
-          </div>
-        </motion.section>
-      </AnimatePresence>
-
-      {/* ── Trust Pillars ─────────────────────────────────────────────────── */}
-      <section className="py-14 bg-background">
-        <div className="container">
-          <div className="text-center mb-10">
-            <h2 className="font-serif text-2xl font-semibold text-foreground mb-2">Why Choose Noor Marketplace?</h2>
-            <p className="text-muted-foreground text-sm max-w-md mx-auto">Built on Islamic values of trust, fairness, and community</p>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {[
-              { icon: Shield, title: "Halal Verified", desc: "All products and services are screened for halal compliance by our team.", color: "oklch(0.40 0.12 140)" },
-              { icon: Award, title: "Trusted Sellers", desc: "Every seller is verified and rated by the community for accountability.", color: "oklch(0.83 0.19 88)" },
-              { icon: Truck, title: "Global Delivery", desc: "Sellers ship worldwide with tracked delivery and buyer protection.", color: "oklch(0.45 0.10 220)" },
-              { icon: Users, title: "Ummah First", desc: "A portion of every commission supports Islamic charities globally.", color: "oklch(0.50 0.12 30)" },
-            ].map(({ icon: Icon, title, desc, color }, i) => (
-              <motion.div key={title}
-                initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }} transition={{ duration: 0.5, delay: i * 0.1 }}
-                className="p-6 rounded-2xl bg-card border border-border hover:shadow-elegant transition-all duration-300">
-                <div className="w-11 h-11 rounded-xl flex items-center justify-center mb-4"
-                  style={{ background: `${color}18`, border: `1px solid ${color}30` }}>
-                  <Icon className="w-5 h-5" style={{ color }} />
-                </div>
-                <h3 className="font-semibold text-foreground mb-2 text-sm">{title}</h3>
-                <p className="text-xs text-muted-foreground leading-relaxed">{desc}</p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── Sell on Noor CTA ──────────────────────────────────────────────── */}
-      <section className="py-16 relative overflow-hidden" style={{ background: "linear-gradient(135deg, oklch(0.12 0.018 42) 0%, oklch(0.18 0.022 45) 100%)" }}>
-        <div className="absolute inset-0 pointer-events-none opacity-10"
-          style={{ backgroundImage: "url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23d4a017' fill-opacity='0.3'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E\")" }} />
-        <div className="container relative">
-          <div className="max-w-2xl mx-auto text-center">
-            <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
-              <span className="font-arabic text-3xl block mb-3" style={{ color: "oklch(0.88 0.17 88)" }}>بارك الله فيك</span>
-              <h2 className="font-serif text-3xl lg:text-4xl font-semibold mb-4" style={{ color: "oklch(0.96 0.006 85)" }}>
-                Start Selling on Noor
-              </h2>
-              <p className="text-base mb-8 leading-relaxed" style={{ color: "oklch(0.75 0.01 80)" }}>
-                Join hundreds of Muslim entrepreneurs. List products or services for free for 14 days,
-                then just 7% commission (6.5% platform + 0.5% auto-donated to charity) — lower than any mainstream platform.
-              </p>
-              <div className="flex flex-wrap justify-center gap-4 mb-8">
-                {["Free 14-day trial", "Only 7% commission", "0.5% to charity", "Global reach"].map((f) => (
-                  <div key={f} className="flex items-center gap-2 text-sm" style={{ color: "oklch(0.85 0.01 80)" }}>
-                    <CheckCircle className="w-4 h-4" style={{ color: "oklch(0.88 0.17 88)" }} />
-                    {f}
-                  </div>
-                ))}
-              </div>
-              <Button size="lg" className="h-12 px-10 rounded-xl font-medium text-foreground hover:opacity-90 transition-opacity"
-                style={{ background: "linear-gradient(135deg, oklch(0.88 0.17 88), oklch(0.75 0.20 86))" }} asChild>
-                <Link href="/seller/dashboard">
-                  <Store className="w-4 h-4 mr-2" />
-                  Open Your Shop
-                </Link>
-              </Button>
-            </motion.div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── Seasonal Sections ────────────────────────────────────────────── */}
-      <section className="py-14 bg-background">
-        <div className="container">
-          <div className="text-center mb-10">
-            <h2 className="font-serif text-2xl font-semibold text-foreground mb-2">Shop by Occasion</h2>
-            <p className="text-sm text-muted-foreground">Curated collections for every blessed moment</p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {[
-              { title: "Ramadan", arabic: "رمضان", desc: "Lanterns, prayer sets, iftar essentials & more", Icon: Moon, href: "/products?category=ramadan-eid", color: "oklch(0.18 0.04 260)" },
-              { title: "Eid Collection", arabic: "عيد مبارك", desc: "Gifts, fashion, sweets & celebration items", Icon: Gift, href: "/products?category=ramadan-eid", color: "oklch(0.18 0.05 140)" },
-              { title: "Hajj & Umrah", arabic: "لبيك اللهم", desc: "Ihram, prayer beads, travel essentials", Icon: MapPin, href: "/products?category=hajj-umrah", color: "oklch(0.18 0.04 45)" },
-            ].map(({ title, arabic, desc, Icon: OccasionIcon, href, color }, i) => (
-              <motion.div key={title}
-                initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }} transition={{ duration: 0.5, delay: i * 0.1 }}
-                className="relative overflow-hidden rounded-2xl p-6 border border-border cursor-pointer hover:shadow-elegant transition-all duration-300 group"
-                style={{ background: `linear-gradient(135deg, ${color} 0%, oklch(0.15 0.02 45) 100%)` }}
-              >
-                <Link href={href} className="block">
-                  <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-3" style={{ background: "rgba(255,255,255,0.15)" }}>
-                    <OccasionIcon className="w-5 h-5 text-white" />
-                  </div>
-                  <div className="font-arabic text-lg mb-1" style={{ color: "oklch(0.88 0.17 88)" }}>{arabic}</div>
-                  <h3 className="font-serif text-xl font-semibold text-white mb-2">{title}</h3>
-                  <p className="text-sm mb-4" style={{ color: "rgba(255,255,255,0.7)" }}>{desc}</p>
-                  <span className="text-sm font-medium flex items-center gap-1" style={{ color: "oklch(0.88 0.17 88)" }}>
-                    Shop Now <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-                  </span>
-                </Link>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── Trending Products ───────────────────────────────────────────── */}
-      <section className="py-14 bg-secondary/20">
-        <div className="container">
-          <div className="flex items-center justify-between mb-8">
-            <div>
-              <h2 className="font-serif text-2xl font-semibold text-foreground">Trending Now</h2>
-              <p className="text-sm text-muted-foreground mt-1">Most popular products this week</p>
-            </div>
-            <Link href="/products?sortBy=popular" className="text-sm font-medium text-primary hover:underline flex items-center gap-1">
-              View all <ChevronRight className="w-3.5 h-3.5" />
-            </Link>
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {displayProducts.slice(0, 4).length > 0 ? displayProducts.slice(0, 4).map((product, i) => (
-              <motion.div key={product.id}
-                initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }} transition={{ duration: 0.4, delay: i * 0.06 }}>
-                <ProductCard product={product} />
-              </motion.div>
-            )) : (
-              <div className="col-span-4 text-center py-12 text-muted-foreground">
-                <Package className="w-12 h-12 mx-auto mb-3 opacity-30" />
-                <p className="text-sm">Products coming soon — be the first to list!</p>
-              </div>
-            )}
-          </div>
-        </div>
-      </section>
-
-      {/* ── Featured Service Providers ───────────────────────────────────── */}
-      <section className="py-14 bg-background">
-        <div className="container">
-          <div className="flex items-center justify-between mb-8">
-            <div>
-              <h2 className="font-serif text-2xl font-semibold text-foreground">Top Service Providers</h2>
-              <p className="text-sm text-muted-foreground mt-1">Highly rated professionals in the Ummah</p>
-            </div>
-            <Link href="/services" className="text-sm font-medium text-primary hover:underline flex items-center gap-1">
-              View all <ChevronRight className="w-3.5 h-3.5" />
-            </Link>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            {displayServices.slice(0, 4).length > 0 ? displayServices.slice(0, 4).map((service, i) => (
-              <motion.div key={service.id}
-                initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }} transition={{ duration: 0.4, delay: i * 0.06 }}>
-                <ServiceCard service={service} />
-              </motion.div>
-            )) : (
-              <div className="col-span-4 text-center py-12 text-muted-foreground">
-                <Calendar className="w-12 h-12 mx-auto mb-3 opacity-30" />
-                <p className="text-sm">Services coming soon — be the first to offer yours!</p>
-              </div>
-            )}
-          </div>
-        </div>
-      </section>
-
-      {/* ── How It Works ──────────────────────────────────────────────────── */}
-      <section className="py-14 bg-secondary/20">
-        <div className="container">
-          <div className="text-center mb-10">
-            <h2 className="font-serif text-2xl font-semibold text-foreground mb-2">How It Works</h2>
-            <p className="text-sm text-muted-foreground">Simple, transparent, and halal</p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-3xl mx-auto">
-            {[
-              { step: "01", title: "Discover", desc: "Browse thousands of halal products and Islamic services from verified sellers." },
-              { step: "02", title: "Connect", desc: "Message sellers, book services, and add products to your cart with confidence." },
-              { step: "03", title: "Transact", desc: "Pay securely via Stripe. Sellers receive instant payouts after delivery confirmation." },
-            ].map(({ step, title, desc }, i) => (
-              <motion.div key={step}
-                initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }} transition={{ duration: 0.5, delay: i * 0.15 }}
-                className="relative p-6 rounded-2xl bg-card border border-border text-center">
-                <div className="font-serif text-4xl font-bold mb-3 gradient-text">{step}</div>
-                <h3 className="font-semibold text-foreground mb-2">{title}</h3>
-                <p className="text-sm text-muted-foreground leading-relaxed">{desc}</p>
-              </motion.div>
-            ))}
-          </div>
-          <div className="text-center mt-8">
-            <Link href="/how-it-works" className="text-sm font-medium text-primary hover:underline flex items-center gap-1 justify-center">
-              Learn more <ChevronRight className="w-3.5 h-3.5" />
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* ── Near Me Discovery ──────────────────────────────────────────── */}
+      {/* ── Near Me Discovery ────────────────────────────────────────────── */}
       <NearMeDiscovery />
 
       {/* ── Smart Bundles ────────────────────────────────────────────────── */}
       <SmartBundles />
+
+      {/* ── Featured Listings ────────────────────────────────────────────── */}
+      <section className="py-20 bg-secondary/20">
+        <div className="container">
+          <div className="flex items-center justify-between mb-10">
+            <div>
+              <h2 className="font-serif text-3xl font-semibold text-foreground">Featured for You</h2>
+              <p className="text-muted-foreground mt-2">Hand-picked selections from our top-rated sellers</p>
+            </div>
+            <div className="flex gap-2">
+              <Link href="/products">
+                <Button variant="outline" size="sm" className="rounded-full">Explore All</Button>
+              </Link>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {displayProducts.slice(0, 4).map((p: any) => (
+              <Link key={p.id} href={`/products/${p.id}`}>
+                <div className="group bg-card rounded-2xl border border-border overflow-hidden hover:shadow-elegant transition-all cursor-pointer">
+                  <div className="aspect-square relative overflow-hidden bg-secondary">
+                    {(p.images as string[])?.[0] ? (
+                      <img
+                        src={(p.images as string[])[0]}
+                        alt={p.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center">
+                        <Package className="w-10 h-10 text-muted-foreground/30" />
+                      </div>
+                    )}
+                    <div className="absolute top-3 right-3">
+                      <button className="w-8 h-8 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center text-muted-foreground hover:text-primary transition-colors shadow-sm">
+                        <Heart className="w-4 h-4" />
+                      </button>
+                    </div>
+                    {p.isFeatured && (
+                      <div className="absolute top-3 left-3">
+                        <Badge className="bg-primary text-primary-foreground border-none">Featured</Badge>
+                      </div>
+                    )}
+                  </div>
+                  <div className="p-4">
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                        {p.category?.replace("-", " ") || "Product"}
+                      </span>
+                      <StarRating rating={4.8} />
+                    </div>
+                    <h3 className="font-medium text-foreground mb-2 line-clamp-1 group-hover:text-primary transition-colors">
+                      {p.title}
+                    </h3>
+                    <div className="flex items-center justify-between mt-4">
+                      <span className="text-lg font-bold text-foreground">£{Number(p.price).toFixed(2)}</span>
+                      <Button size="sm" variant="secondary" className="h-8 rounded-lg text-xs font-bold">
+                        View Details
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
 
       {/* ── New Seller Spotlight ─────────────────────────────────────────── */}
       <NewSellerSpotlight />
@@ -500,149 +339,76 @@ export default function Home() {
       <TrustBadgesSection />
 
       {/* ── WhatsApp Support ─────────────────────────────────────────────── */}
-      <div className="max-w-6xl mx-auto px-4 py-6">
-        <WhatsAppSupport />
-      </div>
+      <WhatsAppSupport />
 
-    </div>
-  );
-}
+      {/* ── How It Works ─────────────────────────────────────────────────── */}
+      <section className="py-24 bg-background">
+        <div className="container">
+          <div className="max-w-3xl mx-auto text-center mb-16">
+            <h2 className="font-serif text-3xl font-semibold text-foreground mb-4">Connecting the Ummah</h2>
+            <p className="text-muted-foreground">Noor Marketplace makes it easy to buy and sell within our community with trust and transparency.</p>
+          </div>
 
-// ─── Product Card ──────────────────────────────────────────────────────────────
-function ProductCard({ product }: { product: {
-  id: number; title: string; price: string; comparePrice?: string | null;
-  images: unknown; isHalalCertified?: boolean | null; avgRating?: string | null; reviewCount?: number | null;
-  shopName?: string | null;
-}}) {
-  const images = (product.images as string[]) ?? [];
-  const rating = product.avgRating ? parseFloat(product.avgRating) : 0;
-
-  return (
-    <Link href={`/products/${product.id}`}>
-      <div className="group bg-card rounded-2xl border border-border overflow-hidden hover:shadow-elegant transition-all duration-300 cursor-pointer product-card">
-        <div className="relative aspect-square overflow-hidden bg-secondary">
-          {images[0] ? (
-            <img src={images[0]} alt={product.title}
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-          ) : (
-            <div className="w-full h-full flex items-center justify-center">
-              <Package className="w-10 h-10 text-muted-foreground/40" />
-            </div>
-          )}
-          {product.isHalalCertified && (
-            <div className="absolute top-2 left-2">
-              <span className="halal-badge flex items-center gap-1"><CheckCircle className="w-3 h-3" /> Halal</span>
-            </div>
-          )}
-          {product.comparePrice && parseFloat(product.comparePrice) > parseFloat(product.price) && (
-            <div className="absolute top-2 right-2">
-              <Badge variant="destructive" className="text-[10px] px-1.5 py-0.5">
-                -{Math.round((1 - parseFloat(product.price) / parseFloat(product.comparePrice)) * 100)}%
-              </Badge>
-            </div>
-          )}
-        </div>
-        <div className="p-3">
-          <p className="text-xs text-muted-foreground mb-1 truncate">{product.shopName || "Noor Seller"}</p>
-          <h3 className="font-medium text-sm text-foreground line-clamp-2 leading-snug mb-2">{product.title}</h3>
-          <div className="flex items-center justify-between">
-            <div>
-              <span className="font-semibold text-foreground">£{parseFloat(product.price).toFixed(2)}</span>
-              {product.comparePrice && parseFloat(product.comparePrice) > parseFloat(product.price) && (
-                <span className="text-xs text-muted-foreground line-through ml-1.5">
-                  £{parseFloat(product.comparePrice).toFixed(2)}
-                </span>
-              )}
-            </div>
-            {rating > 0 && (
-              <div className="flex items-center gap-1">
-                <StarRating rating={rating} />
-                <span className="text-[10px] text-muted-foreground">({product.reviewCount ?? 0})</span>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+            {[
+              {
+                icon: Shield,
+                title: "Verified & Halal",
+                desc: "Every seller is verified and products are checked for halal compliance to ensure peace of mind."
+              },
+              {
+                icon: Clock,
+                title: "Secure Transactions",
+                desc: "Your payments are held in escrow until you receive your order, protecting both buyers and sellers."
+              },
+              {
+                icon: Users,
+                title: "Community Driven",
+                desc: "Support Muslim-owned businesses and find services tailored to our unique lifestyle and values."
+              }
+            ].map((item, i) => (
+              <div key={i} className="text-center group">
+                <div className="w-16 h-16 rounded-2xl bg-secondary flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform shadow-sm">
+                  <item.icon className="w-8 h-8 text-primary" />
+                </div>
+                <h3 className="text-xl font-semibold mb-3">{item.title}</h3>
+                <p className="text-muted-foreground text-sm leading-relaxed">{item.desc}</p>
               </div>
-            )}
+            ))}
           </div>
         </div>
-      </div>
-    </Link>
-  );
-}
+      </section>
 
-// ─── Service Card ──────────────────────────────────────────────────────────────
-function ServiceCard({ service }: { service: {
-  id: number; title: string; price: string; duration?: number | null;
-  images: unknown; locationType?: string | null; avgRating?: string | null; reviewCount?: number | null;
-  providerName?: string | null;
-}}) {
-  const images = (service.images as string[]) ?? [];
-  const rating = service.avgRating ? parseFloat(service.avgRating) : 0;
+      {/* ── CTA ──────────────────────────────────────────────────────────── */}
+      <section className="py-20">
+        <div className="container">
+          <div className="relative rounded-[2rem] overflow-hidden bg-foreground p-10 lg:p-20 text-center">
+            {/* Decorative background */}
+            <div className="absolute inset-0 opacity-10 pointer-events-none pattern-bg" />
+            <div className="absolute top-0 left-0 w-full h-full"
+              style={{ background: "radial-gradient(circle at center, oklch(0.83 0.19 88 / 0.15), transparent)" }} />
 
-  return (
-    <Link href={`/services/${service.id}`}>
-      <div className="group bg-card rounded-2xl border border-border overflow-hidden hover:shadow-elegant transition-all duration-300 cursor-pointer product-card">
-        <div className="relative h-40 overflow-hidden bg-secondary">
-          {images[0] ? (
-            <img src={images[0]} alt={service.title}
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-          ) : (
-            <div className="w-full h-full flex items-center justify-center">
-              <Calendar className="w-10 h-10 text-muted-foreground/40" />
-            </div>
-          )}
-          {service.locationType && (
-            <div className="absolute bottom-2 left-2">
-              <span className="text-[10px] font-medium px-2 py-0.5 rounded-full"
-                style={{ background: "oklch(0.12 0.018 42 / 0.75)", color: "oklch(0.92 0.018 86)" }}>
-                {service.locationType === "online" ? "Online" : service.locationType === "in_person" ? "In Person" : "Online & In Person"}
-              </span>
-            </div>
-          )}
-        </div>
-        <div className="p-3">
-          <p className="text-xs text-muted-foreground mb-1 truncate">{service.providerName || "Noor Provider"}</p>
-          <h3 className="font-medium text-sm text-foreground line-clamp-2 leading-snug mb-2">{service.title}</h3>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <span className="font-semibold text-foreground">From £{parseFloat(service.price).toFixed(2)}</span>
-              {service.duration && (
-                <span className="text-xs text-muted-foreground flex items-center gap-0.5">
-                  <Clock className="w-3 h-3" />{service.duration}m
-                </span>
-              )}
-            </div>
-            {rating > 0 && (
-              <div className="flex items-center gap-1">
-                <StarRating rating={rating} />
-                <span className="text-[10px] text-muted-foreground">({service.reviewCount ?? 0})</span>
+            <div className="relative z-10 max-w-2xl mx-auto">
+              <h2 className="font-serif text-4xl lg:text-5xl font-semibold text-white mb-6">
+                Ready to join the <span className="text-primary">Ummah</span> marketplace?
+              </h2>
+              <p className="text-white/70 text-lg mb-10">
+                Whether you're looking for the perfect Eid gift or want to grow your business,
+                Noor is the place for you.
+              </p>
+              <div className="flex flex-wrap items-center justify-center gap-4">
+                <Button size="lg" className="h-14 px-10 rounded-xl text-primary-foreground font-bold shadow-lg hover:opacity-90 transition-opacity"
+                  style={{ background: "linear-gradient(135deg, oklch(0.83 0.19 88), oklch(0.72 0.21 85))" }} asChild>
+                  <Link href="/register">Create Your Account</Link>
+                </Button>
+                <Button size="lg" variant="outline" className="h-14 px-10 rounded-xl font-bold border-white/20 text-white hover:bg-white/10" asChild>
+                  <Link href="/how-it-works">Learn More</Link>
+                </Button>
               </div>
-            )}
+            </div>
           </div>
         </div>
-      </div>
-    </Link>
-  );
-}
-
-// ─── Empty State ───────────────────────────────────────────────────────────────
-function EmptyState({ mode }: { mode: "products" | "services" }) {
-  return (
-    <div className="col-span-full py-16 text-center">
-      <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4"
-        style={{ background: "oklch(0.58 0.13 75 / 0.08)", border: "1px solid oklch(0.92 0.018 86)" }}>
-        {mode === "products" ? <ShoppingBag className="w-7 h-7 text-primary" /> : <Calendar className="w-7 h-7 text-primary" />}
-      </div>
-      <h3 className="font-serif text-lg font-semibold text-foreground mb-2">
-        {mode === "products" ? "No products yet" : "No services yet"}
-      </h3>
-      <p className="text-sm text-muted-foreground mb-5 max-w-xs mx-auto">
-        Be the first to list your {mode === "products" ? "halal products" : "Islamic services"} on Noor Marketplace.
-      </p>
-      <Button asChild className="text-primary-foreground"
-        style={{ background: "linear-gradient(135deg, oklch(0.83 0.19 88), oklch(0.72 0.21 85))" }}>
-        <Link href="/seller/dashboard">
-          <Sparkles className="w-4 h-4 mr-2" />
-          {mode === "products" ? "Add Your First Product" : "Offer Your Service"}
-        </Link>
-      </Button>
+      </section>
     </div>
   );
 }
