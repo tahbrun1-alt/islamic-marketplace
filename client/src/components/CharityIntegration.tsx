@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { Heart, Globe, TrendingUp, ChevronRight, Check } from "lucide-react";
+import { Heart, Globe, TrendingUp, ChevronRight, Check, Loader2 } from "lucide-react";
 import { Link } from "wouter";
+import { trpc } from "@/lib/trpc";
 
 interface Charity {
   id: string;
@@ -8,8 +9,6 @@ interface Charity {
   logo: string;
   description: string;
   cause: string;
-  totalRaised: string;
-  donors: number;
   verified: boolean;
 }
 
@@ -17,41 +16,33 @@ const CHARITIES: Charity[] = [
   {
     id: "islamic-relief",
     name: "Islamic Relief UK",
-    logo: "IR",
+    logo: "🌍",
     description: "Emergency aid, water, education and sustainable development worldwide.",
     cause: "Global Aid",
-    totalRaised: "£12,450",
-    donors: 847,
     verified: true,
   },
   {
     id: "human-appeal",
     name: "Human Appeal",
-    logo: "MA",
+    logo: "💧",
     description: "Providing clean water, food and shelter to those in need.",
     cause: "Water & Food",
-    totalRaised: "£8,320",
-    donors: 612,
     verified: true,
   },
   {
     id: "muslim-aid",
     name: "Muslim Aid",
-    logo: "PA",
+    logo: "🏥",
     description: "Healthcare, education and emergency relief for vulnerable communities.",
     cause: "Healthcare",
-    totalRaised: "£6,180",
-    donors: 423,
     verified: true,
   },
   {
     id: "penny-appeal",
     name: "Penny Appeal",
-    logo: "HB",
+    logo: "🤲",
     description: "Tackling poverty and transforming lives across the Muslim world.",
     cause: "Poverty Relief",
-    totalRaised: "£4,950",
-    donors: 318,
     verified: true,
   },
 ];
@@ -161,8 +152,14 @@ export function CharityCheckout({ orderTotal, onSelect }: CharityCheckoutProps) 
 }
 
 export function CharityImpactSection() {
-  const totalRaised = "£31,900";
-  const totalDonors = 2200;
+  const { data: stats, isLoading } = trpc.charity.publicStats.useQuery(undefined, {
+    staleTime: 60_000, // refresh every 60 seconds
+    refetchInterval: 60_000,
+  });
+
+  const totalRaised = stats?.totalRaisedFormatted ?? "£0.00";
+  const totalDonors = stats?.totalDonors ?? 0;
+  const totalOrders = stats?.totalOrders ?? 0;
 
   return (
     <section className="py-12 bg-gradient-to-b from-teal-50 to-white">
@@ -174,20 +171,29 @@ export function CharityImpactSection() {
             <h2 className="text-2xl font-bold text-gray-900">Our Sadaqah Impact</h2>
           </div>
           <p className="text-gray-500 text-sm max-w-xl mx-auto">
-            Every purchase on Noor Marketplace can include a Sadaqah donation. Together, our community has raised over{" "}
-            <strong className="text-teal-700">{totalRaised}</strong> for Islamic charities.
+            Every purchase on Noor Marketplace automatically donates 0.5% to verified Islamic charities.
+            Together, our community has raised{" "}
+            <strong className="text-teal-700">{totalRaised}</strong> so far.
           </p>
         </div>
 
-        {/* Stats */}
+        {/* Live Stats */}
         <div className="grid grid-cols-3 gap-4 mb-8">
           <div className="bg-white rounded-xl border border-teal-100 p-4 text-center shadow-sm">
-            <p className="text-2xl font-bold text-teal-700">{totalRaised}</p>
+            {isLoading ? (
+              <Loader2 className="w-5 h-5 animate-spin text-teal-500 mx-auto mb-1" />
+            ) : (
+              <p className="text-2xl font-bold text-teal-700">{totalRaised}</p>
+            )}
             <p className="text-xs text-gray-500 mt-1">Total Raised</p>
           </div>
           <div className="bg-white rounded-xl border border-teal-100 p-4 text-center shadow-sm">
-            <p className="text-2xl font-bold text-teal-700">{totalDonors.toLocaleString()}</p>
-            <p className="text-xs text-gray-500 mt-1">Generous Donors</p>
+            {isLoading ? (
+              <Loader2 className="w-5 h-5 animate-spin text-teal-500 mx-auto mb-1" />
+            ) : (
+              <p className="text-2xl font-bold text-teal-700">{totalOrders.toLocaleString()}</p>
+            )}
+            <p className="text-xs text-gray-500 mt-1">Orders Placed</p>
           </div>
           <div className="bg-white rounded-xl border border-teal-100 p-4 text-center shadow-sm">
             <p className="text-2xl font-bold text-teal-700">4</p>
@@ -214,12 +220,15 @@ export function CharityImpactSection() {
               <p className="text-xs text-gray-500 mb-3 leading-relaxed">{charity.description}</p>
               <div className="flex items-center justify-between text-xs">
                 <div>
-                  <p className="font-bold text-teal-700">{charity.totalRaised}</p>
+                  <div className="flex items-center gap-1">
+                    <TrendingUp className="w-3 h-3 text-teal-600" />
+                    <p className="font-bold text-teal-700">Verified Partner</p>
+                  </div>
                   <p className="text-gray-400">raised via Noor</p>
                 </div>
                 <div className="text-right">
-                  <p className="font-bold text-gray-700">{charity.donors}</p>
-                  <p className="text-gray-400">donors</p>
+                  <p className="font-bold text-gray-700">✓ Halal</p>
+                  <p className="text-gray-400">certified</p>
                 </div>
               </div>
             </div>
@@ -228,7 +237,7 @@ export function CharityImpactSection() {
 
         <div className="text-center mt-8">
           <p className="text-sm text-gray-500 mb-3">
-            Enable Sadaqah donations at checkout — every penny counts.
+            0.5% of every sale is automatically donated — no extra cost to you.
           </p>
           <Link href="/products">
             <button className="inline-flex items-center gap-2 bg-teal-600 text-white px-6 py-2.5 rounded-full text-sm font-medium hover:bg-teal-700 transition-colors">

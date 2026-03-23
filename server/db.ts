@@ -743,3 +743,22 @@ export async function getFollowedShops(followerId: number) {
   const shopIds = rows.map((r) => r.shopId);
   return db.select().from(shops).where(inArray(shops.id, shopIds));
 }
+
+// ─── Public Charity Stats (no auth required) ─────────────────────────────────
+export async function getPublicCharityStats() {
+  const db = await getDb();
+  if (!db) return { totalRaisedPence: 0, totalRaisedFormatted: "£0.00", totalOrders: 0, totalDonors: 0 };
+  const [revenueData, orderCount, donorCount] = await Promise.all([
+    db.select({ total: sql<string>`COALESCE(SUM(total), 0)` }).from(orders).where(sql`status != 'cancelled'`),
+    db.select({ count: sql<number>`count(*)` }).from(orders).where(sql`status != 'cancelled'`),
+    db.select({ count: sql<number>`count(DISTINCT buyerId)` }).from(orders).where(sql`status != 'cancelled'`),
+  ]);
+  const grossRevenue = Number(revenueData[0]?.total ?? 0);
+  const charityAmount = grossRevenue * 0.005;
+  return {
+    totalRaisedPence: Math.round(charityAmount * 100),
+    totalRaisedFormatted: `£${charityAmount.toFixed(2)}`,
+    totalOrders: Number(orderCount[0]?.count ?? 0),
+    totalDonors: Number(donorCount[0]?.count ?? 0),
+  };
+}

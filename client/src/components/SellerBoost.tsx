@@ -163,7 +163,7 @@ export function NewSellerSpotlight() {
           <div className="text-white text-center sm:text-left">
             <p className="font-bold text-lg">Start Selling on Noor Today</p>
             <p className="text-white/80 text-sm">
-              Join 500+ Muslim sellers. Free to start. No monthly fees. Just 8% commission.
+              Join 500+ Muslim sellers. Free to start. No monthly fees. Just 7% commission.
             </p>
           </div>
           <Link href="/seller-onboarding">

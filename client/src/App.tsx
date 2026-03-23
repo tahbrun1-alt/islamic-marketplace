@@ -1,7 +1,7 @@
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/NotFound";
-import { Route, Switch } from "wouter";
+import { Route, Switch, useLocation } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import Navbar from "./components/Navbar";
@@ -30,7 +30,7 @@ import HalalStandards from "./pages/HalalStandards";
 import Messages from "./pages/Messages";
 import SellerOnboarding from "./pages/SellerOnboarding";
 import Categories from "./pages/Categories";
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useEffect } from "react";
 
 // Lazy-loaded pages
 const ProductDetail = lazy(() => import("./pages/ProductDetail"));
@@ -51,9 +51,19 @@ function PageLoader() {
   );
 }
 
+/** Scrolls the window to the top whenever the route changes. */
+function ScrollToTop() {
+  const [location] = useLocation();
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+  }, [location]);
+  return null;
+}
+
 function Router() {
   return (
     <Suspense fallback={<PageLoader />}>
+      <ScrollToTop />
       <Switch>
         <Route path="/" component={Home} />
         <Route path="/products" component={Products} />

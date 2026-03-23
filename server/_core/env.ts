@@ -15,4 +15,8 @@ export const ENV = {
   awsSecretAccessKey: process.env.AWS_SECRET_ACCESS_KEY ?? "",
   awsRegion: process.env.AWS_REGION ?? "us-east-1",
   s3Bucket: process.env.S3_BUCKET ?? "",
+  // Google OAuth
+  googleClientId: process.env.GOOGLE_CLIENT_ID ?? "",
+  googleClientSecret: process.env.GOOGLE_CLIENT_SECRET ?? "",
+  appUrl: process.env.APP_URL ?? "https://noor-marketplace-app-production.up.railway.app",
 };

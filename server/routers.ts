@@ -976,6 +976,11 @@ export const appRouter = router({
     ),
   }),
 
+  // Public charity stats — no auth required
+  charity: router({
+    publicStats: publicProcedure.query(() => db.getPublicCharityStats()),
+  }),
+
   // Global search — searches both products and services in one call
   search: router({
     global: publicProcedure

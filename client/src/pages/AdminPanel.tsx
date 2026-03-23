@@ -150,7 +150,7 @@ export default function AdminPanel() {
                 <span className="text-xs font-medium text-emerald-700 uppercase tracking-wide">Platform Revenue</span>
               </div>
               <p className="text-3xl font-bold text-emerald-800">£{platformRevenue.toFixed(2)}</p>
-              <p className="text-xs text-emerald-600 mt-1">6.5% commission earned</p>
+              <p className="text-xs text-emerald-600 mt-1">7% total commission (6.5% platform + 0.5% charity)</p>
             </CardContent>
           </Card>
 
