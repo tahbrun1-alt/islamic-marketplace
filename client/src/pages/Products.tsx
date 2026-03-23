@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Slider } from "@/components/ui/slider";
 import { Card, CardContent } from "@/components/ui/card";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { Search, SlidersHorizontal, Heart, Star, ShoppingCart, X, Filter } from "lucide-react";
+import { Search, SlidersHorizontal, Heart, Star, ShoppingCart, X, Filter, ShoppingBag } from "lucide-react";
 import { useCartStore } from "@/stores/cartStore";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { toast } from "sonner";

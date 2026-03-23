@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Heart, UserPlus, UserCheck, Star, MessageSquare, ThumbsUp, Share2, ChevronRight } from "lucide-react";
+import { Heart, UserPlus, UserCheck, Star, MessageSquare, ThumbsUp, Share2, ChevronRight, Package } from "lucide-react";
 import { Link } from "wouter";
 
 interface Review {

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "wouter";
-import { ChevronRight, X, Gift, Circle, BookOpen, Shirt, Leaf, Mail, Heart, ShoppingBag, Droplets, BookMarked, Moon, Image, FlaskConical, Calendar, Store, MapPin, LucideIcon, Lamp, Backpack, Sparkles } from "lucide-react";
+import { ChevronRight, X, Gift, Circle, BookOpen, Shirt, Leaf, Mail, Heart, ShoppingBag, Droplets, BookMarked, Moon, Image, FlaskConical, Calendar, Store, MapPin, LucideIcon, Lamp, Backpack, Sparkles, Star } from "lucide-react";
 
 type Season = "ramadan" | "eid" | "hajj" | "muharram" | "normal";
 

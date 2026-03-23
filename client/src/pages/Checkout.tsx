@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
-import { ShieldCheck, Lock, CreditCard, Truck, Tag, CheckCircle2, X, Heart } from "lucide-react";
+import { ShieldCheck, Lock, CreditCard, Truck, Tag, CheckCircle2, X, Heart, ShoppingBag } from "lucide-react";
 
 export default function Checkout() {
   const [, navigate] = useLocation();

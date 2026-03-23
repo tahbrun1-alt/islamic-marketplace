@@ -15,7 +15,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { toast } from "sonner";
 import { Link, useLocation } from "wouter";
 import {
-  Package, ShoppingBag, Star, TrendingUp, Plus, Edit, Trash2,
+  Package, ShoppingBag, Star, TrendingUp, Plus, Edit, Trash2, Heart,
   Settings, BarChart3, MessageSquare, Calendar, Store, CheckCircle,
   Clock, AlertCircle, DollarSign, Sparkles
 } from "lucide-react";
